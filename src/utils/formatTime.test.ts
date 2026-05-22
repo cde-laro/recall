@@ -14,4 +14,7 @@ describe('formatTime', () => {
   it('formats large value', () => {
     expect(formatTime(3661500)).toEqual({ mmss: '61:01', cs: '50' });
   });
+  it('clamps negative to zero', () => {
+    expect(formatTime(-1000)).toEqual({ mmss: '00:00', cs: '00' });
+  });
 });
