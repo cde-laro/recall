@@ -31,6 +31,10 @@
 
 * { box-sizing: border-box; }
 
+html {
+  overflow-anchor: none;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -155,27 +159,28 @@ body::before {
 
 /* ===== Hud full / compact ===== */
 .hud-full {
-  transition: opacity 200ms ease, transform 200ms ease;
+  max-height: 600px;
+  overflow: hidden;
+  transition: max-height 220ms ease, opacity 200ms ease;
 }
 .hud-compact {
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-6px);
-  height: 0;
+  transform: translateY(-4px);
+  max-height: 0;
   overflow: hidden;
-  transition: opacity 200ms ease, transform 200ms ease;
+  transition: max-height 220ms ease, opacity 200ms ease, transform 200ms ease;
 }
 .sticky-zone.is-compact .hud-full {
+  max-height: 0;
   opacity: 0;
   pointer-events: none;
-  height: 0;
-  overflow: hidden;
 }
 .sticky-zone.is-compact .hud-compact {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
-  height: auto;
+  max-height: 200px;
 }
 
 /* ===== Compact line ===== */
