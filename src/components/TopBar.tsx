@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   version: string;
@@ -7,7 +8,6 @@ interface Props {
   game: 'lol' | 'valorant';
   onToggleTheme: () => void;
   onToggleLang: () => void;
-  onToggleGame: () => void;
   onNewRun: () => void;
   onResetRecord: () => void;
 }
@@ -19,8 +19,9 @@ const ValLogo = () => (
   </svg>
 );
 
-export function TopBar({ version, theme, lang, game, onToggleTheme, onToggleLang, onToggleGame, onNewRun, onResetRecord }: Props) {
+export function TopBar({ version, theme, lang, game, onToggleTheme, onToggleLang, onNewRun, onResetRecord }: Props) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const isVal = game === 'valorant';
 
   return (
@@ -28,9 +29,7 @@ export function TopBar({ version, theme, lang, game, onToggleTheme, onToggleLang
       <div className="brand">
         <div className="brand-mark">{isVal ? 'V' : 'M'}</div>
         <div>
-          <div className="brand-text">
-            Memo<span className="accent">{isVal ? '.Agent' : '.Champ'}</span>
-          </div>
+          <div className="brand-text">cde-laro<span className="accent">.dev</span></div>
           <div className="brand-sub">
             {isVal ? '// Agent identification trial' : '// Champion identification trial'}
           </div>
@@ -54,7 +53,7 @@ export function TopBar({ version, theme, lang, game, onToggleTheme, onToggleLang
         </button>
         <button
           className={`game-btn${isVal ? ' active' : ''}`}
-          onClick={onToggleGame}
+          onClick={() => navigate(isVal ? '/league' : '/valorant')}
           title={isVal ? 'Switch to League of Legends' : 'Switch to Valorant'}
         >
           <ValLogo />
