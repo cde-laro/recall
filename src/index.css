@@ -188,11 +188,130 @@ body::before {
 .timer-value.live { color: var(--gold-bright); }
 .timer-value .ms { font-size: 28px; color: var(--ink-dim); font-family: 'JetBrains Mono', monospace; letter-spacing: 0; margin-left: 8px; }
 
-/* ===== InputBar ===== */
-.input-bar {
+/* ===== Sticky command bar ===== */
+.sticky-command {
   position: sticky;
   top: 0;
   z-index: 10;
+  overflow: visible;
+  margin-bottom: 24px;
+}
+
+.command-bar {
+  display: flex;
+  align-items: stretch;
+  background: var(--surface);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line-bright);
+  transition: border-color 200ms ease;
+}
+.command-bar.shake { animation: shake 320ms ease; }
+.command-bar.flash-correct { border-color: var(--success); box-shadow: 0 0 0 3px color-mix(in oklab, var(--success) 22%, transparent); }
+.command-bar.flash-wrong { border-color: var(--danger); }
+
+.cmd-stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 20px;
+  gap: 2px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--line);
+}
+.cmd-stat:last-child { border-right: 0; border-left: 1px solid var(--line); }
+.cmd-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.28em;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+}
+.cmd-num {
+  font-family: 'Anton', sans-serif;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--ink);
+}
+.cmd-total { font-size: 12px; color: var(--ink-mute); }
+
+.command-bar input {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  padding: 20px 24px;
+  outline: none;
+  font-weight: 500;
+}
+.command-bar input::placeholder { color: var(--ink-mute); font-style: italic; font-size: 16px; }
+.command-bar input:disabled { cursor: not-allowed; }
+
+.cmd-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gold);
+  color: var(--bg);
+  border: 0;
+  font-family: 'Anton', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.22em;
+  padding: 0 36px;
+  cursor: pointer;
+  text-transform: uppercase;
+  clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
+  transition: background 160ms ease;
+  flex-shrink: 0;
+}
+.cmd-submit:hover { background: var(--gold-bright); }
+.cmd-submit:disabled { background: var(--ink-mute); cursor: not-allowed; }
+
+/* ===== Timer trapezoid ===== */
+.timer-float {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  padding: 10px 20px 18px;
+  background: var(--surface-solid);
+  clip-path: polygon(0% 0%, 100% 0%, 84% 100%, 16% 100%);
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.5));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  pointer-events: none;
+  border-top: 2px solid var(--line-bright);
+}
+.timer-float.live {
+  border-top-color: var(--gold);
+  filter: drop-shadow(0 6px 16px color-mix(in oklab, var(--gold) 25%, rgba(0,0,0,0.5)));
+}
+.timer-float-num {
+  font-family: 'Anton', sans-serif;
+  font-size: 38px;
+  color: var(--ink-dim);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  transition: color 300ms ease;
+}
+.timer-float.live .timer-float-num { color: var(--gold-bright); }
+.timer-float-ms {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  color: var(--ink-mute);
+  align-self: flex-end;
+  margin-bottom: 5px;
+  transition: color 300ms ease;
+}
+.timer-float.live .timer-float-ms { color: var(--ink-dim); }
+
+/* ===== InputBar (kept for reference, no longer used in DOM) ===== */
+.input-bar {
   display: flex; align-items: stretch;
   background: var(--surface);
   backdrop-filter: blur(6px);
