@@ -1,0 +1,39 @@
+{
+  "topbar": {
+    "season": "Saison 26",
+    "patch": "Patch {{version}}",
+    "newRun": "Nouvelle Run",
+    "resetRecord": "Reset Record"
+  },
+  "scoreboard": {
+    "found": "Champions Trouvés",
+    "bestTime": "Meilleur Temps",
+    "ready": "Prêt à démarrer",
+    "live": "Run en cours",
+    "finished": "Temps Final"
+  },
+  "input": {
+    "placeholder": "Tape le nom d'un champion puis Entrée…",
+    "placeholderDone": "Run terminée — appuyez sur Nouvelle Run",
+    "submit": "Submit"
+  },
+  "status": {
+    "hint": "// commence à taper. le chrono démarre au premier champion validé.",
+    "lastFound": "Dernier",
+    "giveUp": "Abandonner"
+  },
+  "modal": {
+    "newRecord": "Nouveau Record",
+    "complete": "Mission Accomplie",
+    "subNewRecord": "// personal best logged",
+    "subComplete": "// all champions identified",
+    "finalTime": "Temps Final",
+    "bestTime": "Meilleur Temps",
+    "replay": "Rejouer",
+    "viewGrid": "Voir la grille"
+  },
+  "confirm": {
+    "giveUp": "Abandonner et révéler tous les champions ?",
+    "resetRecord": "Effacer le meilleur temps enregistré ?"
+  }
+}

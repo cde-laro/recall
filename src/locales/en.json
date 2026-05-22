@@ -1,0 +1,39 @@
+{
+  "topbar": {
+    "season": "Season 26",
+    "patch": "Patch {{version}}",
+    "newRun": "New Run",
+    "resetRecord": "Reset Record"
+  },
+  "scoreboard": {
+    "found": "Champions Found",
+    "bestTime": "Best Time",
+    "ready": "Ready to start",
+    "live": "Run in progress",
+    "finished": "Final Time"
+  },
+  "input": {
+    "placeholder": "Type a champion name and press Enter…",
+    "placeholderDone": "Run over — press New Run",
+    "submit": "Submit"
+  },
+  "status": {
+    "hint": "// start typing. timer starts on first correct answer.",
+    "lastFound": "Last",
+    "giveUp": "Give up"
+  },
+  "modal": {
+    "newRecord": "New Record",
+    "complete": "Mission Complete",
+    "subNewRecord": "// personal best logged",
+    "subComplete": "// all champions identified",
+    "finalTime": "Final Time",
+    "bestTime": "Best Time",
+    "replay": "Play again",
+    "viewGrid": "View grid"
+  },
+  "confirm": {
+    "giveUp": "Give up and reveal all champions?",
+    "resetRecord": "Clear the saved best time?"
+  }
+}
