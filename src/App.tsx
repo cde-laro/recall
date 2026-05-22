@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
 import { useChampionData } from './hooks/useChampionData';
@@ -34,6 +34,8 @@ export default function App() {
   const [shake, setShake] = useState(false);
   const [lastFound, setLastFound] = useState<string | null>(null);
 
+  const modalTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const { version, champions, loading } = useChampionData(lang);
 
   useEffect(() => {
@@ -42,6 +44,7 @@ export default function App() {
   }, [theme]);
 
   useEffect(() => {
+    if (modalTimerRef.current != null) clearTimeout(modalTimerRef.current);
     i18n.changeLanguage(lang);
     localStorage.setItem('memochamp_lang', lang);
     setFound(new Set());
@@ -50,6 +53,7 @@ export default function App() {
     setEndTime(null);
     setNow(Date.now());
     setShowModal(false);
+    setIsNewRecord(false);
     setJustFoundName(null);
     setLastFound(null);
   }, [lang]);
@@ -61,6 +65,7 @@ export default function App() {
   }, [startTime, endTime]);
 
   const resetGame = useCallback(() => {
+    if (modalTimerRef.current != null) clearTimeout(modalTimerRef.current);
     setFound(new Set());
     setQuery('');
     setStartTime(null);
@@ -101,7 +106,7 @@ export default function App() {
           localStorage.setItem('memochamp_best', String(elapsed));
         }
         setIsNewRecord(newRecord);
-        setTimeout(() => setShowModal(true), 500);
+        modalTimerRef.current = setTimeout(() => setShowModal(true), 500);
       }
     } else {
       setFlash('wrong');
@@ -112,9 +117,11 @@ export default function App() {
 
   const handleGiveUp = useCallback(() => {
     if (!confirm(t('confirm.giveUp'))) return;
+    const now = Date.now();
     setFound(new Set(champions.map(c => c.name)));
-    setEndTime(Date.now());
-  }, [champions, t]);
+    if (startTime == null) setStartTime(now);
+    setEndTime(now);
+  }, [champions, startTime, t]);
 
   const handleResetRecord = useCallback(() => {
     if (!confirm(t('confirm.resetRecord'))) return;
