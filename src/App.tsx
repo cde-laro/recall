@@ -35,6 +35,7 @@ export default function App() {
   const [lastFound, setLastFound] = useState<string | null>(null);
 
   const modalTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
 
   const { version, champions, loading } = useChampionData(lang);
 
@@ -42,6 +43,14 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('memochamp_theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    const el = stickyRef.current;
+    if (!el) return;
+    const onScroll = () => el.classList.toggle('is-compact', window.scrollY >= 150);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     if (modalTimerRef.current != null) clearTimeout(modalTimerRef.current);
@@ -149,47 +158,83 @@ export default function App() {
         onResetRecord={handleResetRecord}
       />
 
-      <div className="sticky-zone">
-        <Scoreboard
-          foundCount={found.size}
-          total={champions.length}
-          startTime={startTime}
-          endTime={endTime}
-          now={now}
-          bestTime={bestTime}
-        />
-
-        <InputBar
-          value={query}
-          disabled={endTime != null || loading}
-          flash={flash}
-          shake={shake}
-          onChange={setQuery}
-          onSubmit={handleSubmit}
-        />
-
-        <div className="status-row">
-          <div>
-            {lastFound ? (
-              <span className="last-found">
-                {t('status.lastFound')} <span className="name">{lastFound}</span>
-              </span>
-            ) : (
-              <span>{t('status.hint')}</span>
-            )}
+      <div className="sticky-zone" ref={stickyRef}>
+        {/* Bloc complet */}
+        <div className="hud-full">
+          <Scoreboard
+            foundCount={found.size}
+            total={champions.length}
+            startTime={startTime}
+            endTime={endTime}
+            now={now}
+            bestTime={bestTime}
+          />
+          <InputBar
+            value={query}
+            disabled={endTime != null || loading}
+            flash={flash}
+            shake={shake}
+            onChange={setQuery}
+            onSubmit={handleSubmit}
+          />
+          <div className="status-row">
+            <div>
+              {lastFound ? (
+                <span className="last-found">
+                  {t('status.lastFound')} <span className="name">{lastFound}</span>
+                </span>
+              ) : (
+                <span>{t('status.hint')}</span>
+              )}
+            </div>
+            <div className="controls">
+              <button className="icon-btn" onClick={handleGiveUp} disabled={endTime != null}>
+                {t('status.giveUp')}
+              </button>
+            </div>
           </div>
-          <div className="controls">
-            <button className="icon-btn" onClick={handleGiveUp} disabled={endTime != null}>
-              {t('status.giveUp')}
-            </button>
+          <div className="progress-track">
+            <div className="progress-fill" style={{ width: `${champions.length ? (found.size / champions.length) * 100 : 0}%` }} />
           </div>
         </div>
 
-        <div className="progress-track">
-          <div
-            className="progress-fill"
-            style={{ width: `${champions.length ? (found.size / champions.length) * 100 : 0}%` }}
-          />
+        {/* Bloc compact */}
+        <div className="hud-compact">
+          <div className={[
+            'compact-line',
+            shake ? 'shake' : '',
+            flash === 'correct' ? 'flash-correct' : '',
+            flash === 'wrong' ? 'flash-wrong' : '',
+          ].filter(Boolean).join(' ')}>
+            <div className="compact-found">
+              <span className="compact-lbl">{t('scoreboard.found')}</span>
+              <span className="compact-num">{String(found.size).padStart(3, '0')}<span className="compact-total">/{champions.length}</span></span>
+            </div>
+            <div className="compact-timer">
+              <span className="compact-t">{(() => { const elapsed = endTime != null ? endTime - (startTime ?? endTime) : startTime != null ? now - startTime : 0; const s = Math.floor(elapsed / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; })()}</span>
+              <span className="compact-ms">.{String(Math.floor(((endTime != null ? endTime - (startTime ?? endTime) : startTime != null ? now - startTime : 0) % 1000) / 10)).padStart(2, '0')}</span>
+            </div>
+            <input
+              autoFocus
+              value={query}
+              disabled={endTime != null || loading}
+              placeholder={endTime != null ? t('input.placeholderDone') : t('input.placeholder')}
+              onChange={e => setQuery(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }}
+            />
+            <button className="compact-submit" disabled={endTime != null || loading} onClick={handleSubmit}>
+              {t('input.submit')}
+            </button>
+            <div className="compact-best">
+              <span className="compact-lbl">{t('scoreboard.bestTime')}</span>
+              <span className="compact-num" style={{ color: bestTime != null ? 'var(--gold-bright)' : 'var(--ink-mute)' }}>
+                {bestTime != null ? (() => { const s = Math.floor(bestTime / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; })() : '--:--'}
+              </span>
+            </div>
+          </div>
+          <div className="progress-track">
+            <div className="progress-fill" style={{ width: `${champions.length ? (found.size / champions.length) * 100 : 0}%` }} />
+          </div>
         </div>
       </div>
 
