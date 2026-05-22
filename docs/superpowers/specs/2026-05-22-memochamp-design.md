@@ -98,8 +98,7 @@ Three-column grid:
 - Right: "Best Time" (gold if set, muted dashes if not)
 
 ### InputBar
-- Prefix label `> CHAMP` (JetBrains Mono, gold)
-- Text input (no autocomplete)
+- Text input (no autocomplete, no prefix label)
 - Angular gold SUBMIT button (clip-path skew)
 - Shake + red border on wrong answer, green glow on correct
 
