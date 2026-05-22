@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
-import { useChampionData } from './hooks/useChampionData';
+import { useGameData } from './hooks/useGameData';
 import { normalize } from './utils/normalize';
 import { formatTime } from './utils/formatTime';
 import { TopBar } from './components/TopBar';
@@ -16,6 +16,9 @@ export default function App() {
   );
   const [theme, setTheme] = useState<'dark' | 'light'>(
     () => (localStorage.getItem('memochamp_theme') as 'dark' | 'light') ?? 'dark'
+  );
+  const [game, setGame] = useState<'lol' | 'valorant'>(
+    () => (localStorage.getItem('memochamp_game') as 'lol' | 'valorant') ?? 'lol'
   );
   const [found, setFound] = useState<Set<string>>(new Set());
   const [query, setQuery] = useState('');
@@ -36,12 +39,27 @@ export default function App() {
   const modalTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { version, champions, loading } = useChampionData(lang);
+  const { version, characters: champions, loading } = useGameData(game, lang);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('memochamp_theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-game', game);
+    localStorage.setItem('memochamp_game', game);
+    if (modalTimerRef.current != null) clearTimeout(modalTimerRef.current);
+    setFound(new Set());
+    setQuery('');
+    setStartTime(null);
+    setEndTime(null);
+    setNow(Date.now());
+    setShowModal(false);
+    setIsNewRecord(false);
+    setJustFoundName(null);
+    setLastFound(null);
+  }, [game]);
 
 useEffect(() => {
     if (modalTimerRef.current != null) clearTimeout(modalTimerRef.current);
@@ -137,6 +155,10 @@ useEffect(() => {
     setLang(l => l === 'fr' ? 'en' : 'fr');
   }, []);
 
+  const toggleGame = useCallback(() => {
+    setGame(g => g === 'lol' ? 'valorant' : 'lol');
+  }, []);
+
   useEffect(() => {
     if (endTime == null && !loading) inputRef.current?.focus();
   }, [endTime, loading]);
@@ -155,8 +177,10 @@ useEffect(() => {
         version={version}
         theme={theme}
         lang={lang}
+        game={game}
         onToggleTheme={toggleTheme}
         onToggleLang={toggleLang}
+        onToggleGame={toggleGame}
         onNewRun={resetGame}
         onResetRecord={handleResetRecord}
       />
@@ -218,7 +242,6 @@ useEffect(() => {
       ) : (
         <ChampionGrid
           champions={champions}
-          version={version}
           found={found}
           justFoundName={justFoundName}
         />

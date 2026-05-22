@@ -1,25 +1,22 @@
-import type { Champion } from '../hooks/useChampionData';
+import type { Character } from '../hooks/useGameData';
 
 interface Props {
-  champion: Champion;
-  version: string;
+  champion: Character;
   index: number;
   found: boolean;
   justFound: boolean;
 }
 
-export function ChampionCard({ champion, version, index, found, justFound }: Props) {
+export function ChampionCard({ champion, index, found, justFound }: Props) {
   const cls = ['card', found ? 'found' : '', justFound ? 'justfound' : '']
     .filter(Boolean).join(' ');
-
-  const imgUrl = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champion.id}.png`;
 
   return (
     <div className={cls}>
       <span className="num">#{String(index + 1).padStart(3, '0')}</span>
       <div className="portrait">
         {found
-          ? <img src={imgUrl} alt={champion.name} loading="lazy" />
+          ? <img src={champion.imageUrl} alt={champion.name} loading="lazy" />
           : <span className="question">?</span>
         }
       </div>

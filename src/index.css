@@ -15,6 +15,27 @@
   --success: #4ade80;
 }
 
+[data-game="valorant"] {
+  --gold: #FF4655;
+  --gold-bright: #FF7A84;
+  --found: #FF4655;
+  --bg: #0F1923;
+  --bg-2: #151f2b;
+  --surface-solid: #1a242e;
+  --line: #1e2d3d;
+  --line-bright: #2a3d52;
+}
+
+[data-game="valorant"][data-theme="light"] {
+  --bg: #ece8e1;
+  --bg-2: #ddd8cf;
+  --surface-solid: #f5f0e8;
+  --line: #ccc5b6;
+  --line-bright: #b8ae9c;
+  --gold: #FF4655;
+  --gold-bright: #cc2233;
+}
+
 [data-theme="light"] {
   --bg: #f1ece1;
   --bg-2: #e8e1d0;
@@ -147,6 +168,18 @@ body::before {
   line-height: 1;
 }
 .lang-btn:hover { border-color: var(--gold); background: color-mix(in oklab, var(--gold) 8%, transparent); }
+
+.game-btn {
+  background: transparent;
+  border: 1px solid var(--line-bright);
+  color: var(--ink-mute);
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+.game-btn:hover { color: var(--ink); border-color: var(--gold); background: color-mix(in oklab, var(--gold) 8%, transparent); }
+.game-btn.active { color: var(--gold-bright); border-color: var(--gold); background: color-mix(in oklab, var(--gold) 12%, transparent); }
 
 /* ===== Scoreboard ===== */
 .scoreboard {
