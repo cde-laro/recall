@@ -176,6 +176,9 @@ body::before {
   opacity: 0;
   pointer-events: none;
 }
+.sticky-zone.is-compact {
+  padding-top: 28px;
+}
 .sticky-zone.is-compact .hud-compact {
   opacity: 1;
   pointer-events: auto;
