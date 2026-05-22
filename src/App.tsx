@@ -194,12 +194,10 @@ useEffect(() => {
 
       <div className="status-row">
         <div>
-          {lastFound ? (
+          {lastFound && (
             <span className="last-found">
               {t('status.lastFound')} <span className="name">{lastFound}</span>
             </span>
-          ) : (
-            <span>{t('status.hint')}</span>
           )}
         </div>
         <div className="controls">
