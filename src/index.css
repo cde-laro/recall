@@ -65,6 +65,16 @@ body::before {
 /* ===== Layout ===== */
 .app { position: relative; z-index: 1; max-width: 1480px; margin: 0 auto; padding: 28px 32px 80px; }
 
+.sticky-zone {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in oklab, var(--gold) 8%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--bg-2), var(--bg) 40%);
+  padding-bottom: 2px;
+}
+
 /* ===== TopBar ===== */
 .topbar {
   display: flex;
@@ -300,6 +310,7 @@ body::before {
   clip-path: polygon(100% 0, 100% 100%, 0 0); z-index: 2;
 }
 .card.found::after { background: var(--gold); }
+.card.found .name-bar { color: #fff; }
 
 /* portrait area */
 .card .portrait {

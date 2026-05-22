@@ -149,46 +149,48 @@ export default function App() {
         onResetRecord={handleResetRecord}
       />
 
-      <Scoreboard
-        foundCount={found.size}
-        total={champions.length}
-        startTime={startTime}
-        endTime={endTime}
-        now={now}
-        bestTime={bestTime}
-      />
-
-      <InputBar
-        value={query}
-        disabled={endTime != null || loading}
-        flash={flash}
-        shake={shake}
-        onChange={setQuery}
-        onSubmit={handleSubmit}
-      />
-
-      <div className="status-row">
-        <div>
-          {lastFound ? (
-            <span className="last-found">
-              {t('status.lastFound')} <span className="name">{lastFound}</span>
-            </span>
-          ) : (
-            <span>{t('status.hint')}</span>
-          )}
-        </div>
-        <div className="controls">
-          <button className="icon-btn" onClick={handleGiveUp} disabled={endTime != null}>
-            {t('status.giveUp')}
-          </button>
-        </div>
-      </div>
-
-      <div className="progress-track">
-        <div
-          className="progress-fill"
-          style={{ width: `${champions.length ? (found.size / champions.length) * 100 : 0}%` }}
+      <div className="sticky-zone">
+        <Scoreboard
+          foundCount={found.size}
+          total={champions.length}
+          startTime={startTime}
+          endTime={endTime}
+          now={now}
+          bestTime={bestTime}
         />
+
+        <InputBar
+          value={query}
+          disabled={endTime != null || loading}
+          flash={flash}
+          shake={shake}
+          onChange={setQuery}
+          onSubmit={handleSubmit}
+        />
+
+        <div className="status-row">
+          <div>
+            {lastFound ? (
+              <span className="last-found">
+                {t('status.lastFound')} <span className="name">{lastFound}</span>
+              </span>
+            ) : (
+              <span>{t('status.hint')}</span>
+            )}
+          </div>
+          <div className="controls">
+            <button className="icon-btn" onClick={handleGiveUp} disabled={endTime != null}>
+              {t('status.giveUp')}
+            </button>
+          </div>
+        </div>
+
+        <div className="progress-track">
+          <div
+            className="progress-fill"
+            style={{ width: `${champions.length ? (found.size / champions.length) * 100 : 0}%` }}
+          />
+        </div>
       </div>
 
       {loading ? (
