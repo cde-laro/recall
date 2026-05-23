@@ -15,7 +15,7 @@ interface State {
 
 const LOL_LOCALE: Record<'fr' | 'en', string> = { fr: 'fr_FR', en: 'en_US' };
 const VAL_LOCALE: Record<'fr' | 'en', string> = { fr: 'fr-FR', en: 'en-US' };
-const OW_LOCALE: Record<'fr' | 'en', string> = { fr: 'fr-FR', en: 'en-US' };
+const OW_LOCALE: Record<'fr' | 'en', string> = { fr: 'fr-fr', en: 'en-us' };
 
 export function useGameData(game: 'lol' | 'valorant' | 'overwatch', lang: 'fr' | 'en'): State {
   const [state, setState] = useState<State>({
@@ -61,7 +61,7 @@ export function useGameData(game: 'lol' | 'valorant' | 'overwatch', lang: 'fr' |
 
     async function fetchOverwatch() {
       const data = await fetch(
-        `https://overfast-api.genesyk.com/heroes?locale=${OW_LOCALE[lang]}`
+        `https://overfast-api.tekrop.fr/heroes?locale=${OW_LOCALE[lang]}`
       ).then(r => r.json());
       const characters: Character[] = (data as Array<{ key: string; name: string; portrait: string }>)
         .map(h => ({ name: h.name, id: h.key, imageUrl: h.portrait }))
