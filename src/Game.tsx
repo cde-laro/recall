@@ -9,7 +9,7 @@ import { ChampionGrid } from './components/ChampionGrid';
 import { CompleteModal } from './components/CompleteModal';
 
 interface Props {
-  game: 'lol' | 'valorant';
+  game: 'lol' | 'valorant' | 'overwatch';
 }
 
 export function Game({ game }: Props) {
