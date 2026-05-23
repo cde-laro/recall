@@ -201,6 +201,51 @@ body::before {
 .game-btn:hover { color: var(--ink); border-color: var(--gold); background: color-mix(in oklab, var(--gold) 8%, transparent); }
 .game-btn.active { color: var(--gold-bright); border-color: var(--gold); background: color-mix(in oklab, var(--gold) 12%, transparent); }
 
+.game-dropdown {
+  position: relative;
+}
+
+.game-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--surface-solid);
+  border: 1px solid var(--line-bright);
+  min-width: 140px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  color: var(--ink-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+  transition: background 120ms ease, color 120ms ease;
+}
+.game-menu-item:hover { background: color-mix(in oklab, var(--gold) 8%, transparent); color: var(--ink); }
+.game-menu-item.current { color: var(--gold-bright); }
+
+.game-menu-mark {
+  font-family: 'Anton', sans-serif;
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+  color: var(--gold-bright);
+  opacity: 0.7;
+}
+.game-menu-item.current .game-menu-mark { opacity: 1; }
+
 /* ===== Scoreboard ===== */
 .scoreboard {
   display: grid;
