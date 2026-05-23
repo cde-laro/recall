@@ -36,6 +36,26 @@
   --gold-bright: #cc2233;
 }
 
+[data-game="overwatch"] {
+  --gold: #F99E1A;
+  --gold-bright: #FFBC3B;
+  --bg: #0d0f14;
+  --bg-2: #14161c;
+  --surface-solid: #191b22;
+  --line: #21242e;
+  --line-bright: #2e3240;
+}
+
+[data-game="overwatch"][data-theme="light"] {
+  --bg: #f0ece3;
+  --bg-2: #e8e3d8;
+  --surface-solid: #faf7f0;
+  --line: #d6cfc0;
+  --line-bright: #c0b8a4;
+  --gold: #c97c00;
+  --gold-bright: #a86200;
+}
+
 [data-theme="light"] {
   --bg: #f1ece1;
   --bg-2: #e8e1d0;
