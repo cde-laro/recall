@@ -51,6 +51,18 @@ export function Game({ game }: Props) {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-game', game);
+    const TITLES: Record<typeof game, string> = {
+      lol: 'RECALL/League — 168 champions · cde-laro.dev',
+      valorant: 'RECALL/Valorant — All agents · cde-laro.dev',
+      overwatch: 'RECALL/Overwatch — All heroes · cde-laro.dev',
+    };
+    const DESCS: Record<typeof game, string> = {
+      lol: 'Can you name all 168 League of Legends champions from memory? No hints, no help.',
+      valorant: 'Can you name every Valorant agent from memory? Test your knowledge.',
+      overwatch: 'Can you name every Overwatch hero from memory? The ultimate recall challenge.',
+    };
+    document.title = TITLES[game];
+    document.querySelector('meta[name="description"]')?.setAttribute('content', DESCS[game]);
   }, [game]);
 
   // Reset on lang change
