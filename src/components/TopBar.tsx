@@ -33,10 +33,10 @@ const BRAND_MARK: Record<Game, string> = {
   overwatch: 'O',
 };
 
-const BRAND_SUB: Record<Game, string> = {
-  lol: '// Champion identification trial',
-  valorant: '// Agent identification trial',
-  overwatch: '// Hero identification trial',
+const BRAND_GAME: Record<Game, string> = {
+  lol: 'League',
+  valorant: 'Valorant',
+  overwatch: 'Overwatch',
 };
 
 const SEASON_CHIP: Record<Game, string> = {
@@ -49,18 +49,23 @@ export function TopBar({ version, theme, lang, game, onToggleTheme, onToggleLang
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open && !menuOpen) return;
     function handleClick(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
     }
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
-  }, [open]);
+  }, [open, menuOpen]);
 
   const chipLabel = game === 'lol'
     ? (version ? `${t('topbar.season')} · ${t('topbar.patch', { version })}` : '')
@@ -71,18 +76,18 @@ export function TopBar({ version, theme, lang, game, onToggleTheme, onToggleLang
       <div className="brand">
         <div className="brand-mark">{BRAND_MARK[game]}</div>
         <div>
-          <div className="brand-text">cde-laro<span className="accent">.dev</span></div>
-          <div className="brand-sub">{BRAND_SUB[game]}</div>
+          <div className="brand-text">RECALL<span className="accent">/{BRAND_GAME[game]}</span></div>
         </div>
       </div>
 
       <span className="season-chip">{chipLabel}</span>
 
       <div className="topbar-right">
-        <button className="icon-btn" onClick={onResetRecord}>
+        {/* Desktop-only text controls */}
+        <button className="icon-btn desktop-only" onClick={onResetRecord}>
           {t('topbar.resetRecord')}
         </button>
-        <button className="icon-btn" onClick={onNewRun}>
+        <button className="icon-btn desktop-only" onClick={onNewRun}>
           {t('topbar.newRun')}
         </button>
 
@@ -116,6 +121,28 @@ export function TopBar({ version, theme, lang, game, onToggleTheme, onToggleLang
         <button className="lang-btn" onClick={onToggleLang} title="Switch language">
           {lang === 'fr' ? '🇬🇧' : '🇫🇷'}
         </button>
+
+        {/* Mobile-only burger menu */}
+        <div className="burger-dropdown" ref={menuRef}>
+          <button
+            className="burger-btn"
+            onClick={() => setMenuOpen(o => !o)}
+            aria-expanded={menuOpen}
+            aria-label="Menu"
+          >
+            ☰
+          </button>
+          {menuOpen && (
+            <div className="burger-menu">
+              <button className="burger-menu-item" onClick={() => { setMenuOpen(false); onNewRun(); }}>
+                {t('topbar.newRun')}
+              </button>
+              <button className="burger-menu-item" onClick={() => { setMenuOpen(false); onResetRecord(); }}>
+                {t('topbar.resetRecord')}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

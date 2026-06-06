@@ -246,6 +246,50 @@ body::before {
 }
 .game-menu-item.current .game-menu-mark { opacity: 1; }
 
+/* ===== Burger menu (mobile-only, hidden on desktop) ===== */
+.burger-dropdown { position: relative; }
+
+.burger-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--line-bright);
+  color: var(--ink-dim);
+  width: 36px; height: 36px;
+  place-items: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+.burger-btn:hover { border-color: var(--gold); background: color-mix(in oklab, var(--gold) 8%, transparent); }
+
+.burger-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--surface-solid);
+  border: 1px solid var(--line-bright);
+  min-width: 160px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.burger-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  color: var(--ink-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+  transition: background 120ms ease, color 120ms ease;
+}
+.burger-menu-item:hover { background: color-mix(in oklab, var(--gold) 8%, transparent); color: var(--ink); }
+
 /* ===== Sticky command bar ===== */
 .sticky-command {
   position: sticky;
@@ -541,8 +585,44 @@ body::before {
 }
 
 /* ===== Responsive ===== */
-@media (max-width: 720px) {
+@media (max-width: 640px) {
   .app { padding: 18px 16px 60px; }
-  .grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
   .season-chip { display: none; }
+  .topbar { gap: 8px; padding-bottom: 12px; }
+  .brand-text { font-size: 18px; letter-spacing: 0.12em; }
+  .topbar-right { gap: 8px; }
+  .desktop-only { display: none !important; }
+  .burger-btn { display: grid; }
+
+  /* Command bar — 2 rows */
+  .command-bar { flex-wrap: wrap; }
+  .command-bar .cmd-stat {
+    order: 1;
+    width: 50%;
+    box-sizing: border-box;
+    padding: 6px 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .command-bar .cmd-stat:first-child { border-right: 1px solid var(--line); }
+  .command-bar .cmd-stat:last-child { order: 2; border-left: none; align-items: flex-end; }
+  .command-bar input { order: 3; font-size: 16px; padding: 14px 12px; }
+  .command-bar .cmd-submit { order: 4; padding: 0 20px; clip-path: none; }
+
+  /* Timer */
+  .timer-float { width: 200px; }
+  .timer-float-num { font-size: 30px; }
+
+  /* Status row */
+  .status-row { font-size: 13px; }
+
+  /* Grid */
+  .grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+
+  /* Modal */
+  .modal .stats { grid-template-columns: 1fr; gap: 16px; }
+  .modal .actions { flex-direction: column; }
+  .modal h2 { font-size: 32px; }
+  .modal .stat-value { font-size: 28px; }
 }
