@@ -452,6 +452,27 @@ body::before {
   gap: 10px;
 }
 
+/* LoL — compact grid for 168 champions */
+[data-game="lol"] .grid {
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 5px;
+}
+[data-game="lol"] .card .name-bar {
+  font-size: 9px;
+  padding: 3px 5px 4px;
+  min-height: 20px;
+  letter-spacing: 0.04em;
+}
+[data-game="lol"] .card:not(.found) .name-bar {
+  font-size: 8px;
+  letter-spacing: 0.1em;
+}
+[data-game="lol"] .card .num { font-size: 7px; }
+[data-game="lol"] .card::before { width: 10px; height: 10px; }
+[data-game="lol"] .card::after { width: 8px; height: 8px; }
+[data-game="lol"] .card .portrait .question { font-size: 36px; }
+[data-game="lol"] .card .hint-letter { font-size: 8px; }
+
 /* ===== Card ===== */
 .card {
   position: relative;
@@ -587,6 +608,7 @@ body::before {
 /* ===== Responsive ===== */
 @media (max-width: 640px) {
   .app { padding: 18px 16px 60px; }
+  .sticky-command { top: 0; }
   .season-chip { display: none; }
   .topbar { gap: 8px; padding-bottom: 12px; }
   .brand-text { font-size: 18px; letter-spacing: 0.12em; }

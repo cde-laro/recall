@@ -28,7 +28,7 @@ const GAME_PATHS: Record<Game, string> = {
 };
 
 const BRAND_MARK: Record<Game, string> = {
-  lol: 'M',
+  lol: 'L',
   valorant: 'V',
   overwatch: 'O',
 };
