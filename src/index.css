@@ -246,46 +246,6 @@ body::before {
 }
 .game-menu-item.current .game-menu-mark { opacity: 1; }
 
-/* ===== Scoreboard ===== */
-.scoreboard {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 32px;
-  margin-bottom: 28px;
-}
-
-.score-side { display: flex; flex-direction: column; gap: 6px; }
-.score-side.right { align-items: flex-end; text-align: right; }
-
-.score-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; letter-spacing: 0.32em;
-  color: var(--ink-mute); text-transform: uppercase;
-}
-.score-value { font-family: 'Anton', sans-serif; font-size: 44px; letter-spacing: 0.04em; line-height: 1; }
-.score-value .small { font-size: 22px; color: var(--ink-dim); margin-left: 4px; }
-
-.timer-shell {
-  position: relative;
-  padding: 14px 36px 18px;
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  border: 1px solid var(--line-bright);
-  background: linear-gradient(180deg, color-mix(in oklab, var(--gold) 6%, transparent), transparent);
-  clip-path: polygon(4% 0, 96% 0, 100% 22%, 100% 100%, 0 100%, 0 22%);
-  min-width: 280px;
-}
-.timer-shell::before, .timer-shell::after {
-  content: ""; position: absolute; top: 0; width: 16px; height: 2px; background: var(--gold);
-}
-.timer-shell::before { left: 4%; transform: skewX(-50deg); }
-.timer-shell::after  { right: 4%; transform: skewX(50deg); }
-
-.timer-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.32em; color: var(--gold-bright); text-transform: uppercase; }
-.timer-value { font-family: 'Anton', sans-serif; font-size: 72px; letter-spacing: 0.06em; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
-.timer-value.live { color: var(--gold-bright); }
-.timer-value .ms { font-size: 28px; color: var(--ink-dim); font-family: 'JetBrains Mono', monospace; letter-spacing: 0; margin-left: 8px; }
-
 /* ===== Sticky command bar ===== */
 .sticky-command {
   position: sticky;
@@ -405,19 +365,6 @@ body::before {
   margin-bottom: 5px;
 }
 
-/* ===== InputBar (kept for reference, no longer used in DOM) ===== */
-.input-bar {
-  display: flex; align-items: stretch;
-  background: var(--surface);
-  backdrop-filter: blur(6px);
-  border: 1px solid var(--line-bright);
-  margin-bottom: 24px;
-  transition: border-color 200ms ease;
-}
-.input-bar.shake { animation: shake 320ms ease; }
-.input-bar.flash-correct { border-color: var(--success); box-shadow: 0 0 0 3px color-mix(in oklab, var(--success) 22%, transparent); }
-.input-bar.flash-wrong { border-color: var(--danger); }
-
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   20% { transform: translateX(-8px); }
@@ -425,27 +372,6 @@ body::before {
   60% { transform: translateX(-4px); }
   80% { transform: translateX(4px); }
 }
-
-.input-bar input {
-  flex: 1;
-  background: transparent; border: 0;
-  color: var(--ink);
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 22px; padding: 22px 24px;
-  outline: none; font-weight: 500; letter-spacing: 0.01em;
-}
-.input-bar input::placeholder { color: var(--ink-mute); font-style: italic; }
-
-.input-submit {
-  background: var(--gold); color: var(--bg);
-  border: 0;
-  font-family: 'Anton', sans-serif; font-size: 18px; letter-spacing: 0.22em;
-  padding: 0 36px; cursor: pointer; text-transform: uppercase;
-  clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
-  transition: background 160ms ease;
-}
-.input-submit:hover { background: var(--gold-bright); }
-.input-submit:disabled { background: var(--ink-mute); cursor: not-allowed; }
 
 /* ===== Status row ===== */
 .status-row {
@@ -617,11 +543,6 @@ body::before {
 /* ===== Responsive ===== */
 @media (max-width: 720px) {
   .app { padding: 18px 16px 60px; }
-  .scoreboard { grid-template-columns: 1fr; }
-  .score-side.right { align-items: flex-start; text-align: left; }
-  .timer-value { font-size: 56px; }
-  .input-bar input { font-size: 17px; padding: 16px 14px; }
-  .input-submit { padding: 0 18px; font-size: 14px; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
   .season-chip { display: none; }
 }

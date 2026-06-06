@@ -15,7 +15,7 @@
   "input": {
     "placeholder": "Tape le nom d'un champion puis Entrée…",
     "placeholderDone": "Run terminée — appuyez sur Nouvelle Run",
-    "submit": "Submit"
+    "submit": "Valider"
   },
   "status": {
     "hint": "// commence à taper. le chrono démarre au premier champion validé.",
@@ -25,8 +25,8 @@
   "modal": {
     "newRecord": "Nouveau Record",
     "complete": "Mission Accomplie",
-    "subNewRecord": "// personal best logged",
-    "subComplete": "// all champions identified",
+    "subNewRecord": "// meilleur temps enregistré",
+    "subComplete": "// tous les personnages identifiés",
     "finalTime": "Temps Final",
     "bestTime": "Meilleur Temps",
     "replay": "Rejouer",

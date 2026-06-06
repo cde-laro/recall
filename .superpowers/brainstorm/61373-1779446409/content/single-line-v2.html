@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Single line compact</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="/helper.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d1117; color: #e8ecf3; font-family: 'Space Grotesk', sans-serif; padding: 32px 24px 60px; }
+
+  h1 { font-family: 'Anton', sans-serif; font-size: 22px; letter-spacing: 0.15em; text-transform: uppercase; color: #f3c969; margin-bottom: 6px; }
+  .subtitle { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.22em; color: #4b5571; text-transform: uppercase; margin-bottom: 32px; }
+
+  .section-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.3em; color: #4b5571; text-transform: uppercase; margin-bottom: 12px; margin-top: 28px; }
+
+  /* Full state — shared */
+  .hud { background: #07090f; border: 1px solid #2c3a55; margin-bottom: 8px; }
+  .scoreboard-full {
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: center; gap: 10px;
+    padding: 8px 14px;
+    border-bottom: 1px solid #1c2436;
+  }
+  .score-col { display: flex; flex-direction: column; gap: 2px; }
+  .score-col.right { align-items: flex-end; }
+  .score-lbl { font-family: 'JetBrains Mono', monospace; font-size: 7px; letter-spacing: 0.3em; color: #4b5571; text-transform: uppercase; }
+  .score-val { font-family: 'Anton', sans-serif; font-size: 22px; line-height: 1; letter-spacing: 0.04em; }
+  .score-val .sm { font-size: 11px; color: #8893a8; }
+  .timer-col {
+    text-align: center;
+    border: 1px solid #2c3a55;
+    clip-path: polygon(6% 0, 94% 0, 100% 20%, 100% 100%, 0 100%, 0 20%);
+    padding: 4px 14px 6px;
+    background: linear-gradient(180deg, rgba(211,166,74,0.08), transparent);
+  }
+  .timer-lbl { font-family: 'JetBrains Mono', monospace; font-size: 7px; letter-spacing: 0.28em; color: #f3c969; text-transform: uppercase; }
+  .timer-val { font-family: 'Anton', sans-serif; font-size: 30px; line-height: 1; color: #f3c969; }
+  .timer-val .ms { font-size: 13px; color: #8893a8; font-family: 'JetBrains Mono', monospace; }
+  .input-full {
+    display: flex;
+    background: #11162370;
+    border-bottom: 1px solid #2c3a55;
+  }
+  .input-full input {
+    flex: 1; background: transparent; border: 0;
+    color: #8893a8; font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px; padding: 10px 12px; font-style: italic;
+  }
+  .input-full .submit {
+    background: #d6a64a; color: #07090f;
+    border: 0; font-family: 'Anton', sans-serif;
+    font-size: 10px; letter-spacing: 0.18em;
+    padding: 0 14px; text-transform: uppercase;
+    clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .progress { height: 3px; background: #1c2436; }
+  .progress-fill { height: 100%; width: 18%; background: linear-gradient(90deg, #d6a64a, #f3c969); }
+
+  .arrow { text-align: center; font-size: 16px; color: #4b5571; padding: 6px 0; }
+
+  /* ===========================
+     OPTION A — Tout sur une ligne : timer | input | submit
+     =========================== */
+  .compact-a-line {
+    display: flex; align-items: stretch;
+    border-bottom: 1px solid #1c2436;
+    height: 46px;
+  }
+  .compact-a-line .timer-chunk {
+    display: flex; align-items: center; gap: 6px;
+    padding: 0 14px;
+    border-right: 1px solid #1c2436;
+    flex-shrink: 0;
+  }
+  .compact-a-line .t-num { font-family: 'Anton', sans-serif; font-size: 22px; color: #f3c969; line-height: 1; }
+  .compact-a-line .t-ms { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #8893a8; }
+  .compact-a-line .found-chunk {
+    display: flex; align-items: center;
+    padding: 0 10px;
+    border-right: 1px solid #1c2436;
+    flex-shrink: 0;
+    gap: 4px;
+  }
+  .compact-a-line .f-num { font-family: 'Anton', sans-serif; font-size: 16px; color: #e8ecf3; }
+  .compact-a-line .f-total { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #4b5571; }
+  .compact-a-line input {
+    flex: 1; background: transparent; border: 0;
+    color: #8893a8; font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px; padding: 0 12px; font-style: italic; outline: none;
+  }
+  .compact-a-line .submit {
+    background: #d6a64a; color: #07090f;
+    border: 0; font-family: 'Anton', sans-serif;
+    font-size: 10px; letter-spacing: 0.18em;
+    padding: 0 16px; text-transform: uppercase;
+    clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
+    flex-shrink: 0;
+  }
+
+  /* ===========================
+     OPTION B — Timer centré, found + best aux extrémités, input pleine largeur
+     =========================== */
+  .compact-b-line {
+    display: flex; align-items: center;
+    padding: 0 14px;
+    height: 36px;
+    border-bottom: 1px solid #1c2436;
+    gap: 10px;
+  }
+  .compact-b-line .side { font-family: 'Anton', sans-serif; font-size: 15px; color: #e8ecf3; flex-shrink: 0; }
+  .compact-b-line .side .lbl { font-family: 'JetBrains Mono', monospace; font-size: 7px; letter-spacing: 0.2em; color: #4b5571; display: block; text-transform: uppercase; }
+  .compact-b-line .sep { flex: 1; height: 1px; background: #1c2436; }
+  .compact-b-line .timer-center { font-family: 'Anton', sans-serif; font-size: 24px; color: #f3c969; flex-shrink: 0; }
+  .compact-b-line .timer-center .ms { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8893a8; }
+  .compact-b-input {
+    display: flex; align-items: stretch; height: 40px;
+    border-bottom: 1px solid #1c2436;
+  }
+  .compact-b-input input {
+    flex: 1; background: transparent; border: 0;
+    color: #8893a8; font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px; padding: 0 12px; font-style: italic; outline: none;
+  }
+  .compact-b-input .submit {
+    background: #d6a64a; color: #07090f;
+    border: 0; font-family: 'Anton', sans-serif;
+    font-size: 10px; letter-spacing: 0.18em;
+    padding: 0 16px; text-transform: uppercase;
+    clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
+    flex-shrink: 0;
+  }
+
+  /* ===========================
+     OPTION C — Tout en une seule ligne : found | timer | input | submit
+     =========================== */
+  .compact-c-line {
+    display: flex; align-items: stretch;
+    height: 48px;
+    background: rgba(7,9,15,0.95);
+    backdrop-filter: blur(8px);
+  }
+  .compact-c-line .found-box {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 0 12px;
+    border-right: 1px solid #1c2436;
+    flex-shrink: 0;
+    gap: 1px;
+  }
+  .compact-c-line .found-box .lbl { font-family: 'JetBrains Mono', monospace; font-size: 7px; letter-spacing: 0.22em; color: #4b5571; text-transform: uppercase; }
+  .compact-c-line .found-box .num { font-family: 'Anton', sans-serif; font-size: 18px; color: #e8ecf3; line-height: 1; }
+  .compact-c-line .timer-box {
+    display: flex; align-items: center; gap: 2px;
+    padding: 0 14px;
+    border-right: 1px solid #1c2436;
+    flex-shrink: 0;
+    background: linear-gradient(90deg, rgba(211,166,74,0.06), transparent);
+  }
+  .compact-c-line .timer-box .t { font-family: 'Anton', sans-serif; font-size: 26px; color: #f3c969; line-height: 1; }
+  .compact-c-line .timer-box .ms { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8893a8; }
+  .compact-c-line input {
+    flex: 1; background: transparent; border: 0;
+    color: #8893a8; font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px; padding: 0 14px; font-style: italic; outline: none;
+  }
+  .compact-c-line .submit {
+    background: #d6a64a; color: #07090f;
+    border: 0; font-family: 'Anton', sans-serif;
+    font-size: 10px; letter-spacing: 0.18em;
+    padding: 0 18px; text-transform: uppercase;
+    clip-path: polygon(6% 0, 100% 0, 100% 100%, 0 100%);
+    flex-shrink: 0;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 28px; }
+  .option-card {
+    border: 1px solid #2c3a55;
+    cursor: pointer;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+    background: #111623;
+    overflow: hidden;
+  }
+  .option-card:hover { border-color: #d6a64a; }
+  .option-card.selected {
+    border-color: #f3c969;
+    box-shadow: 0 0 0 2px #d6a64a, 0 8px 24px -8px rgba(211,166,74,0.5);
+  }
+  .option-card.selected .card-label { background: #d6a64a; color: #07090f; }
+  .card-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.28em;
+    text-transform: uppercase; padding: 8px 14px;
+    background: #1c2436; color: #8893a8;
+    border-bottom: 1px solid #2c3a55;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .card-label span { font-size: 18px; font-family: 'Anton', sans-serif; letter-spacing: 0; }
+  .preview { padding: 16px; }
+  .desc { padding: 10px 14px 14px; font-size: 12px; color: #8893a8; line-height: 1.5; border-top: 1px solid #1c2436; }
+  .desc strong { color: #e8ecf3; }
+</style>
+</head>
+<body>
+
+<h1>Une seule ligne — 3 variantes</h1>
+<p class="subtitle">État compact quand on scrolle</p>
+
+<p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#4b5571;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:28px;">
+  ▲ État complet (en haut de page) — identique pour les 3
+</p>
+<div class="hud" style="max-width:600px;margin-bottom:32px;">
+  <div class="scoreboard-full">
+    <div class="score-col">
+      <span class="score-lbl">Champions trouvés</span>
+      <span class="score-val">001<span class="sm">/172</span></span>
+    </div>
+    <div class="timer-col">
+      <div class="timer-lbl">Run en cours</div>
+      <div class="timer-val">00:34<span class="ms">.57</span></div>
+    </div>
+    <div class="score-col right">
+      <span class="score-lbl">Meilleur temps</span>
+      <span class="score-val" style="color:#f3c969">02:14<span class="sm" style="color:#8893a8">.00</span></span>
+    </div>
+  </div>
+  <div class="input-full">
+    <input placeholder="Tape le nom d'un champion puis Entrée…" disabled>
+    <div class="submit">Submit</div>
+  </div>
+  <div class="progress"><div class="progress-fill"></div></div>
+</div>
+
+<div class="options">
+
+  <!-- OPTION A -->
+  <div class="option-card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-label"><span>A</span> Timer + found + input — tout en une ligne</div>
+    <div class="preview">
+      <div class="hud">
+        <div class="compact-a-line">
+          <div class="timer-chunk">
+            <div>
+              <div class="t-num">00:34<span class="t-ms">.57</span></div>
+            </div>
+          </div>
+          <div class="found-chunk">
+            <span class="f-num">001</span>
+            <span class="f-total">/172</span>
+          </div>
+          <input placeholder="Tape le nom d'un champion…" disabled>
+          <div class="submit">Submit</div>
+        </div>
+        <div class="progress"><div class="progress-fill"></div></div>
+      </div>
+    </div>
+    <div class="desc">Timer à gauche · found count · puis l'input. <strong>Tout en une ligne de ~46px</strong>. Très efficace, donne un max de place à la grille.</div>
+  </div>
+
+  <!-- OPTION B -->
+  <div class="option-card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-label"><span>B</span> Ligne info + ligne input</div>
+    <div class="preview">
+      <div class="hud">
+        <div class="compact-b-line">
+          <div class="side">
+            <span class="lbl">Trouvés</span>
+            001<span style="font-size:10px;color:#8893a8">/172</span>
+          </div>
+          <div class="sep"></div>
+          <div class="timer-center">00:34<span class="ms">.57</span></div>
+          <div class="sep"></div>
+          <div class="side" style="color:#f3c969">
+            <span class="lbl">Meilleur</span>
+            02:14
+          </div>
+        </div>
+        <div class="compact-b-input">
+          <input placeholder="Tape le nom d'un champion…" disabled>
+          <div class="submit">Submit</div>
+        </div>
+        <div class="progress"><div class="progress-fill"></div></div>
+      </div>
+    </div>
+    <div class="desc">Ligne fine avec found · timer · best, puis input séparé. <strong>2 lignes compactes</strong> mais garde les 3 infos visibles.</div>
+  </div>
+
+  <!-- OPTION C -->
+  <div class="option-card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-label"><span>C</span> Found · timer · input · submit — une seule ligne</div>
+    <div class="preview">
+      <div class="hud" style="border-color:#2c3a55;">
+        <div class="compact-c-line">
+          <div class="found-box">
+            <span class="lbl">Trouvés</span>
+            <span class="num">001<span style="font-size:10px;color:#4b5571">/172</span></span>
+          </div>
+          <div class="timer-box">
+            <span class="t">00:34</span>
+            <span class="ms">.57</span>
+          </div>
+          <input placeholder="Tape le nom d'un champion puis Entrée…" disabled>
+          <div class="submit">Submit</div>
+        </div>
+        <div class="progress"><div class="progress-fill"></div></div>
+      </div>
+    </div>
+    <div class="desc">Found + timer à gauche comme blocs séparés · input prend tout l'espace restant · Submit à droite. <strong>Une seule ligne de ~48px</strong>, tout accessible, meilleur temps masqué.</div>
+  </div>
+
+</div>
+
+</body>
+</html>
