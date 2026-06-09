@@ -95,7 +95,9 @@ export function TopBar({ version, theme, lang, game, onToggleTheme, onToggleLang
           <button
             className="game-btn active"
             onClick={() => setOpen(o => !o)}
-            title="Switch game"
+            aria-label={t('topbar.switchGame')}
+            aria-haspopup="menu"
+            aria-expanded={open}
           >
             {BRAND_MARK[game]}
           </button>
@@ -115,11 +117,11 @@ export function TopBar({ version, theme, lang, game, onToggleTheme, onToggleLang
           )}
         </div>
 
-        <button className="theme-btn" onClick={onToggleTheme} title="Toggle theme">
-          {theme === 'dark' ? '☀️' : '🌙'}
+        <button className="theme-btn" onClick={onToggleTheme} aria-label={t('topbar.toggleTheme')}>
+          <span aria-hidden="true">{theme === 'dark' ? '☀️' : '🌙'}</span>
         </button>
-        <button className="lang-btn" onClick={onToggleLang} title="Switch language">
-          {lang === 'fr' ? '🇬🇧' : '🇫🇷'}
+        <button className="lang-btn" onClick={onToggleLang} aria-label={t('topbar.switchLanguage')}>
+          <span aria-hidden="true">{lang === 'fr' ? '🇬🇧' : '🇫🇷'}</span>
         </button>
 
         {/* Mobile-only burger menu */}

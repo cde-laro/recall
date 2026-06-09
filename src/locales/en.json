@@ -3,7 +3,13 @@
     "season": "Season 26",
     "patch": "Patch {{version}}",
     "newRun": "New Run",
-    "resetRecord": "Reset Record"
+    "resetRecord": "Reset Record",
+    "switchGame": "Switch game",
+    "toggleTheme": "Toggle theme",
+    "switchLanguage": "Switch language"
+  },
+  "card": {
+    "locked": "Locked"
   },
   "scoreboard": {
     "found": "Champions Found",

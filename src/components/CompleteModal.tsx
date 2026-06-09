@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatTime } from '../utils/formatTime';
 
@@ -14,10 +15,32 @@ export function CompleteModal({ time, bestTime, isNewRecord, onRestart, onClose 
   const current = formatTime(time);
   const best = bestTime != null ? formatTime(bestTime) : null;
 
+  const restartRef = useRef<HTMLButtonElement>(null);
+  const previousFocus = useRef<Element | null>(null);
+
+  useEffect(() => {
+    previousFocus.current = document.activeElement;
+    restartRef.current?.focus();
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      (previousFocus.current as HTMLElement | null)?.focus?.();
+    };
+  }, [onClose]);
+
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
-        <h2>{isNewRecord ? t('modal.newRecord') : t('modal.complete')}</h2>
+      <div
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        onClick={e => e.stopPropagation()}
+      >
+        <h2 id="modal-title">{isNewRecord ? t('modal.newRecord') : t('modal.complete')}</h2>
         <div className="sub">
           {isNewRecord ? t('modal.subNewRecord') : t('modal.subComplete')}
         </div>
@@ -40,7 +63,7 @@ export function CompleteModal({ time, bestTime, isNewRecord, onRestart, onClose 
           </div>
         </div>
         <div className="actions">
-          <button onClick={onRestart}>{t('modal.replay')}</button>
+          <button ref={restartRef} onClick={onRestart}>{t('modal.replay')}</button>
           <button className="secondary" onClick={onClose}>{t('modal.viewGrid')}</button>
         </div>
       </div>

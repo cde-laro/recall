@@ -69,6 +69,7 @@ export function Game({ game }: Props) {
   useEffect(() => {
     if (modalTimerRef.current != null) clearTimeout(modalTimerRef.current);
     i18n.changeLanguage(lang);
+    document.documentElement.setAttribute('lang', lang);
     localStorage.setItem('memochamp_lang', lang);
     setFound(new Set());
     setQuery('');
@@ -207,13 +208,18 @@ export function Game({ game }: Props) {
         <div className={['command-bar', shake ? 'shake' : '', flash === 'correct' ? 'flash-correct' : '', flash === 'wrong' ? 'flash-wrong' : ''].filter(Boolean).join(' ')}>
           <div className="cmd-stat">
             <span className="cmd-lbl">{t('scoreboard.found')}</span>
-            <span className="cmd-num">{String(found.size).padStart(3, '0')}<span className="cmd-total">/{champions.length}</span></span>
+            <span className="cmd-num" aria-live="polite">{String(found.size).padStart(3, '0')}<span className="cmd-total">/{champions.length}</span></span>
           </div>
           <input
             ref={inputRef}
             autoFocus
             value={query}
             disabled={endTime != null || loading}
+            aria-label={t('input.placeholder')}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
             placeholder={endTime != null ? t('input.placeholderDone') : t('input.placeholder')}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') handleSubmit(); }}

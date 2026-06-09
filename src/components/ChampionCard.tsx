@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { Character } from '../hooks/useGameData';
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export function ChampionCard({ champion, index, found, justFound }: Props) {
+  const { t } = useTranslation();
   const cls = ['card', found ? 'found' : '', justFound ? 'justfound' : '']
     .filter(Boolean).join(' ');
 
@@ -21,7 +23,7 @@ export function ChampionCard({ champion, index, found, justFound }: Props) {
         }
       </div>
       <div className="name-bar">
-        {found ? champion.name : '—— LOCKED ——'}
+        {found ? champion.name : `—— ${t('card.locked')} ——`}
       </div>
     </div>
   );
