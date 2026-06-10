@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+export type GameId = 'lol' | 'valorant' | 'overwatch';
+
 export interface Character {
   name: string;
   id: string;
@@ -17,7 +19,7 @@ const LOL_LOCALE: Record<'fr' | 'en', string> = { fr: 'fr_FR', en: 'en_US' };
 const VAL_LOCALE: Record<'fr' | 'en', string> = { fr: 'fr-FR', en: 'en-US' };
 const OW_LOCALE: Record<'fr' | 'en', string> = { fr: 'fr-fr', en: 'en-us' };
 
-export function useGameData(game: 'lol' | 'valorant' | 'overwatch', lang: 'fr' | 'en'): State {
+export function useGameData(game: GameId, lang: 'fr' | 'en'): State {
   const [state, setState] = useState<State>({
     version: '',
     characters: [],

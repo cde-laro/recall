@@ -44,5 +44,9 @@
   "confirm": {
     "giveUp": "Abandonner et révéler tous les champions ?",
     "resetRecord": "Effacer le meilleur temps enregistré ?"
+  },
+  "error": {
+    "loadFailed": "// impossible de charger les données du jeu",
+    "retry": "Réessayer"
   }
 }

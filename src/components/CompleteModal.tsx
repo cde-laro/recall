@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatTime } from '../utils/formatTime';
 import { buildShareText } from '../utils/shareText';
+import type { GameId } from '../hooks/useGameData';
 
 interface Props {
-  game: 'lol' | 'valorant' | 'overwatch';
+  game: GameId;
   total: number;
   lang: 'fr' | 'en';
   time: number;

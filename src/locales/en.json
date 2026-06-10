@@ -44,5 +44,9 @@
   "confirm": {
     "giveUp": "Give up and reveal all champions?",
     "resetRecord": "Clear the saved best time?"
+  },
+  "error": {
+    "loadFailed": "// failed to load game data",
+    "retry": "Retry"
   }
 }

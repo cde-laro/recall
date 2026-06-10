@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-type Game = 'lol' | 'valorant' | 'overwatch';
+import type { GameId as Game } from '../hooks/useGameData';
 
 interface Props {
   version: string;

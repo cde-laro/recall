@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { Character } from '../hooks/useGameData';
 import { ChampionCard } from './ChampionCard';
 
@@ -7,7 +8,7 @@ interface Props {
   justFoundName: string | null;
 }
 
-export function ChampionGrid({ champions, found, justFoundName }: Props) {
+export const ChampionGrid = memo(function ChampionGrid({ champions, found, justFoundName }: Props) {
   return (
     <div className="grid">
       {champions.map((champ, i) => (
@@ -21,4 +22,4 @@ export function ChampionGrid({ champions, found, justFoundName }: Props) {
       ))}
     </div>
   );
-}
+});

@@ -619,6 +619,14 @@ body::before {
 }
 .modal .share-actions { margin-top: 12px; }
 
+.load-error {
+  display: grid; gap: 18px; justify-items: center;
+  text-align: center; padding: 60px 20px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  letter-spacing: 0.28em; color: var(--ink-mute); text-transform: uppercase;
+}
+.load-error p { margin: 0; }
+
 /* ===== Responsive ===== */
 @media (max-width: 640px) {
   .app { padding: 18px 16px 60px; }

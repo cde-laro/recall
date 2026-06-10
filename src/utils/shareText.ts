@@ -1,6 +1,5 @@
 import { formatTime } from './formatTime';
-
-type GameId = 'lol' | 'valorant' | 'overwatch';
+import type { GameId } from '../hooks/useGameData';
 
 const GAME_LABELS: Record<GameId, string> = {
   lol: 'League',

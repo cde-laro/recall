@@ -1,15 +1,17 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
-import { useGameData } from './hooks/useGameData';
+import { useGameData, type GameId } from './hooks/useGameData';
 import { normalize } from './utils/normalize';
 import { formatTime } from './utils/formatTime';
+import { findCharacter } from './utils/aliases';
 import { TopBar } from './components/TopBar';
+import { Timer } from './components/Timer';
 import { ChampionGrid } from './components/ChampionGrid';
 import { CompleteModal } from './components/CompleteModal';
 
 interface Props {
-  game: 'lol' | 'valorant' | 'overwatch';
+  game: GameId;
 }
 
 export function Game({ game }: Props) {
@@ -25,7 +27,6 @@ export function Game({ game }: Props) {
   const [query, setQuery] = useState('');
   const [startTime, setStartTime] = useState<number | null>(null);
   const [endTime, setEndTime] = useState<number | null>(null);
-  const [now, setNow] = useState(Date.now());
   const bestKey = `memochamp_best_${game}`;
   const [bestTime, setBestTime] = useState<number | null>(() => {
     const raw = localStorage.getItem(`memochamp_best_${game}`);
@@ -41,7 +42,7 @@ export function Game({ game }: Props) {
   const modalTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { version, characters: champions, loading } = useGameData(game, lang);
+  const { version, characters: champions, loading, error } = useGameData(game, lang);
 
   // Apply theme + game tokens
   useEffect(() => {
@@ -52,12 +53,12 @@ export function Game({ game }: Props) {
   useEffect(() => {
     document.documentElement.setAttribute('data-game', game);
     const TITLES: Record<typeof game, string> = {
-      lol: 'RECALL/League — 168 champions · cde-laro.dev',
+      lol: 'RECALL/League — All champions · cde-laro.dev',
       valorant: 'RECALL/Valorant — All agents · cde-laro.dev',
       overwatch: 'RECALL/Overwatch — All heroes · cde-laro.dev',
     };
     const DESCS: Record<typeof game, string> = {
-      lol: 'Can you name all 168 League of Legends champions from memory? No hints, no help.',
+      lol: 'Can you name every League of Legends champion from memory? No hints, no help.',
       valorant: 'Can you name every Valorant agent from memory? Test your knowledge.',
       overwatch: 'Can you name every Overwatch hero from memory? The ultimate recall challenge.',
     };
@@ -75,7 +76,6 @@ export function Game({ game }: Props) {
     setQuery('');
     setStartTime(null);
     setEndTime(null);
-    setNow(Date.now());
     setShowModal(false);
     setIsNewRecord(false);
     setJustFoundName(null);
@@ -89,7 +89,6 @@ export function Game({ game }: Props) {
     setQuery('');
     setStartTime(null);
     setEndTime(null);
-    setNow(Date.now());
     setShowModal(false);
     setIsNewRecord(false);
     setJustFoundName(null);
@@ -97,13 +96,6 @@ export function Game({ game }: Props) {
     const raw = localStorage.getItem(`memochamp_best_${game}`);
     setBestTime(raw ? Number(raw) : null);
   }, [game]);
-
-  // Timer tick
-  useEffect(() => {
-    if (startTime == null || endTime != null) return;
-    const id = setInterval(() => setNow(Date.now()), 30);
-    return () => clearInterval(id);
-  }, [startTime, endTime]);
 
   // Focus input
   useEffect(() => {
@@ -116,7 +108,6 @@ export function Game({ game }: Props) {
     setQuery('');
     setStartTime(null);
     setEndTime(null);
-    setNow(Date.now());
     setShowModal(false);
     setIsNewRecord(false);
     setJustFoundName(null);
@@ -125,10 +116,9 @@ export function Game({ game }: Props) {
 
   const handleSubmit = useCallback(() => {
     if (endTime != null || !champions.length) return;
-    const norm = normalize(query);
-    if (!norm) return;
+    if (!normalize(query)) return;
 
-    const match = champions.find(c => normalize(c.name) === norm);
+    const match = findCharacter(champions, query, game);
     if (match && !found.has(match.name)) {
       const next = new Set(found);
       next.add(match.name);
@@ -159,7 +149,7 @@ export function Game({ game }: Props) {
       setShake(true);
       setTimeout(() => { setFlash(null); setShake(false); }, 360);
     }
-  }, [query, found, startTime, endTime, champions, bestTime, bestKey]);
+  }, [query, found, startTime, endTime, champions, game, bestTime, bestKey]);
 
   const handleGiveUp = useCallback(() => {
     if (!confirm(t('confirm.giveUp'))) return;
@@ -183,12 +173,7 @@ export function Game({ game }: Props) {
     setLang(l => l === 'fr' ? 'en' : 'fr');
   }, []);
 
-  const elapsed = endTime != null
-    ? endTime - (startTime ?? endTime)
-    : startTime != null ? now - startTime : 0;
-  const currentTime = formatTime(elapsed);
   const bestDisplay = bestTime != null ? formatTime(bestTime) : null;
-  const isLive = startTime != null && endTime == null;
   const pct = champions.length ? (found.size / champions.length) * 100 : 0;
 
   return (
@@ -234,10 +219,7 @@ export function Game({ game }: Props) {
             </span>
           </div>
         </div>
-        <div className={`timer-float${isLive ? ' live' : ''}`}>
-          <span className="timer-float-num">{currentTime.mmss}</span>
-          <span className="timer-float-ms">.{currentTime.cs}</span>
-        </div>
+        <Timer startTime={startTime} endTime={endTime} />
       </div>
 
       <div className="status-row">
@@ -259,7 +241,14 @@ export function Game({ game }: Props) {
         <div className="progress-fill" style={{ width: `${pct}%` }} />
       </div>
 
-      {loading ? (
+      {error ? (
+        <div className="load-error" role="alert">
+          <p>{t('error.loadFailed')}</p>
+          <button className="icon-btn" onClick={() => window.location.reload()}>
+            {t('error.retry')}
+          </button>
+        </div>
+      ) : loading ? (
         <div style={{ textAlign: 'center', padding: '60px 20px', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: '0.28em', color: 'var(--ink-mute)', textTransform: 'uppercase' }}>
           // Loading…
         </div>

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Character } from '../hooks/useGameData';
 
@@ -8,7 +9,7 @@ interface Props {
   justFound: boolean;
 }
 
-export function ChampionCard({ champion, index, found, justFound }: Props) {
+export const ChampionCard = memo(function ChampionCard({ champion, index, found, justFound }: Props) {
   const { t } = useTranslation();
   const cls = ['card', found ? 'found' : '', justFound ? 'justfound' : '']
     .filter(Boolean).join(' ');
@@ -27,4 +28,4 @@ export function ChampionCard({ champion, index, found, justFound }: Props) {
       </div>
     </div>
   );
-}
+});
