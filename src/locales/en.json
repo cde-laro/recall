@@ -36,7 +36,10 @@
     "finalTime": "Final Time",
     "bestTime": "Best Time",
     "replay": "Play again",
-    "viewGrid": "View grid"
+    "viewGrid": "View grid",
+    "share": "Share",
+    "copyScore": "Copy score",
+    "copied": "Copied!"
   },
   "confirm": {
     "giveUp": "Give up and reveal all champions?",

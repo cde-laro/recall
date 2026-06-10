@@ -1,8 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatTime } from '../utils/formatTime';
+import { buildShareText } from '../utils/shareText';
 
 interface Props {
+  game: 'lol' | 'valorant' | 'overwatch';
+  total: number;
+  lang: 'fr' | 'en';
   time: number;
   bestTime: number | null;
   isNewRecord: boolean;
@@ -10,13 +14,37 @@ interface Props {
   onClose: () => void;
 }
 
-export function CompleteModal({ time, bestTime, isNewRecord, onRestart, onClose }: Props) {
+export function CompleteModal({ game, total, lang, time, bestTime, isNewRecord, onRestart, onClose }: Props) {
   const { t } = useTranslation();
   const current = formatTime(time);
   const best = bestTime != null ? formatTime(bestTime) : null;
 
+  const [copied, setCopied] = useState(false);
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const restartRef = useRef<HTMLButtonElement>(null);
   const previousFocus = useRef<Element | null>(null);
+
+  const shareText = buildShareText({ game, total, timeMs: time, isNewRecord, lang });
+
+  function handleCopy() {
+    navigator.clipboard?.writeText(shareText).then(() => {
+      setCopied(true);
+      if (copiedTimerRef.current != null) clearTimeout(copiedTimerRef.current);
+      copiedTimerRef.current = setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {});
+  }
+
+  function handleShare() {
+    if (navigator.share) {
+      navigator.share({ text: shareText }).catch(() => {});
+    } else {
+      handleCopy();
+    }
+  }
+
+  useEffect(() => () => {
+    if (copiedTimerRef.current != null) clearTimeout(copiedTimerRef.current);
+  }, []);
 
   useEffect(() => {
     previousFocus.current = document.activeElement;
@@ -65,6 +93,12 @@ export function CompleteModal({ time, bestTime, isNewRecord, onRestart, onClose 
         <div className="actions">
           <button ref={restartRef} onClick={onRestart}>{t('modal.replay')}</button>
           <button className="secondary" onClick={onClose}>{t('modal.viewGrid')}</button>
+        </div>
+        <div className="actions share-actions">
+          <button className="secondary" onClick={handleShare}>{t('modal.share')}</button>
+          <button className="secondary" onClick={handleCopy} aria-live="polite">
+            {copied ? t('modal.copied') : t('modal.copyScore')}
+          </button>
         </div>
       </div>
     </div>

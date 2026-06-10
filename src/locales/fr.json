@@ -36,7 +36,10 @@
     "finalTime": "Temps Final",
     "bestTime": "Meilleur Temps",
     "replay": "Rejouer",
-    "viewGrid": "Voir la grille"
+    "viewGrid": "Voir la grille",
+    "share": "Partager",
+    "copyScore": "Copier le score",
+    "copied": "Copié !"
   },
   "confirm": {
     "giveUp": "Abandonner et révéler tous les champions ?",

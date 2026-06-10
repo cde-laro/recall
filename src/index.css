@@ -617,6 +617,7 @@ body::before {
 .modal .actions button.secondary {
   background: transparent; color: var(--ink); border: 1px solid var(--line-bright);
 }
+.modal .share-actions { margin-top: 12px; }
 
 /* ===== Responsive ===== */
 @media (max-width: 640px) {

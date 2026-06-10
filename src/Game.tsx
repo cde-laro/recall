@@ -273,6 +273,9 @@ export function Game({ game }: Props) {
 
       {showModal && endTime != null && startTime != null && (
         <CompleteModal
+          game={game}
+          total={champions.length}
+          lang={lang}
           time={endTime - startTime}
           bestTime={bestTime}
           isNewRecord={isNewRecord}
