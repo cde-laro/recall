@@ -404,9 +404,9 @@ body {
   isolation: isolate;
   transition: transform 200ms ease, border-color 200ms ease;
 }
-.card.locked { display: grid; place-items: center; }
-.lock-glyph { width: 44%; height: 44%; color: var(--ink-mute); opacity: 0.4; }
-[data-game="lol"] .lock-glyph { width: 52%; height: 52%; }
+.card.locked { display: flex; align-items: center; justify-content: center; }
+.lock-glyph { width: 46%; height: auto; aspect-ratio: 1 / 1; color: var(--ink-mute); opacity: 0.4; }
+[data-game="lol"] .lock-glyph { width: 56%; }
 
 .card.found {
   border-color: color-mix(in oklab, var(--gold) 65%, var(--line));
