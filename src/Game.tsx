@@ -15,6 +15,12 @@ interface Props {
   onToggleLang: () => void;
 }
 
+const ALIAS_EXAMPLES: Record<GameId, string> = {
+  lol: 'mf, j4, asol',
+  valorant: 'brim, kj',
+  overwatch: 'rein, hog, sym',
+};
+
 export function Game({ game, lang, onToggleLang }: Props) {
   const { t } = useTranslation();
 
@@ -198,10 +204,12 @@ export function Game({ game, lang, onToggleLang }: Props) {
 
       <div className="status-row">
         <div>
-          {lastFound && (
+          {lastFound ? (
             <span className="last-found">
               {t('status.lastFound')} <span className="name">{lastFound}</span>
             </span>
+          ) : (
+            !endTime && <span>{t('status.aliasHint', { examples: ALIAS_EXAMPLES[game] })}</span>
           )}
         </div>
         <div className="controls">
