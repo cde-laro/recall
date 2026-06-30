@@ -241,10 +241,6 @@ export function Game({ game, lang, onToggleLang }: Props) {
         </div>
 
         <div className="stats">
-          <div className="stat">
-            <span className="stat-lbl">{t('scoreboard.timer')}</span>
-            <Timer startTime={startTime} endTime={endTime} />
-          </div>
           <div className="stat stat--progress">
             <span className="stat-lbl">{t('scoreboard.found')}</span>
             <span className="stat-big" aria-live="polite">
@@ -270,6 +266,10 @@ export function Game({ game, lang, onToggleLang }: Props) {
 
       <main className="main">
         <div className="main-top">
+          <div className="timebar">
+            <span className="timebar-lbl">{t('scoreboard.timer')}</span>
+            <Timer startTime={startTime} endTime={endTime} />
+          </div>
           <button className="giveup" onClick={handleGiveUp} disabled={endTime != null}>
             <span className="giveup-flag" aria-hidden="true">⚑</span>
             <span className="giveup-text">
