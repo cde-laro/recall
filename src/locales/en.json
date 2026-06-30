@@ -13,6 +13,7 @@
   },
   "scoreboard": {
     "found": "Champions Found",
+    "timer": "Timer",
     "bestTime": "Best Time",
     "ready": "Ready to start",
     "live": "Run in progress",

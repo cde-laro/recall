@@ -25,9 +25,8 @@ export function Timer({ startTime, endTime }: Props) {
   const isLive = startTime != null && endTime == null;
 
   return (
-    <div className={`timer-float${isLive ? ' live' : ''}`}>
-      <span className="timer-float-num">{time.mmss}</span>
-      <span className="timer-float-ms">.{time.cs}</span>
-    </div>
+    <span className={`stat-big timer-val${isLive ? ' live' : ''}`}>
+      {time.mmss}<span className="stat-cs">.{time.cs}</span>
+    </span>
   );
 }

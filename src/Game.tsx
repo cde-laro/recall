@@ -164,11 +164,28 @@ export function Game({ game, lang, onToggleLang }: Props) {
       />
 
       <div className="sticky-command">
-        <div className={['command-bar', shake ? 'shake' : '', flash === 'correct' ? 'flash-correct' : '', flash === 'wrong' ? 'flash-wrong' : ''].filter(Boolean).join(' ')}>
-          <div className="cmd-stat">
-            <span className="cmd-lbl">{t('scoreboard.found')}</span>
-            <span className="cmd-num" aria-live="polite">{String(found.size).padStart(3, '0')}<span className="cmd-total">/{champions.length}</span></span>
+        <div className="stat-band">
+          <div className="stat-cell">
+            <span className="stat-lbl">{t('scoreboard.timer')}</span>
+            <Timer startTime={startTime} endTime={endTime} />
           </div>
+          <div className="stat-cell stat-cell--progress">
+            <span className="stat-lbl">{t('scoreboard.found')}</span>
+            <span className="stat-big" aria-live="polite">
+              {String(found.size).padStart(3, '0')}<span className="stat-sep">/{champions.length}</span>
+            </span>
+            <div className="progress-track in-cell">
+              <div className="progress-fill" style={{ width: `${pct}%` }} />
+            </div>
+          </div>
+          <div className="stat-cell stat-cell--right">
+            <span className="stat-lbl">{t('scoreboard.bestTime')}</span>
+            <span className="stat-big" style={{ color: bestDisplay ? 'var(--gold-bright)' : 'var(--ink-mute)' }}>
+              {bestDisplay ? bestDisplay.mmss : '--:--'}
+            </span>
+          </div>
+        </div>
+        <div className={['command-bar', shake ? 'shake' : '', flash === 'correct' ? 'flash-correct' : '', flash === 'wrong' ? 'flash-wrong' : ''].filter(Boolean).join(' ')}>
           <input
             ref={inputRef}
             autoFocus
@@ -186,14 +203,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
           <button className="cmd-submit" disabled={endTime != null || loading} onClick={handleSubmit}>
             {t('input.submit')}
           </button>
-          <div className="cmd-stat">
-            <span className="cmd-lbl">{t('scoreboard.bestTime')}</span>
-            <span className="cmd-num" style={{ color: bestDisplay ? 'var(--gold-bright)' : 'var(--ink-mute)' }}>
-              {bestDisplay ? bestDisplay.mmss : '--:--'}
-            </span>
-          </div>
         </div>
-        <Timer startTime={startTime} endTime={endTime} />
       </div>
 
       <div className="status-row">
@@ -209,10 +219,6 @@ export function Game({ game, lang, onToggleLang }: Props) {
             {t('status.giveUp')}
           </button>
         </div>
-      </div>
-
-      <div className="progress-track">
-        <div className="progress-fill" style={{ width: `${pct}%` }} />
       </div>
 
       {error ? (

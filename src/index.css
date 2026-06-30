@@ -322,32 +322,6 @@ body::before {
 .command-bar.flash-correct { border-color: var(--success); box-shadow: 0 0 0 3px color-mix(in oklab, var(--success) 22%, transparent); }
 .command-bar.flash-wrong { border-color: var(--danger); }
 
-.cmd-stat {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0 20px;
-  gap: 2px;
-  flex-shrink: 0;
-  border-right: 1px solid var(--line);
-}
-.cmd-stat:last-child { border-right: 0; border-left: 1px solid var(--line); }
-.cmd-lbl {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 0.28em;
-  color: var(--ink-mute);
-  text-transform: uppercase;
-}
-.cmd-num {
-  font-family: 'Anton', sans-serif;
-  font-size: 20px;
-  line-height: 1;
-  color: var(--ink);
-  font-variant-numeric: tabular-nums;
-}
-.cmd-total { font-size: 12px; color: var(--ink-mute); }
-
 .command-bar input {
   flex: 1;
   background: transparent;
@@ -382,44 +356,45 @@ body::before {
 .cmd-submit:hover { background: var(--gold-bright); }
 .cmd-submit:disabled { background: var(--ink-mute); cursor: not-allowed; }
 
-/* ===== Timer trapezoid ===== */
-.timer-float {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 260px;
-  padding: 10px 20px 18px;
-  background: var(--ink-mute);
-  clip-path: polygon(0% 0%, 100% 0%, 84% 100%, 16% 100%);
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
+/* ===== Stat band (timer · progress · best) ===== */
+.stat-band {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  pointer-events: none;
-  transition: background 300ms ease, filter 300ms ease;
+  background: var(--surface);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line-bright);
+  margin-bottom: 12px;
 }
-.timer-float.live {
-  background: var(--gold);
-  filter: drop-shadow(0 6px 20px color-mix(in oklab, var(--gold) 40%, rgba(0,0,0,0.4)));
+.stat-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 22px;
+  border-right: 1px solid var(--line);
+  min-width: 0;
 }
-.timer-float-num {
+.stat-cell:last-child { border-right: 0; }
+.stat-cell--progress { flex: 1.5; }
+.stat-cell--right { align-items: flex-end; text-align: right; }
+.stat-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+}
+.stat-big {
   font-family: 'Anton', sans-serif;
-  font-size: 38px;
-  color: var(--bg);
+  font-size: 30px;
   line-height: 1;
-  letter-spacing: 0.06em;
+  color: var(--ink);
+  letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
 }
-.timer-float-ms {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 16px;
-  color: var(--bg);
-  opacity: 0.7;
-  align-self: flex-end;
-  margin-bottom: 5px;
-}
+.stat-sep { color: var(--ink-mute); font-size: 19px; margin-left: 1px; }
+.stat-cs { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--ink-dim); margin-left: 1px; }
+.timer-val.live { color: var(--gold-bright); }
+.progress-track.in-cell { margin-bottom: 0; margin-top: 2px; }
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
@@ -638,45 +613,29 @@ body::before {
   .desktop-only { display: none !important; }
   .burger-btn { display: grid; }
 
-  /* Command bar — 2 rows */
-  .command-bar { flex-wrap: wrap; }
-  .command-bar .cmd-stat {
-    order: 1;
-    width: 50%;
-    box-sizing: border-box;
-    padding: 6px 12px;
-    border-right: none;
-    border-bottom: 1px solid var(--line);
-    flex-shrink: 0;
-  }
-  .command-bar .cmd-stat:first-child { border-right: 1px solid var(--line); }
-  .command-bar .cmd-stat:last-child { order: 2; border-left: none; align-items: flex-end; }
-  .command-bar input { order: 3; font-size: 16px; padding: 14px 12px; }
-  .command-bar .cmd-submit { order: 4; padding: 0 20px; clip-path: none; }
+  /* Stat band — 3 cellules compactes */
+  .stat-band { margin-bottom: 10px; }
+  .stat-cell { padding: 8px 10px; gap: 5px; }
+  .stat-cell--progress { flex: 1.4; }
+  .stat-lbl { font-size: 8px; letter-spacing: 0.18em; }
+  .stat-big { font-size: 21px; }
+  .stat-sep { font-size: 14px; }
+  .stat-cs { font-size: 12px; }
 
-  /* Timer */
-  .timer-float { width: 200px; }
-  .timer-float-num { font-size: 30px; }
+  /* Command bar — input + submit pleine largeur */
+  .command-bar input { font-size: 16px; padding: 14px 12px; }
+  .command-bar .cmd-submit { padding: 0 20px; clip-path: none; }
 
   /* Status row */
   .status-row { font-size: 13px; }
 
-  /* Grid */
-  .grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+  /* Grid — plus dense sur mobile */
+  .grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 7px; }
 
-  /* Grid — LoL garde une densité maîtrisée et lisible sur mobile */
-  [data-game="lol"] .grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
-  [data-game="lol"] .card .name-bar { font-size: 9px; min-height: 22px; }
-  [data-game="lol"] .card:not(.found) .name-bar { font-size: 8px; }
-
-  /* Timer — en flux sous la barre (plus de chevauchement avec la status-row) */
-  .timer-float {
-    position: static;
-    transform: none;
-    width: 200px;
-    margin: 6px auto 0;
-    filter: none;
-  }
+  /* Grid — LoL très dense (~6 colonnes) */
+  [data-game="lol"] .grid { grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 5px; }
+  [data-game="lol"] .card .name-bar { font-size: 8px; min-height: 18px; }
+  [data-game="lol"] .card:not(.found) .name-bar { font-size: 7px; }
 
   /* Cibles tactiles ≥ 44px (recommandation mobile) */
   .theme-btn, .lang-btn, .game-btn, .burger-btn { width: 44px; height: 44px; }
