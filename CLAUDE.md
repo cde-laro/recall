@@ -19,8 +19,15 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   (changement de jeu ou de langue) — pas d'effets de reset dans `Game.tsx`.
   Ne pas réintroduire de `useEffect` qui setState en synchrone (règle lint
   `react-hooks/set-state-in-effect`).
-- `src/Game.tsx` — composant principal (état du jeu, saisie). Reçoit
-  `lang`/`onToggleLang` en props (plus d'état `lang` local).
+- `src/Game.tsx` — composant principal (état du jeu, saisie) **et shell UI**.
+  Reçoit `lang`/`onToggleLang` en props (plus d'état `lang` local). Layout
+  `.shell` en 2 colonnes : `.rail` (gauche — marque, sélecteur de jeu, panneau
+  `.stats`, « à propos », contrôles thème/langue/menu) et `.main` (abandon
+  discret, `.command-bar` input+Valider, sous-titre, grille). Le sélecteur de
+  jeu et les contrôles sont inline dans `Game.tsx` (il n'y a **plus de
+  `TopBar`**). Sur mobile la rail se replie au-dessus de `.main` et `.stats`
+  passe en carte horizontale ; l'abandon descend en bas. Style « app » arrondi
+  (border-radius), accent or/rouge/orange selon le jeu.
 - `src/hooks/useGameData.ts` — fetch des personnages : Data Dragon (LoL),
   valorant-api.com, overfast-api.tekrop.fr. **Cache localStorage** via
   `src/utils/dataCache.ts` : clé `memochamp_cache_{game}_{lang}`, expiration au
@@ -28,15 +35,16 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   dans l'effet) ; une réponse vide n'est jamais mise en cache. Exporte le
   type partagé `GameId` ('lol' | 'valorant' | 'overwatch') — ne pas redéclarer
   cette union ailleurs.
-- `src/components/` — TopBar, Timer, ChampionGrid, ChampionCard, CompleteModal.
-  La modale de fin s'affiche sur run complète **ET sur abandon** (prop
-  `completed=false`, score partiel `found/total`). Le tick 30ms du chrono vit
-  dans `Timer.tsx` pour ne pas re-rendre la grille (Grid et Card sont mémoïsés)
-  — ne pas remonter d'état haute fréquence dans Game.tsx. Le chrono n'est plus
-  un trapèze flottant : `Timer` rend juste la valeur (`.stat-big`), affichée
-  dans la **bande de stats** `.stat-band` (chrono · progression `found/total` +
-  barre · meilleur temps) au-dessus de la `command-bar`, désormais réduite à
-  l'input + bouton Valider en pleine largeur.
+- `src/components/` — Timer, ChampionGrid, ChampionCard, CompleteModal (plus de
+  TopBar : la barre est inline dans `Game.tsx`). La modale de fin s'affiche sur
+  run complète **ET sur abandon** (prop `completed=false`, score partiel
+  `found/total`). Le tick 30ms du chrono vit dans `Timer.tsx` pour ne pas
+  re-rendre la grille (Grid et Card sont mémoïsés) — ne pas remonter d'état
+  haute fréquence dans Game.tsx. `Timer` rend juste la valeur (`.stat-big`),
+  affichée dans le panneau `.stats` de la rail (chrono · progression
+  `found/total` + barre · meilleur temps). `ChampionCard` : carte arrondie ;
+  verrouillée = silhouette d'avatar (`.lock-glyph`, plus de « ? » ni de numéro),
+  trouvée = portrait + bandeau nom.
 - `src/utils/` — fonctions pures testées (normalize, formatTime, shareText,
   aliases, levenshtein, dataCache). `aliases.ts` : abréviations de saisie
   (mf, j4, asol…) ; les cibles LoL visent l'id Data Dragon (stable inter-langues),
