@@ -26,8 +26,11 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   discret, `.command-bar` input+Valider, sous-titre, grille). Le sélecteur de
   jeu et les contrôles sont inline dans `Game.tsx` (il n'y a **plus de
   `TopBar`**). Sur mobile la rail se replie au-dessus de `.main` et `.stats`
-  passe en carte horizontale ; l'abandon descend en bas. Style « app » arrondi
-  (border-radius), accent or/rouge/orange selon le jeu.
+  passe en carte horizontale. Style « app » lisse et arrondi calqué sur une
+  maquette : typo **Inter** (plus d'Anton ni de JetBrains Mono ; cf.
+  `index.html`), labels en casse normale, ombres douces, accent or/rouge/orange
+  selon le jeu. Le **chrono est en grand en haut du `.main`** (`.timebar`), pas
+  dans le panneau `.stats` (qui ne contient que progression + meilleur temps).
 - `src/hooks/useGameData.ts` — fetch des personnages : Data Dragon (LoL),
   valorant-api.com, overfast-api.tekrop.fr. **Cache localStorage** via
   `src/utils/dataCache.ts` : clé `memochamp_cache_{game}_{lang}`, expiration au
