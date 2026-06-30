@@ -11,11 +11,10 @@ interface Props {
 export const ChampionGrid = memo(function ChampionGrid({ champions, found, justFoundName }: Props) {
   return (
     <div className="grid">
-      {champions.map((champ, i) => (
+      {champions.map(champ => (
         <ChampionCard
           key={champ.id}
           champion={champ}
-          index={i}
           found={found.has(champ.name)}
           justFound={justFoundName === champ.name}
         />

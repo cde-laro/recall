@@ -11,6 +11,16 @@
   "card": {
     "locked": "Locked"
   },
+  "brand": {
+    "tagline": "Only memory."
+  },
+  "about": {
+    "title": "About RECALL",
+    "body": "No hints. Only memory."
+  },
+  "sidebar": {
+    "game": "Game"
+  },
   "scoreboard": {
     "found": "Champions Found",
     "timer": "Timer",
@@ -26,8 +36,10 @@
   },
   "status": {
     "hint": "// start typing. timer starts on first correct answer.",
+    "noHints": "No hints. All memory.",
     "lastFound": "Last",
-    "giveUp": "Give up"
+    "giveUp": "Give up",
+    "giveUpSub": "Reveal remaining"
   },
   "modal": {
     "newRecord": "New Record",

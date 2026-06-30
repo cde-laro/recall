@@ -11,6 +11,16 @@
   "card": {
     "locked": "Verrouillé"
   },
+  "brand": {
+    "tagline": "Rien que la mémoire."
+  },
+  "about": {
+    "title": "À propos de RECALL",
+    "body": "Aucun indice. Rien que la mémoire."
+  },
+  "sidebar": {
+    "game": "Jeu"
+  },
   "scoreboard": {
     "found": "Champions Trouvés",
     "timer": "Chrono",
@@ -26,8 +36,10 @@
   },
   "status": {
     "hint": "// commence à taper. le chrono démarre au premier champion validé.",
+    "noHints": "Aucun indice. Tout de mémoire.",
     "lastFound": "Dernier",
-    "giveUp": "Abandonner"
+    "giveUp": "Abandonner",
+    "giveUpSub": "Révéler les restants"
   },
   "modal": {
     "newRecord": "Nouveau Record",

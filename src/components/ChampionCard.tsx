@@ -1,31 +1,33 @@
 import { memo } from 'react';
-import { useTranslation } from 'react-i18next';
 import type { Character } from '../hooks/useGameData';
 
 interface Props {
   champion: Character;
-  index: number;
   found: boolean;
   justFound: boolean;
 }
 
-export const ChampionCard = memo(function ChampionCard({ champion, index, found, justFound }: Props) {
-  const { t } = useTranslation();
-  const cls = ['card', found ? 'found' : '', justFound ? 'justfound' : '']
+export const ChampionCard = memo(function ChampionCard({ champion, found, justFound }: Props) {
+  const cls = ['card', found ? 'found' : 'locked', justFound ? 'justfound' : '']
     .filter(Boolean).join(' ');
+
+  if (!found) {
+    return (
+      <div className={cls}>
+        <svg className="lock-glyph" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+          <circle cx="12" cy="8.2" r="4.1" />
+          <path d="M3.8 20.5c0-4.3 3.7-6.8 8.2-6.8s8.2 2.5 8.2 6.8z" />
+        </svg>
+      </div>
+    );
+  }
 
   return (
     <div className={cls}>
-      <span className="num">#{String(index + 1).padStart(3, '0')}</span>
       <div className="portrait">
-        {found
-          ? <img src={champion.imageUrl} alt={champion.name} loading="lazy" />
-          : <span className="question">?</span>
-        }
+        <img src={champion.imageUrl} alt={champion.name} loading="lazy" />
       </div>
-      <div className="name-bar">
-        {found ? champion.name : `—— ${t('card.locked')} ——`}
-      </div>
+      <div className="name-bar">{champion.name}</div>
     </div>
   );
 });
