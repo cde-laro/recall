@@ -7,6 +7,8 @@ import type { GameId } from '../hooks/useGameData';
 interface Props {
   game: GameId;
   total: number;
+  found: number;
+  completed: boolean;
   lang: 'fr' | 'en';
   time: number;
   bestTime: number | null;
@@ -15,7 +17,7 @@ interface Props {
   onClose: () => void;
 }
 
-export function CompleteModal({ game, total, lang, time, bestTime, isNewRecord, onRestart, onClose }: Props) {
+export function CompleteModal({ game, total, found, completed, lang, time, bestTime, isNewRecord, onRestart, onClose }: Props) {
   const { t } = useTranslation();
   const current = formatTime(time);
   const best = bestTime != null ? formatTime(bestTime) : null;
@@ -25,7 +27,8 @@ export function CompleteModal({ game, total, lang, time, bestTime, isNewRecord, 
   const restartRef = useRef<HTMLButtonElement>(null);
   const previousFocus = useRef<Element | null>(null);
 
-  const shareText = buildShareText({ game, total, timeMs: time, isNewRecord, lang });
+  const record = completed && isNewRecord;
+  const shareText = buildShareText({ game, found, total, timeMs: time, isNewRecord: record, lang });
 
   function handleCopy() {
     navigator.clipboard?.writeText(shareText).then(() => {
@@ -69,9 +72,13 @@ export function CompleteModal({ game, total, lang, time, bestTime, isNewRecord, 
         aria-labelledby="modal-title"
         onClick={e => e.stopPropagation()}
       >
-        <h2 id="modal-title">{isNewRecord ? t('modal.newRecord') : t('modal.complete')}</h2>
+        <h2 id="modal-title">
+          {completed ? (record ? t('modal.newRecord') : t('modal.complete')) : t('modal.gaveUp')}
+        </h2>
         <div className="sub">
-          {isNewRecord ? t('modal.subNewRecord') : t('modal.subComplete')}
+          {completed
+            ? (record ? t('modal.subNewRecord') : t('modal.subComplete'))
+            : t('modal.subGaveUp', { found, total })}
         </div>
         <div className="stats">
           <div>

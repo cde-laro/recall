@@ -36,6 +36,8 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const [flash, setFlash] = useState<'correct' | 'wrong' | null>(null);
   const [shake, setShake] = useState(false);
   const [lastFound, setLastFound] = useState<string | null>(null);
+  const [completed, setCompleted] = useState(false);
+  const [resultFound, setResultFound] = useState(0);
 
   const modalTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -79,6 +81,8 @@ export function Game({ game, lang, onToggleLang }: Props) {
     setIsNewRecord(false);
     setJustFoundName(null);
     setLastFound(null);
+    setCompleted(false);
+    setResultFound(0);
   }, []);
 
   const handleSubmit = useCallback(() => {
@@ -102,6 +106,8 @@ export function Game({ game, lang, onToggleLang }: Props) {
       if (next.size === champions.length) {
         const finishedAt = Date.now();
         setEndTime(finishedAt);
+        setCompleted(true);
+        setResultFound(champions.length);
         const elapsed = finishedAt - startedAt;
         const newRecord = bestTime == null || elapsed < bestTime;
         if (newRecord) {
@@ -121,10 +127,15 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const handleGiveUp = useCallback(() => {
     if (!confirm(t('confirm.giveUp'))) return;
     const now = Date.now();
-    setFound(new Set(champions.map(c => c.name)));
-    if (startTime == null) setStartTime(now);
+    const startedAt = startTime ?? now;
+    setResultFound(found.size);
+    setCompleted(false);
+    if (startTime == null) setStartTime(startedAt);
     setEndTime(now);
-  }, [champions, startTime, t]);
+    setFound(new Set(champions.map(c => c.name)));
+    setIsNewRecord(false);
+    modalTimerRef.current = setTimeout(() => setShowModal(true), 500);
+  }, [champions, startTime, found, t]);
 
   const handleResetRecord = useCallback(() => {
     if (!confirm(t('confirm.resetRecord'))) return;
@@ -227,6 +238,8 @@ export function Game({ game, lang, onToggleLang }: Props) {
         <CompleteModal
           game={game}
           total={champions.length}
+          found={resultFound}
+          completed={completed}
           lang={lang}
           time={endTime - startTime}
           bestTime={bestTime}

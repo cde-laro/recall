@@ -31,6 +31,8 @@
   "modal": {
     "newRecord": "Nouveau Record",
     "complete": "Mission Accomplie",
+    "gaveUp": "Run Abandonnée",
+    "subGaveUp": "// {{found}}/{{total}} identifiés avant abandon",
     "subNewRecord": "// meilleur temps enregistré",
     "subComplete": "// tous les personnages identifiés",
     "finalTime": "Temps Final",

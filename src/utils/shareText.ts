@@ -20,17 +20,20 @@ const RECORD_SUFFIX: Record<'fr' | 'en', string> = {
 
 interface ShareTextOptions {
   game: GameId;
+  found: number;
   total: number;
   timeMs: number;
   isNewRecord: boolean;
   lang: 'fr' | 'en';
 }
 
-export function buildShareText({ game, total, timeMs, isNewRecord, lang }: ShareTextOptions): string {
+export function buildShareText({ game, found, total, timeMs, isNewRecord, lang }: ShareTextOptions): string {
   const { mmss, cs } = formatTime(timeMs);
-  const record = isNewRecord ? RECORD_SUFFIX[lang] : '';
+  const complete = found >= total;
+  const record = complete && isNewRecord ? RECORD_SUFFIX[lang] : '';
+  const scoreLine = complete ? `${total}/${total} 🏆` : `${found}/${total}`;
   return [
-    `RECALL/${GAME_LABELS[game]} — ${total}/${total} 🏆`,
+    `RECALL/${GAME_LABELS[game]} — ${scoreLine}`,
     `⏱️ ${mmss}.${cs}${record}`,
     GAME_URLS[game],
   ].join('\n');

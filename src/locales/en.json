@@ -31,6 +31,8 @@
   "modal": {
     "newRecord": "New Record",
     "complete": "Mission Complete",
+    "gaveUp": "Run Abandoned",
+    "subGaveUp": "// {{found}}/{{total}} identified before giving up",
     "subNewRecord": "// personal best logged",
     "subComplete": "// all champions identified",
     "finalTime": "Final Time",
