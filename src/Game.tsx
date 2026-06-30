@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import i18n from './i18n';
 import { useGameData, type GameId } from './hooks/useGameData';
 import { normalize } from './utils/normalize';
 import { formatTime } from './utils/formatTime';
@@ -12,14 +11,13 @@ import { CompleteModal } from './components/CompleteModal';
 
 interface Props {
   game: GameId;
+  lang: 'fr' | 'en';
+  onToggleLang: () => void;
 }
 
-export function Game({ game }: Props) {
+export function Game({ game, lang, onToggleLang }: Props) {
   const { t } = useTranslation();
 
-  const [lang, setLang] = useState<'fr' | 'en'>(
-    () => (localStorage.getItem('memochamp_lang') as 'fr' | 'en') ?? 'fr'
-  );
   const [theme, setTheme] = useState<'dark' | 'light'>(
     () => (localStorage.getItem('memochamp_theme') as 'dark' | 'light') ?? 'dark'
   );
@@ -64,37 +62,6 @@ export function Game({ game }: Props) {
     };
     document.title = TITLES[game];
     document.querySelector('meta[name="description"]')?.setAttribute('content', DESCS[game]);
-  }, [game]);
-
-  // Reset on lang change
-  useEffect(() => {
-    if (modalTimerRef.current != null) clearTimeout(modalTimerRef.current);
-    i18n.changeLanguage(lang);
-    document.documentElement.setAttribute('lang', lang);
-    localStorage.setItem('memochamp_lang', lang);
-    setFound(new Set());
-    setQuery('');
-    setStartTime(null);
-    setEndTime(null);
-    setShowModal(false);
-    setIsNewRecord(false);
-    setJustFoundName(null);
-    setLastFound(null);
-  }, [lang]);
-
-  // Reset on game change (route change)
-  useEffect(() => {
-    if (modalTimerRef.current != null) clearTimeout(modalTimerRef.current);
-    setFound(new Set());
-    setQuery('');
-    setStartTime(null);
-    setEndTime(null);
-    setShowModal(false);
-    setIsNewRecord(false);
-    setJustFoundName(null);
-    setLastFound(null);
-    const raw = localStorage.getItem(`memochamp_best_${game}`);
-    setBestTime(raw ? Number(raw) : null);
   }, [game]);
 
   // Focus input
@@ -169,10 +136,6 @@ export function Game({ game }: Props) {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   }, []);
 
-  const toggleLang = useCallback(() => {
-    setLang(l => l === 'fr' ? 'en' : 'fr');
-  }, []);
-
   const bestDisplay = bestTime != null ? formatTime(bestTime) : null;
   const pct = champions.length ? (found.size / champions.length) * 100 : 0;
 
@@ -184,7 +147,7 @@ export function Game({ game }: Props) {
         lang={lang}
         game={game}
         onToggleTheme={toggleTheme}
-        onToggleLang={toggleLang}
+        onToggleLang={onToggleLang}
         onNewRun={resetGame}
         onResetRecord={handleResetRecord}
       />
