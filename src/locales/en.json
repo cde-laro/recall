@@ -25,7 +25,6 @@
   },
   "status": {
     "hint": "// start typing. timer starts on first correct answer.",
-    "aliasHint": "Tip: abbreviations work ({{examples}})",
     "lastFound": "Last",
     "giveUp": "Give up"
   },
