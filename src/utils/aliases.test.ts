@@ -52,4 +52,25 @@ describe('findCharacter', () => {
     expect(findCharacter(OW, 'soldier', 'overwatch')?.id).toBe('soldier-76');
     expect(findCharacter(OW, 'torb', 'overwatch')?.id).toBe('torbjorn');
   });
+
+  it('accepts a slight typo (single edit) and resolves it', () => {
+    expect(findCharacter(LOL, 'miss fortue', 'lol')?.id).toBe('MissFortune'); // n manquant
+    expect(findCharacter(LOL, 'aurelon sol', 'lol')?.id).toBe('AurelionSol'); // i manquant
+  });
+
+  it('resolves a typo against a single candidate but stays null when ambiguous', () => {
+    const ONE: Character[] = [{ name: 'Karma', id: 'Karma', imageUrl: '' }];
+    expect(findCharacter(ONE, 'karpa', 'lol')?.id).toBe('Karma'); // dist 1, candidat unique
+    const AMBI: Character[] = [
+      { name: 'Karma', id: 'Karma', imageUrl: '' },
+      { name: 'Karsa', id: 'Karsa', imageUrl: '' },
+    ];
+    expect(findCharacter(AMBI, 'karpa', 'lol')).toBeNull(); // dist 1 des deux → ambigu
+  });
+
+  it('does not fuzzy-match very short inputs even with a single candidate', () => {
+    const ONE: Character[] = [{ name: 'Lux', id: 'Lux', imageUrl: '' }];
+    // 'lax' est à distance 1 de 'lux', mais len < 4 → pas de fuzzy
+    expect(findCharacter(ONE, 'lax', 'lol')).toBeNull();
+  });
 });

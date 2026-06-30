@@ -1,4 +1,5 @@
 import { normalize } from './normalize';
+import { levenshtein } from './levenshtein';
 import type { Character, GameId } from '../hooks/useGameData';
 
 // Alias normalisé → cible normalisée. La cible est comparée au nom ET à l'id
@@ -74,6 +75,12 @@ const ALIASES: Record<GameId, Record<string, string>> = {
   },
 };
 
+function maxFuzzyDistance(len: number): number {
+  if (len < 4) return 0;   // trop court : un edit change trop le sens
+  if (len < 8) return 1;
+  return 2;
+}
+
 export function findCharacter(characters: Character[], query: string, game: GameId): Character | null {
   const norm = normalize(query);
   if (!norm) return null;
@@ -82,5 +89,21 @@ export function findCharacter(characters: Character[], query: string, game: Game
   if (direct) return direct;
 
   const target = ALIASES[game][norm] ?? norm;
-  return characters.find(c => normalize(c.id) === target || normalize(c.name) === target) ?? null;
+  const aliased = characters.find(c => normalize(c.id) === target || normalize(c.name) === target);
+  if (aliased) return aliased;
+
+  // Dernier recours : tolérance aux fautes de frappe sur le nom affiché.
+  const maxDist = maxFuzzyDistance(norm.length);
+  if (maxDist === 0) return null;
+
+  let best: Character | null = null;
+  let bestDist = maxDist + 1;
+  let tie = false;
+  for (const c of characters) {
+    const d = levenshtein(norm, normalize(c.name));
+    if (d > maxDist) continue;
+    if (d < bestDist) { bestDist = d; best = c; tie = false; }
+    else if (d === bestDist) { tie = true; }
+  }
+  return tie ? null : best;
 }
