@@ -32,7 +32,11 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   La modale de fin s'affiche sur run complète **ET sur abandon** (prop
   `completed=false`, score partiel `found/total`). Le tick 30ms du chrono vit
   dans `Timer.tsx` pour ne pas re-rendre la grille (Grid et Card sont mémoïsés)
-  — ne pas remonter d'état haute fréquence dans Game.tsx.
+  — ne pas remonter d'état haute fréquence dans Game.tsx. Le chrono n'est plus
+  un trapèze flottant : `Timer` rend juste la valeur (`.stat-big`), affichée
+  dans la **bande de stats** `.stat-band` (chrono · progression `found/total` +
+  barre · meilleur temps) au-dessus de la `command-bar`, désormais réduite à
+  l'input + bouton Valider en pleine largeur.
 - `src/utils/` — fonctions pures testées (normalize, formatTime, shareText,
   aliases, levenshtein, dataCache). `aliases.ts` : abréviations de saisie
   (mf, j4, asol…) ; les cibles LoL visent l'id Data Dragon (stable inter-langues),
