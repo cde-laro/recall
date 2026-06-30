@@ -664,6 +664,23 @@ body::before {
   /* Grid */
   .grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
 
+  /* Grid — LoL garde une densité maîtrisée et lisible sur mobile */
+  [data-game="lol"] .grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
+  [data-game="lol"] .card .name-bar { font-size: 9px; min-height: 22px; }
+  [data-game="lol"] .card:not(.found) .name-bar { font-size: 8px; }
+
+  /* Timer — en flux sous la barre (plus de chevauchement avec la status-row) */
+  .timer-float {
+    position: static;
+    transform: none;
+    width: 200px;
+    margin: 6px auto 0;
+    filter: none;
+  }
+
+  /* Cibles tactiles ≥ 44px (recommandation mobile) */
+  .theme-btn, .lang-btn, .game-btn, .burger-btn { width: 44px; height: 44px; }
+
   /* Modal */
   .modal .stats { grid-template-columns: 1fr; gap: 16px; }
   .modal .actions { flex-direction: column; }
