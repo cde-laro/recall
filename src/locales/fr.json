@@ -9,13 +9,6 @@
   "card": {
     "missed": "Manqué"
   },
-  "brand": {
-    "tagline": "Rien que la mémoire."
-  },
-  "about": {
-    "title": "À propos de RECALL",
-    "body": "Aucun indice. Rien que la mémoire."
-  },
   "sidebar": {
     "game": "Jeu"
   },
@@ -34,7 +27,6 @@
   },
   "status": {
     "loading": "Chargement…",
-    "noHints": "Aucun indice. Tout de mémoire.",
     "lastFound": "Dernier",
     "giveUp": "Abandonner",
     "giveUpSub": "Révéler les restants"

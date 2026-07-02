@@ -9,13 +9,6 @@
   "card": {
     "missed": "Missed"
   },
-  "brand": {
-    "tagline": "Only memory."
-  },
-  "about": {
-    "title": "About RECALL",
-    "body": "No hints. Only memory."
-  },
   "sidebar": {
     "game": "Game"
   },
@@ -34,7 +27,6 @@
   },
   "status": {
     "loading": "Loading…",
-    "noHints": "No hints. All memory.",
     "lastFound": "Last",
     "giveUp": "Give up",
     "giveUpSub": "Reveal remaining"

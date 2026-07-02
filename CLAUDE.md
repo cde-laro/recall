@@ -28,8 +28,10 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
 - `src/Game.tsx` — composant principal (état du jeu, saisie) **et shell UI**.
   Reçoit `lang`/`onToggleLang` en props (plus d'état `lang` local). Layout
   `.shell` en 2 colonnes : `.rail` (gauche — marque, sélecteur de jeu, panneau
-  `.stats`, « à propos », contrôles thème/langue/menu) et `.main` (abandon
-  discret, `.command-bar` input+Valider, sous-titre, grille). Le sélecteur de
+  `.stats`, contrôles thème/langue/menu ; plus de panneau « à propos » ni de
+  tagline) et `.main` (abandon discret, `.command-bar` input+Valider,
+  sous-titre « Dernier trouvé », grille). Pendant `loading`, `Game` early-return
+  un **loader plein écran** `.page-loading` (brand-mark pulsante) — pas de shell. Le sélecteur de
   jeu et les contrôles sont inline dans `Game.tsx` (il n'y a **plus de
   `TopBar`**). Sur mobile la rail se replie au-dessus de `.main` et `.stats`
   passe en carte horizontale. Style « app » lisse et arrondi calqué sur une
@@ -61,8 +63,7 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   grille reçoit `revealMissed` et les non-trouvés passent en état `missed`
   (portrait désaturé, ✗ rouge) — 3 états de carte : locked/found/missed.
   `ConfirmModal` remplace `window.confirm` (état `pendingConfirm` dans Game,
-  Escape/backdrop = annuler). Pendant `loading`, la grille affiche 24 cartes
-  `.card.skeleton` (shimmer). Le tick 30ms du chrono vit dans `Timer.tsx` pour ne pas
+  Escape/backdrop = annuler, focus trap, `onCancel` doit rester stable). Le tick 30ms du chrono vit dans `Timer.tsx` pour ne pas
   re-rendre la grille (Grid et Card sont mémoïsés) — ne pas remonter d'état
   haute fréquence dans Game.tsx. `Timer` rend juste la valeur (`.stat-big`),
   affichée dans le panneau `.stats` de la rail (chrono · progression

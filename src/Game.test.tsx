@@ -115,10 +115,11 @@ describe('Game flow', () => {
     expect(screen.getByText('Données locales — patch antérieur possible')).toBeInTheDocument();
   });
 
-  it('shows a skeleton grid while loading', () => {
+  it('shows a full-page loader while loading', () => {
     mockHook.loading = true;
     renderGame();
-    expect(document.querySelectorAll('.card.skeleton')).toHaveLength(24);
+    expect(document.querySelector('.page-loading')).toBeInTheDocument();
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
   it('rejects a wrong guess without completing', () => {

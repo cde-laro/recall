@@ -186,16 +186,23 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const bestDisplay = bestTime != null ? formatTime(bestTime) : null;
   const pct = champions.length ? (found.size / champions.length) * 100 : 0;
 
+  // Chargement des données : loader plein écran, le shell n'apparaît que prêt.
+  if (loading) {
+    return (
+      <div className="page-loading" role="status">
+        <div className="brand-mark" aria-hidden="true">{BRAND_MARK[game]}</div>
+        {t('status.loading')}
+      </div>
+    );
+  }
+
   return (
     <div className="shell">
       <aside className="rail">
         <div className="rail-head">
           <div className="brand">
             <div className="brand-mark">{BRAND_MARK[game]}</div>
-            <div>
-              <div className="brand-text">RECALL</div>
-              <div className="brand-sub">{t('brand.tagline')}</div>
-            </div>
+            <div className="brand-text">RECALL</div>
           </div>
           <div className="rail-controls">
             <button className="theme-btn" onClick={toggleTheme} aria-label={t('topbar.toggleTheme')}>
@@ -260,11 +267,6 @@ export function Game({ game, lang, onToggleLang }: Props) {
         </div>
 
         {stale && <div className="stale-note">{t('data.stale')}</div>}
-
-        <div className="about">
-          <div className="about-title">{t('about.title')}</div>
-          <div className="about-body">{t('about.body')}</div>
-        </div>
       </aside>
 
       <main className="main">
@@ -303,10 +305,8 @@ export function Game({ game, lang, onToggleLang }: Props) {
         </div>
 
         <div className="subtitle">
-          {lastFound ? (
+          {lastFound && (
             <span className="last-found">{t('status.lastFound')} <span className="name">{lastFound}</span></span>
-          ) : (
-            t('status.noHints')
           )}
         </div>
 
@@ -314,13 +314,6 @@ export function Game({ game, lang, onToggleLang }: Props) {
           <div className="load-error" role="alert">
             <p>{t('error.loadFailed')}</p>
             <button className="icon-btn" onClick={() => window.location.reload()}>{t('error.retry')}</button>
-          </div>
-        ) : loading ? (
-          <div className="grid" role="status">
-            <span className="sr-only">{t('status.loading')}</span>
-            {Array.from({ length: 24 }, (_, i) => (
-              <div key={i} className="card skeleton" aria-hidden="true" />
-            ))}
           </div>
         ) : (
           <ChampionGrid
