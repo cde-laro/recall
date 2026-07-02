@@ -40,6 +40,7 @@
   },
   "status": {
     "hint": "// commence à taper. le chrono démarre au premier champion validé.",
+    "loading": "Chargement…",
     "noHints": "Aucun indice. Tout de mémoire.",
     "lastFound": "Dernier",
     "giveUp": "Abandonner",

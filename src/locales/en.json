@@ -40,6 +40,7 @@
   },
   "status": {
     "hint": "// start typing. timer starts on first correct answer.",
+    "loading": "Loading…",
     "noHints": "No hints. All memory.",
     "lastFound": "Last",
     "giveUp": "Give up",

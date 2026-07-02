@@ -91,6 +91,12 @@ describe('Game flow', () => {
     expect(screen.getByText('Données locales — patch antérieur possible')).toBeInTheDocument();
   });
 
+  it('shows a skeleton grid while loading', () => {
+    mockHook.loading = true;
+    renderGame();
+    expect(document.querySelectorAll('.card.skeleton')).toHaveLength(24);
+  });
+
   it('rejects a wrong guess without completing', () => {
     renderGame();
     const input = screen.getByRole('textbox') as HTMLInputElement;

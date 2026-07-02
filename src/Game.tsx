@@ -309,7 +309,11 @@ export function Game({ game, lang, onToggleLang }: Props) {
             <button className="icon-btn" onClick={() => window.location.reload()}>{t('error.retry')}</button>
           </div>
         ) : loading ? (
-          <div className="loading-block">// Loading…</div>
+          <div className="grid" role="status" aria-label={t('status.loading')}>
+            {Array.from({ length: 24 }, (_, i) => (
+              <div key={i} className="card skeleton" aria-hidden="true" />
+            ))}
+          </div>
         ) : (
           <ChampionGrid
             champions={champions}

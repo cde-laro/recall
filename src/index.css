@@ -390,7 +390,7 @@ body {
 .subtitle .last-found .name { color: var(--ink); margin-left: 8px; }
 
 /* ===== Loading / error ===== */
-.loading-block, .load-error {
+.load-error {
   text-align: center; padding: 64px 20px;
   font-size: 13px; letter-spacing: 0.06em;
   color: var(--ink-mute);
@@ -449,6 +449,21 @@ body {
   background: linear-gradient(180deg, transparent, rgba(46, 10, 14, 0.88));
 }
 .missed-mark { color: var(--danger); }
+
+.card.skeleton {
+  background: linear-gradient(
+    100deg,
+    var(--surface-solid) 40%,
+    color-mix(in oklab, var(--ink) 6%, var(--surface-solid)) 50%,
+    var(--surface-solid) 60%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
 
 .sr-only {
   position: absolute;
