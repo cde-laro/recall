@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useGameData, type GameId } from './hooks/useGameData';
+import { usePreloadImages } from './hooks/usePreloadImages';
 import { normalize } from './utils/normalize';
 import { formatTime } from './utils/formatTime';
 import { findCharacter } from './utils/aliases';
@@ -65,6 +66,10 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const menuBtnRef = useRef<HTMLButtonElement>(null);
 
   const { characters: champions, loading, error, stale } = useGameData(game, lang);
+
+  // Portraits préchargés dès que le roster est connu → révélation instantanée.
+  const portraitUrls = useMemo(() => champions.map(c => c.imageUrl), [champions]);
+  usePreloadImages(portraitUrls);
 
   // Per-game document title + meta description
   useEffect(() => {

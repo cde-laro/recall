@@ -50,6 +50,9 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   `src/data/{game}.{lang}.json` (importers statiques, map `SNAPSHOTS`) avec
   `stale: true` (petite note dans la rail), **sans** écrire le cache — l'API est
   retentée au prochain chargement.
+- `src/hooks/usePreloadImages.ts` — précharge les portraits (concurrence 6)
+  dès que le roster est connu, appelé par `Game` : la révélation d'une carte
+  sort du cache HTTP, pas de flash.
 - `src/data/` — 6 snapshots committés (base de secours) + `snapshots.test.ts`
   (validité). Rafraîchis par `scripts/update-snapshots.mjs`, branché en
   `prebuild` (donc à chaque déploiement Vercel) ; le script ne fait **jamais**
