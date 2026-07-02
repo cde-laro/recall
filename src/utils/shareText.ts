@@ -27,6 +27,17 @@ interface ShareTextOptions {
   lang: 'fr' | 'en';
 }
 
+const BAR_LENGTH = 10;
+
+// Barre compressée façon Wordle : verte pour tous les jeux (décision spec).
+// Partiel clampé à 1..9 pour ne jamais ressembler à un 0/x ou un x/x.
+function buildBar(found: number, total: number): string {
+  const complete = found >= total;
+  let filled = complete ? BAR_LENGTH : Math.round((found / total) * BAR_LENGTH);
+  if (!complete) filled = Math.min(BAR_LENGTH - 1, Math.max(found > 0 ? 1 : 0, filled));
+  return '🟩'.repeat(filled) + '⬛'.repeat(BAR_LENGTH - filled);
+}
+
 export function buildShareText({ game, found, total, timeMs, isNewRecord, lang }: ShareTextOptions): string {
   const { mmss, cs } = formatTime(timeMs);
   const complete = found >= total;
@@ -34,6 +45,7 @@ export function buildShareText({ game, found, total, timeMs, isNewRecord, lang }
   const scoreLine = complete ? `${total}/${total} 🏆` : `${found}/${total}`;
   return [
     `RECALL/${GAME_LABELS[game]} — ${scoreLine}`,
+    buildBar(found, total),
     `⏱️ ${mmss}.${cs}${record}`,
     GAME_URLS[game],
   ].join('\n');

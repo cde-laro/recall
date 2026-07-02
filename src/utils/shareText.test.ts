@@ -6,7 +6,7 @@ describe('buildShareText', () => {
     expect(
       buildShareText({ game: 'lol', found: 168, total: 168, timeMs: 263450, isNewRecord: false, lang: 'fr' })
     ).toBe(
-      'RECALL/League — 168/168 🏆\n⏱️ 04:23.45\nhttps://cde-laro.dev/recall/league'
+      'RECALL/League — 168/168 🏆\n🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩\n⏱️ 04:23.45\nhttps://cde-laro.dev/recall/league'
     );
   });
 
@@ -14,7 +14,7 @@ describe('buildShareText', () => {
     expect(
       buildShareText({ game: 'lol', found: 168, total: 168, timeMs: 263450, isNewRecord: true, lang: 'fr' })
     ).toBe(
-      'RECALL/League — 168/168 🏆\n⏱️ 04:23.45 — Nouveau record !\nhttps://cde-laro.dev/recall/league'
+      'RECALL/League — 168/168 🏆\n🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩\n⏱️ 04:23.45 — Nouveau record !\nhttps://cde-laro.dev/recall/league'
     );
   });
 
@@ -22,7 +22,7 @@ describe('buildShareText', () => {
     expect(
       buildShareText({ game: 'lol', found: 168, total: 168, timeMs: 263450, isNewRecord: true, lang: 'en' })
     ).toBe(
-      'RECALL/League — 168/168 🏆\n⏱️ 04:23.45 — New record!\nhttps://cde-laro.dev/recall/league'
+      'RECALL/League — 168/168 🏆\n🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩\n⏱️ 04:23.45 — New record!\nhttps://cde-laro.dev/recall/league'
     );
   });
 
@@ -30,7 +30,7 @@ describe('buildShareText', () => {
     expect(
       buildShareText({ game: 'valorant', found: 27, total: 27, timeMs: 61000, isNewRecord: false, lang: 'en' })
     ).toBe(
-      'RECALL/Valorant — 27/27 🏆\n⏱️ 01:01.00\nhttps://cde-laro.dev/recall/valorant'
+      'RECALL/Valorant — 27/27 🏆\n🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩\n⏱️ 01:01.00\nhttps://cde-laro.dev/recall/valorant'
     );
   });
 
@@ -38,7 +38,7 @@ describe('buildShareText', () => {
     expect(
       buildShareText({ game: 'overwatch', found: 42, total: 42, timeMs: 5990, isNewRecord: false, lang: 'fr' })
     ).toBe(
-      'RECALL/Overwatch — 42/42 🏆\n⏱️ 00:05.99\nhttps://cde-laro.dev/recall/overwatch'
+      'RECALL/Overwatch — 42/42 🏆\n🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩\n⏱️ 00:05.99\nhttps://cde-laro.dev/recall/overwatch'
     );
   });
 
@@ -52,5 +52,27 @@ describe('buildShareText', () => {
     const txt = buildShareText({ game: 'lol', found: 5, total: 168, timeMs: 30000, isNewRecord: true, lang: 'fr' });
     expect(txt).not.toContain('Nouveau record');
     expect(txt).toContain('5/168');
+  });
+
+  it('renders a full green bar only when complete', () => {
+    const txt = buildShareText({ game: 'lol', found: 172, total: 172, timeMs: 61000, isNewRecord: false, lang: 'fr' });
+    expect(txt).toContain('🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩');
+    expect(txt).not.toContain('⬛');
+  });
+
+  it('clamps a nearly-complete partial run to 9 cells', () => {
+    const txt = buildShareText({ game: 'lol', found: 171, total: 172, timeMs: 61000, isNewRecord: false, lang: 'fr' });
+    expect(txt).toContain('🟩🟩🟩🟩🟩🟩🟩🟩🟩⬛');
+  });
+
+  it('shows at least one green cell as soon as something was found', () => {
+    const txt = buildShareText({ game: 'lol', found: 1, total: 172, timeMs: 61000, isNewRecord: false, lang: 'fr' });
+    expect(txt).toContain('🟩⬛⬛⬛⬛⬛⬛⬛⬛⬛');
+  });
+
+  it('shows an empty bar when nothing was found', () => {
+    const txt = buildShareText({ game: 'overwatch', found: 0, total: 42, timeMs: 5000, isNewRecord: false, lang: 'fr' });
+    expect(txt).toContain('⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛');
+    expect(txt).not.toContain('🟩');
   });
 });
