@@ -370,16 +370,45 @@ body {
 .card.found {
   border-color: color-mix(in oklab, var(--gold) 65%, var(--line));
   box-shadow: 0 10px 26px -12px color-mix(in oklab, var(--gold) 55%, transparent);
-  animation: reveal 480ms cubic-bezier(.2,.8,.2,1);
+  animation: reveal 420ms cubic-bezier(.2,.8,.2,1);
 }
 .card.justfound {
   border-color: var(--gold-bright);
   box-shadow: 0 0 0 2px var(--gold), 0 12px 28px -8px color-mix(in oklab, var(--gold) 70%, transparent);
 }
 @keyframes reveal {
-  0%   { transform: scale(0.92); opacity: 0; }
-  60%  { transform: scale(1.03); opacity: 1; }
-  100% { transform: scale(1); }
+  from { transform: scale(0.96); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* Reveal : portrait légèrement zoomé/flouté qui devient net,
+   bandeau du nom qui glisse, éclat qui balaie la carte trouvée. */
+.card.found .portrait img {
+  animation: portrait-in 550ms cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes portrait-in {
+  from { filter: blur(8px) saturate(0.6); transform: scale(1.08); }
+  to   { filter: blur(0) saturate(1); transform: scale(1); }
+}
+.card.found .name-bar {
+  animation: namebar-in 320ms ease 140ms both;
+}
+@keyframes namebar-in {
+  from { transform: translateY(8px); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+.card.justfound::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: shine 650ms ease 150ms forwards;
+}
+@keyframes shine {
+  to { transform: translateX(100%); }
 }
 
 .card.missed {
