@@ -62,11 +62,11 @@ describe('Game flow', () => {
   });
 
   it('shows a partial scoreboard and reveals missed characters when giving up', async () => {
-    vi.stubGlobal('confirm', () => true);
     renderGame();
     const input = screen.getByRole('textbox');
     submit(input, 'jett'); // 1/2 trouvé
     fireEvent.click(screen.getByText('Abandonner'));
+    fireEvent.click(screen.getByText('Confirmer'));
     const dialog = await screen.findByRole('dialog', {}, { timeout: 2000 });
     expect(dialog).toHaveTextContent('Run Abandonnée');
     expect(dialog).toHaveTextContent('1/2');
@@ -74,6 +74,15 @@ describe('Game flow', () => {
     expect(document.querySelector('.card.missed .name-bar')).toHaveTextContent('Sage');
     expect(document.querySelector('.card.found .name-bar')).toHaveTextContent('Jett');
     expect(document.querySelectorAll('.card.missed')).toHaveLength(1);
+  });
+
+  it('does not end the run when the confirm dialog is cancelled', () => {
+    renderGame();
+    fireEvent.click(screen.getByText('Abandonner'));
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Annuler'));
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(screen.getByRole('textbox')).not.toBeDisabled();
   });
 
   it('shows the stale-data notice when data comes from the local snapshot', () => {

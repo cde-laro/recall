@@ -522,6 +522,15 @@ body {
 }
 .modal .share-actions { margin-top: 12px; }
 
+.modal--confirm { width: min(430px, 92vw); padding: 26px; }
+.confirm-message {
+  margin: 0 0 22px;
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.modal .actions button.danger { background: var(--danger); color: #fff; }
+
 /* ===== Responsive ===== */
 @media (max-width: 880px) {
   .shell { grid-template-columns: 1fr; gap: 18px; }

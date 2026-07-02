@@ -8,6 +8,7 @@ import { findCharacter } from './utils/aliases';
 import { Timer } from './components/Timer';
 import { ChampionGrid } from './components/ChampionGrid';
 import { CompleteModal } from './components/CompleteModal';
+import { ConfirmModal } from './components/ConfirmModal';
 
 interface Props {
   game: GameId;
@@ -58,6 +59,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const [completed, setCompleted] = useState(false);
   const [gameOpen, setGameOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [pendingConfirm, setPendingConfirm] = useState<'giveUp' | 'resetRecord' | null>(null);
 
   const modalTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -157,20 +159,18 @@ export function Game({ game, lang, onToggleLang }: Props) {
   }, [query, found, startTime, endTime, champions, game, bestTime, bestKey]);
 
   const handleGiveUp = useCallback(() => {
-    if (!confirm(t('confirm.giveUp'))) return;
     const now = Date.now();
     if (startTime == null) setStartTime(now);
     setEndTime(now);
     setCompleted(false);
     setIsNewRecord(false);
     modalTimerRef.current = setTimeout(() => setShowModal(true), 500);
-  }, [startTime, t]);
+  }, [startTime]);
 
   const handleResetRecord = useCallback(() => {
-    if (!confirm(t('confirm.resetRecord'))) return;
     localStorage.removeItem(bestKey);
     setBestTime(null);
-  }, [t, bestKey]);
+  }, [bestKey]);
 
   const toggleTheme = useCallback(() => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
@@ -202,7 +202,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
               {menuOpen && (
                 <div className="popover">
                   <button className="popover-item" onClick={() => { setMenuOpen(false); resetGame(); }}>{t('topbar.newRun')}</button>
-                  <button className="popover-item" onClick={() => { setMenuOpen(false); handleResetRecord(); }}>{t('topbar.resetRecord')}</button>
+                  <button className="popover-item" onClick={() => { setMenuOpen(false); setPendingConfirm('resetRecord'); }}>{t('topbar.resetRecord')}</button>
                 </div>
               )}
             </div>
@@ -266,7 +266,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
             <span className="timebar-lbl">{t('scoreboard.timer')}</span>
             <Timer startTime={startTime} endTime={endTime} />
           </div>
-          <button className="giveup" onClick={handleGiveUp} disabled={endTime != null}>
+          <button className="giveup" onClick={() => setPendingConfirm('giveUp')} disabled={endTime != null}>
             <span className="giveup-flag" aria-hidden="true">⚑</span>
             <span className="giveup-text">
               <strong>{t('status.giveUp')}</strong>
@@ -319,6 +319,19 @@ export function Game({ game, lang, onToggleLang }: Props) {
           />
         )}
       </main>
+
+      {pendingConfirm && (
+        <ConfirmModal
+          message={t(pendingConfirm === 'giveUp' ? 'confirm.giveUp' : 'confirm.resetRecord')}
+          danger
+          onConfirm={() => {
+            const action = pendingConfirm === 'giveUp' ? handleGiveUp : handleResetRecord;
+            setPendingConfirm(null);
+            action();
+          }}
+          onCancel={() => setPendingConfirm(null)}
+        />
+      )}
 
       {showModal && endTime != null && startTime != null && (
         <CompleteModal

@@ -62,7 +62,9 @@
   },
   "confirm": {
     "giveUp": "Give up and reveal all champions?",
-    "resetRecord": "Clear the saved best time?"
+    "resetRecord": "Clear the saved best time?",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
   },
   "error": {
     "loadFailed": "// failed to load game data",
