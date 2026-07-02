@@ -1,13 +1,32 @@
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Character } from '../hooks/useGameData';
 
 interface Props {
   champion: Character;
   found: boolean;
   justFound: boolean;
+  missed: boolean;
 }
 
-export const ChampionCard = memo(function ChampionCard({ champion, found, justFound }: Props) {
+export const ChampionCard = memo(function ChampionCard({ champion, found, justFound, missed }: Props) {
+  const { t } = useTranslation();
+
+  if (missed) {
+    return (
+      <div className="card missed">
+        <div className="portrait">
+          <img src={champion.imageUrl} alt={champion.name} loading="lazy" />
+        </div>
+        <div className="name-bar">
+          <span className="missed-mark" aria-hidden="true">✗ </span>
+          {champion.name}
+          <span className="sr-only"> — {t('card.missed')}</span>
+        </div>
+      </div>
+    );
+  }
+
   const cls = ['card', found ? 'found' : 'locked', justFound ? 'justfound' : '']
     .filter(Boolean).join(' ');
 

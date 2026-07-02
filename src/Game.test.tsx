@@ -51,7 +51,7 @@ describe('Game flow', () => {
     expect(dialog).not.toHaveTextContent('abandon');
   });
 
-  it('shows a partial scoreboard when giving up before completing', async () => {
+  it('shows a partial scoreboard and reveals missed characters when giving up', async () => {
     vi.stubGlobal('confirm', () => true);
     renderGame();
     const input = screen.getByRole('textbox');
@@ -60,6 +60,10 @@ describe('Game flow', () => {
     const dialog = await screen.findByRole('dialog', {}, { timeout: 2000 });
     expect(dialog).toHaveTextContent('Run Abandonnée');
     expect(dialog).toHaveTextContent('1/2');
+    // La grille révèle la manquée (Sage) en style "missed", la trouvée (Jett) reste "found".
+    expect(document.querySelector('.card.missed .name-bar')).toHaveTextContent('Sage');
+    expect(document.querySelector('.card.found .name-bar')).toHaveTextContent('Jett');
+    expect(document.querySelectorAll('.card.missed')).toHaveLength(1);
   });
 
   it('rejects a wrong guess without completing', () => {

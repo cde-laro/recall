@@ -9,7 +9,8 @@
     "switchLanguage": "Changer de langue"
   },
   "card": {
-    "locked": "Verrouillé"
+    "locked": "Verrouillé",
+    "missed": "Manqué"
   },
   "brand": {
     "tagline": "Rien que la mémoire."

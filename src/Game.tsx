@@ -56,7 +56,6 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const [shake, setShake] = useState(false);
   const [lastFound, setLastFound] = useState<string | null>(null);
   const [completed, setCompleted] = useState(false);
-  const [resultFound, setResultFound] = useState(0);
   const [gameOpen, setGameOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -117,7 +116,6 @@ export function Game({ game, lang, onToggleLang }: Props) {
     setJustFoundName(null);
     setLastFound(null);
     setCompleted(false);
-    setResultFound(0);
   }, []);
 
   const handleSubmit = useCallback(() => {
@@ -142,7 +140,6 @@ export function Game({ game, lang, onToggleLang }: Props) {
         const finishedAt = Date.now();
         setEndTime(finishedAt);
         setCompleted(true);
-        setResultFound(champions.length);
         const elapsed = finishedAt - startedAt;
         const newRecord = bestTime == null || elapsed < bestTime;
         if (newRecord) {
@@ -162,15 +159,12 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const handleGiveUp = useCallback(() => {
     if (!confirm(t('confirm.giveUp'))) return;
     const now = Date.now();
-    const startedAt = startTime ?? now;
-    setResultFound(found.size);
-    setCompleted(false);
-    if (startTime == null) setStartTime(startedAt);
+    if (startTime == null) setStartTime(now);
     setEndTime(now);
-    setFound(new Set(champions.map(c => c.name)));
+    setCompleted(false);
     setIsNewRecord(false);
     modalTimerRef.current = setTimeout(() => setShowModal(true), 500);
-  }, [champions, startTime, found, t]);
+  }, [startTime, t]);
 
   const handleResetRecord = useCallback(() => {
     if (!confirm(t('confirm.resetRecord'))) return;
@@ -319,6 +313,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
             champions={champions}
             found={found}
             justFoundName={justFoundName}
+            revealMissed={endTime != null && !completed}
           />
         )}
       </main>
@@ -327,7 +322,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
         <CompleteModal
           game={game}
           total={champions.length}
-          found={resultFound}
+          found={found.size}
           completed={completed}
           lang={lang}
           time={endTime - startTime}

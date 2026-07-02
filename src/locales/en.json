@@ -9,7 +9,8 @@
     "switchLanguage": "Switch language"
   },
   "card": {
-    "locked": "Locked"
+    "locked": "Locked",
+    "missed": "Missed"
   },
   "brand": {
     "tagline": "Only memory."

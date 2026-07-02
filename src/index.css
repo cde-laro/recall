@@ -434,6 +434,26 @@ body {
   100% { transform: scale(1); }
 }
 
+.card.missed {
+  border-color: color-mix(in oklab, var(--danger) 55%, var(--line));
+}
+.card.missed .portrait img { filter: grayscale(1); opacity: 0.8; }
+.card.missed .name-bar {
+  color: #fda4af;
+  background: linear-gradient(180deg, transparent, rgba(46, 10, 14, 0.88));
+}
+.missed-mark { color: var(--danger); }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .card .portrait { position: absolute; inset: 0; overflow: hidden; }
 .card .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
 
