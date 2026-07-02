@@ -1,15 +1,11 @@
 {
   "topbar": {
-    "season": "Season 26",
-    "patch": "Patch {{version}}",
     "newRun": "New Run",
     "resetRecord": "Reset Record",
-    "switchGame": "Switch game",
     "toggleTheme": "Toggle theme",
     "switchLanguage": "Switch language"
   },
   "card": {
-    "locked": "Locked",
     "missed": "Missed"
   },
   "brand": {
@@ -28,10 +24,7 @@
   "scoreboard": {
     "found": "Champions Found",
     "timer": "Timer",
-    "bestTime": "Best Time",
-    "ready": "Ready to start",
-    "live": "Run in progress",
-    "finished": "Final Time"
+    "bestTime": "Best Time"
   },
   "input": {
     "placeholder": "Type a champion name and press Enter…",
@@ -39,7 +32,6 @@
     "submit": "Submit"
   },
   "status": {
-    "hint": "// start typing. timer starts on first correct answer.",
     "loading": "Loading…",
     "noHints": "No hints. All memory.",
     "lastFound": "Last",

@@ -1,15 +1,11 @@
 {
   "topbar": {
-    "season": "Saison 26",
-    "patch": "Patch {{version}}",
     "newRun": "Nouvelle Run",
     "resetRecord": "Reset Record",
-    "switchGame": "Changer de jeu",
     "toggleTheme": "Changer de thème",
     "switchLanguage": "Changer de langue"
   },
   "card": {
-    "locked": "Verrouillé",
     "missed": "Manqué"
   },
   "brand": {
@@ -28,10 +24,7 @@
   "scoreboard": {
     "found": "Champions Trouvés",
     "timer": "Chrono",
-    "bestTime": "Meilleur Temps",
-    "ready": "Prêt à démarrer",
-    "live": "Run en cours",
-    "finished": "Temps Final"
+    "bestTime": "Meilleur Temps"
   },
   "input": {
     "placeholder": "Tape le nom d'un champion puis Entrée…",
@@ -39,7 +32,6 @@
     "submit": "Valider"
   },
   "status": {
-    "hint": "// commence à taper. le chrono démarre au premier champion validé.",
     "loading": "Chargement…",
     "noHints": "Aucun indice. Tout de mémoire.",
     "lastFound": "Dernier",

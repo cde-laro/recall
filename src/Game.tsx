@@ -195,7 +195,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
               <span aria-hidden="true">{theme === 'dark' ? '☀️' : '🌙'}</span>
             </button>
             <button className="lang-btn" onClick={onToggleLang} aria-label={t('topbar.switchLanguage')}>
-              <span aria-hidden="true">{lang === 'fr' ? '🇬🇧' : '🇫🇷'}</span>
+              {lang === 'fr' ? 'EN' : 'FR'}
             </button>
             <div className="menu-wrap" ref={menuRef}>
               <button className="icon-btn" onClick={() => setMenuOpen(o => !o)} aria-expanded={menuOpen} aria-label="Menu">⋯</button>
@@ -238,7 +238,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
           <div className="stat stat--progress">
             <span className="stat-lbl">{t('scoreboard.found')}</span>
             <span className="stat-big" aria-live="polite">
-              {String(found.size).padStart(3, '0')}<span className="stat-sep">/{champions.length}</span>
+              {String(found.size).padStart(String(champions.length).length, '0')}<span className="stat-sep">/{champions.length}</span>
             </span>
             <div className="progress-track in-cell">
               <div className="progress-fill" style={{ width: `${pct}%` }} />
