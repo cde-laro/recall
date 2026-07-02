@@ -27,16 +27,6 @@
   --line-bright: #2a3d52;
 }
 
-[data-game="valorant"][data-theme="light"] {
-  --bg: #ece8e1;
-  --bg-2: #ddd8cf;
-  --surface-solid: #f5f0e8;
-  --line: #ccc5b6;
-  --line-bright: #b8ae9c;
-  --gold: #FF4655;
-  --gold-bright: #cc2233;
-}
-
 [data-game="overwatch"] {
   --gold: #F99E1A;
   --gold-bright: #FFBC3B;
@@ -45,31 +35,6 @@
   --surface-solid: #191b22;
   --line: #21242e;
   --line-bright: #2e3240;
-}
-
-[data-game="overwatch"][data-theme="light"] {
-  --bg: #f0ece3;
-  --bg-2: #e8e3d8;
-  --surface-solid: #faf7f0;
-  --line: #d6cfc0;
-  --line-bright: #c0b8a4;
-  --gold: #c97c00;
-  --gold-bright: #a86200;
-}
-
-[data-theme="light"] {
-  color-scheme: light;
-  --bg: #f1ece1;
-  --bg-2: #e8e1d0;
-  --surface: #ffffff80;
-  --surface-solid: #ffffff;
-  --line: #d8d0bd;
-  --line-bright: #b9ad91;
-  --ink: #1a1814;
-  --ink-dim: #5f5849;
-  --ink-mute: #8a8270;
-  --gold: #8a6b1e;
-  --gold-bright: #b78919;
 }
 
 * { box-sizing: border-box; }
@@ -150,7 +115,7 @@ body {
 
 .rail-controls { display: flex; align-items: center; gap: 6px; }
 
-.theme-btn, .lang-btn, .icon-btn {
+.lang-btn, .icon-btn {
   background: var(--surface-solid);
   border: 1px solid var(--line);
   color: var(--ink-dim);
@@ -164,7 +129,7 @@ body {
 }
 .icon-btn { width: auto; padding: 0 12px; font-size: 18px; }
 .lang-btn { font-size: 12px; font-weight: 700; letter-spacing: 0.05em; }
-.theme-btn:hover, .lang-btn:hover, .icon-btn:hover {
+.lang-btn:hover, .icon-btn:hover {
   color: var(--ink); border-color: var(--gold);
 }
 

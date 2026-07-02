@@ -38,9 +38,6 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [theme, setTheme] = useState<'dark' | 'light'>(
-    () => (localStorage.getItem('memochamp_theme') as 'dark' | 'light') ?? 'dark'
-  );
   const [found, setFound] = useState<Set<string>>(new Set());
   const [query, setQuery] = useState('');
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -68,12 +65,6 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const menuBtnRef = useRef<HTMLButtonElement>(null);
 
   const { characters: champions, loading, error, stale } = useGameData(game, lang);
-
-  // Apply theme
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('memochamp_theme', theme);
-  }, [theme]);
 
   // Per-game document title + meta description
   useEffect(() => {
@@ -176,10 +167,6 @@ export function Game({ game, lang, onToggleLang }: Props) {
     setBestTime(null);
   }, [bestKey]);
 
-  const toggleTheme = useCallback(() => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
-  }, []);
-
   // Stable : ConfirmModal dépend de onCancel dans son effet de focus.
   const closeConfirm = useCallback(() => setPendingConfirm(null), []);
 
@@ -205,9 +192,6 @@ export function Game({ game, lang, onToggleLang }: Props) {
             <div className="brand-text">RECALL</div>
           </div>
           <div className="rail-controls">
-            <button className="theme-btn" onClick={toggleTheme} aria-label={t('topbar.toggleTheme')}>
-              <span aria-hidden="true">{theme === 'dark' ? '☀️' : '🌙'}</span>
-            </button>
             <button className="lang-btn" onClick={onToggleLang} aria-label={`${lang === 'fr' ? 'EN' : 'FR'} — ${t('topbar.switchLanguage')}`}>
               {lang === 'fr' ? 'EN' : 'FR'}
             </button>

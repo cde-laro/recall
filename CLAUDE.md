@@ -28,8 +28,8 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
 - `src/Game.tsx` — composant principal (état du jeu, saisie) **et shell UI**.
   Reçoit `lang`/`onToggleLang` en props (plus d'état `lang` local). Layout
   `.shell` en 2 colonnes : `.rail` (gauche — marque, sélecteur de jeu, panneau
-  `.stats`, contrôles thème/langue/menu ; plus de panneau « à propos » ni de
-  tagline) et `.main` (abandon discret, `.command-bar` input+Valider,
+  `.stats`, contrôles langue/menu ; plus de thème light, de panneau
+  « à propos » ni de tagline) et `.main` (abandon discret, `.command-bar` input+Valider,
   sous-titre « Dernier trouvé », grille). Pendant `loading`, `Game` early-return
   un **loader plein écran** `.page-loading` (brand-mark pulsante) — pas de shell. Le sélecteur de
   jeu et les contrôles sont inline dans `Game.tsx` (il n'y a **plus de
@@ -79,7 +79,8 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   (trophée seulement si complet ; barre emoji 🟩/⬛ de 10 cases, clampée 1–9
   sur run partielle).
 - Best times en localStorage : `memochamp_best_{game}` ; langue/thème :
-  `memochamp_lang`, `memochamp_theme` ; cache data : `memochamp_cache_{game}_{lang}`.
+  `memochamp_lang` (plus de thème light — dark uniquement) ; cache data :
+  `memochamp_cache_{game}_{lang}`.
 
 ## Commandes
 
