@@ -22,6 +22,9 @@
   "sidebar": {
     "game": "Game"
   },
+  "data": {
+    "stale": "Local data — may be one patch behind"
+  },
   "scoreboard": {
     "found": "Champions Found",
     "timer": "Timer",

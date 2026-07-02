@@ -64,7 +64,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const gameRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const { characters: champions, loading, error } = useGameData(game, lang);
+  const { characters: champions, loading, error, stale } = useGameData(game, lang);
 
   // Apply theme
   useEffect(() => {
@@ -251,6 +251,8 @@ export function Game({ game, lang, onToggleLang }: Props) {
             </span>
           </div>
         </div>
+
+        {stale && <div className="stale-note">{t('data.stale')}</div>}
 
         <div className="about">
           <div className="about-title">{t('about.title')}</div>

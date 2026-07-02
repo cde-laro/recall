@@ -12,8 +12,16 @@ const CHARS: Character[] = [
   { name: 'Sage', id: 'uuid-sage', imageUrl: '' },
 ];
 
+const mockHook = vi.hoisted(() => ({ stale: false, loading: false }));
+
 vi.mock('./hooks/useGameData', () => ({
-  useGameData: () => ({ version: '', characters: CHARS, loading: false, error: null }),
+  useGameData: () => ({
+    version: '',
+    characters: CHARS,
+    loading: mockHook.loading,
+    error: null,
+    stale: mockHook.stale,
+  }),
 }));
 
 function renderGame() {
@@ -34,6 +42,8 @@ describe('Game flow', () => {
     localStorage.clear();
     await i18n.changeLanguage('fr');
     vi.restoreAllMocks();
+    mockHook.stale = false;
+    mockHook.loading = false;
   });
 
   afterEach(() => {
@@ -64,6 +74,12 @@ describe('Game flow', () => {
     expect(document.querySelector('.card.missed .name-bar')).toHaveTextContent('Sage');
     expect(document.querySelector('.card.found .name-bar')).toHaveTextContent('Jett');
     expect(document.querySelectorAll('.card.missed')).toHaveLength(1);
+  });
+
+  it('shows the stale-data notice when data comes from the local snapshot', () => {
+    mockHook.stale = true;
+    renderGame();
+    expect(screen.getByText('Données locales — patch antérieur possible')).toBeInTheDocument();
   });
 
   it('rejects a wrong guess without completing', () => {

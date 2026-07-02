@@ -22,6 +22,9 @@
   "sidebar": {
     "game": "Jeu"
   },
+  "data": {
+    "stale": "Données locales — patch antérieur possible"
+  },
   "scoreboard": {
     "found": "Champions Trouvés",
     "timer": "Chrono",

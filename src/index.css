@@ -297,6 +297,12 @@ body {
 }
 .about-body { position: relative; font-size: 13.5px; color: var(--ink-dim); line-height: 1.55; }
 
+.stale-note {
+  font-size: 12px;
+  color: var(--ink-mute);
+  padding: 0 4px;
+}
+
 /* ===== Main top : big timer + give up ===== */
 .main-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .timebar { display: flex; flex-direction: column; gap: 4px; }
