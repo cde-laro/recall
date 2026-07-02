@@ -14,11 +14,32 @@ interface State {
   characters: Character[];
   loading: boolean;
   error: string | null;
+  /** true si les données viennent du snapshot local (API injoignable). */
+  stale: boolean;
+}
+
+interface Snapshot {
+  version: string;
+  characters: Character[];
 }
 
 const LOL_LOCALE: Record<'fr' | 'en', string> = { fr: 'fr_FR', en: 'en_US' };
 const VAL_LOCALE: Record<'fr' | 'en', string> = { fr: 'fr-FR', en: 'en-US' };
 const OW_LOCALE: Record<'fr' | 'en', string> = { fr: 'fr-fr', en: 'en-us' };
+
+// Importers statiques (analysables par Vite) vers les snapshots committés,
+// rafraîchis à chaque build par scripts/update-snapshots.mjs.
+const SNAPSHOTS: Record<GameId, Record<'fr' | 'en', () => Promise<{ default: Snapshot }>>> = {
+  lol: { fr: () => import('../data/lol.fr.json'), en: () => import('../data/lol.en.json') },
+  valorant: { fr: () => import('../data/valorant.fr.json'), en: () => import('../data/valorant.en.json') },
+  overwatch: { fr: () => import('../data/overwatch.fr.json'), en: () => import('../data/overwatch.en.json') },
+};
+
+async function fetchJson<T>(url: string): Promise<T> {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`HTTP ${r.status} — ${url}`);
+  return r.json() as Promise<T>;
+}
 
 export function useGameData(game: GameId, lang: 'fr' | 'en'): State {
   // game/lang sont stables pour la durée de vie du hook (Game est remonté par
@@ -30,8 +51,8 @@ export function useGameData(game: GameId, lang: 'fr' | 'en'): State {
       Date.now()
     );
     return cached
-      ? { version: cached.version, characters: cached.characters, loading: false, error: null }
-      : { version: '', characters: [], loading: true, error: null };
+      ? { version: cached.version, characters: cached.characters, loading: false, error: null, stale: false }
+      : { version: '', characters: [], loading: true, error: null, stale: false };
   });
 
   useEffect(() => {
@@ -50,20 +71,16 @@ export function useGameData(game: GameId, lang: 'fr' | 'en'): State {
       if (characters.length) {
         writeCache(localStorage, cacheKey, { version, characters }, nextMidnight(Date.now()));
       }
-      setState({ version, characters, loading: false, error: null });
+      setState({ version, characters, loading: false, error: null, stale: false });
     }
 
     async function fetchLol() {
-      const versions: string[] = await fetch(
-        'https://ddragon.leagueoflegends.com/api/versions.json'
-      ).then(r => r.json());
+      const versions = await fetchJson<string[]>('https://ddragon.leagueoflegends.com/api/versions.json');
       const version = versions[0];
-      const data = await fetch(
+      const data = await fetchJson<{ data: Record<string, { name: string; id: string }> }>(
         `https://ddragon.leagueoflegends.com/cdn/${version}/data/${LOL_LOCALE[lang]}/champion.json`
-      ).then(r => r.json());
-      const characters: Character[] = Object.values(
-        data.data as Record<string, { name: string; id: string }>
-      )
+      );
+      const characters: Character[] = Object.values(data.data)
         .map(c => ({
           name: c.name,
           id: c.id,
@@ -74,28 +91,37 @@ export function useGameData(game: GameId, lang: 'fr' | 'en'): State {
     }
 
     async function fetchValorant() {
-      const data = await fetch(
+      const data = await fetchJson<{ data: Array<{ displayName: string; uuid: string; displayIcon: string }> }>(
         `https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=${VAL_LOCALE[lang]}`
-      ).then(r => r.json());
-      const characters: Character[] = (data.data as Array<{ displayName: string; uuid: string; displayIcon: string }>)
+      );
+      const characters: Character[] = data.data
         .map(a => ({ name: a.displayName, id: a.uuid, imageUrl: a.displayIcon }))
         .sort((a, b) => a.name.localeCompare(b.name, lang));
       store('', characters);
     }
 
     async function fetchOverwatch() {
-      const data = await fetch(
+      const data = await fetchJson<Array<{ key: string; name: string; portrait: string }>>(
         `https://overfast-api.tekrop.fr/heroes?locale=${OW_LOCALE[lang]}`
-      ).then(r => r.json());
-      const characters: Character[] = (data as Array<{ key: string; name: string; portrait: string }>)
+      );
+      const characters: Character[] = data
         .map(h => ({ name: h.name, id: h.key, imageUrl: h.portrait }))
         .sort((a, b) => a.name.localeCompare(b.name, lang));
       store('', characters);
     }
 
     const fetch$ = game === 'lol' ? fetchLol() : game === 'valorant' ? fetchValorant() : fetchOverwatch();
-    fetch$.catch(e => {
-      if (!cancelled) setState(s => ({ ...s, loading: false, error: String(e) }));
+    fetch$.catch(async e => {
+      // API injoignable : on sert le snapshot committé (rafraîchi à chaque
+      // déploiement), sans le mettre en cache pour retenter l'API ensuite.
+      try {
+        const { default: snap } = await SNAPSHOTS[game][lang]();
+        if (cancelled) return;
+        if (!snap.characters.length) throw e;
+        setState({ version: snap.version, characters: snap.characters, loading: false, error: null, stale: true });
+      } catch {
+        if (!cancelled) setState(s => ({ ...s, loading: false, error: String(e) }));
+      }
     });
 
     return () => { cancelled = true; };
