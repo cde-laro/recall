@@ -1,5 +1,6 @@
 {
   "topbar": {
+    "menu": "Menu",
     "newRun": "New Run",
     "resetRecord": "Reset Record",
     "toggleTheme": "Toggle theme",

@@ -16,7 +16,8 @@ const VAL_LOCALE = { fr: 'fr-FR', en: 'en-US' };
 const OW_LOCALE = { fr: 'fr-fr', en: 'en-us' };
 
 async function json(url) {
-  const r = await fetch(url);
+  // Timeout : une API qui traîne ne doit pas bloquer le build Vercel.
+  const r = await fetch(url, { signal: AbortSignal.timeout(15_000) });
   if (!r.ok) throw new Error(`HTTP ${r.status} — ${url}`);
   return r.json();
 }

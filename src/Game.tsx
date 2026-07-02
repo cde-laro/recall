@@ -65,6 +65,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const gameRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
 
   const { characters: champions, loading, error, stale } = useGameData(game, lang);
 
@@ -159,13 +160,16 @@ export function Game({ game, lang, onToggleLang }: Props) {
   }, [query, found, startTime, endTime, champions, game, bestTime, bestKey]);
 
   const handleGiveUp = useCallback(() => {
+    // Garde : si la run s'est terminée pendant que la confirmation était
+    // ouverte, ne pas réécrire une victoire en abandon.
+    if (endTime != null) return;
     const now = Date.now();
     if (startTime == null) setStartTime(now);
     setEndTime(now);
     setCompleted(false);
     setIsNewRecord(false);
     modalTimerRef.current = setTimeout(() => setShowModal(true), 500);
-  }, [startTime]);
+  }, [startTime, endTime]);
 
   const handleResetRecord = useCallback(() => {
     localStorage.removeItem(bestKey);
@@ -175,6 +179,9 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const toggleTheme = useCallback(() => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   }, []);
+
+  // Stable : ConfirmModal dépend de onCancel dans son effet de focus.
+  const closeConfirm = useCallback(() => setPendingConfirm(null), []);
 
   const bestDisplay = bestTime != null ? formatTime(bestTime) : null;
   const pct = champions.length ? (found.size / champions.length) * 100 : 0;
@@ -194,15 +201,15 @@ export function Game({ game, lang, onToggleLang }: Props) {
             <button className="theme-btn" onClick={toggleTheme} aria-label={t('topbar.toggleTheme')}>
               <span aria-hidden="true">{theme === 'dark' ? '☀️' : '🌙'}</span>
             </button>
-            <button className="lang-btn" onClick={onToggleLang} aria-label={t('topbar.switchLanguage')}>
+            <button className="lang-btn" onClick={onToggleLang} aria-label={`${lang === 'fr' ? 'EN' : 'FR'} — ${t('topbar.switchLanguage')}`}>
               {lang === 'fr' ? 'EN' : 'FR'}
             </button>
             <div className="menu-wrap" ref={menuRef}>
-              <button className="icon-btn" onClick={() => setMenuOpen(o => !o)} aria-expanded={menuOpen} aria-label="Menu">⋯</button>
+              <button ref={menuBtnRef} className="icon-btn" onClick={() => setMenuOpen(o => !o)} aria-expanded={menuOpen} aria-label={t('topbar.menu')}>⋯</button>
               {menuOpen && (
                 <div className="popover">
                   <button className="popover-item" onClick={() => { setMenuOpen(false); resetGame(); }}>{t('topbar.newRun')}</button>
-                  <button className="popover-item" onClick={() => { setMenuOpen(false); setPendingConfirm('resetRecord'); }}>{t('topbar.resetRecord')}</button>
+                  <button className="popover-item" onClick={() => { setMenuOpen(false); menuBtnRef.current?.focus(); setPendingConfirm('resetRecord'); }}>{t('topbar.resetRecord')}</button>
                 </div>
               )}
             </div>
@@ -266,7 +273,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
             <span className="timebar-lbl">{t('scoreboard.timer')}</span>
             <Timer startTime={startTime} endTime={endTime} />
           </div>
-          <button className="giveup" onClick={() => setPendingConfirm('giveUp')} disabled={endTime != null}>
+          <button className="giveup" onClick={() => setPendingConfirm('giveUp')} disabled={endTime != null || !champions.length}>
             <span className="giveup-flag" aria-hidden="true">⚑</span>
             <span className="giveup-text">
               <strong>{t('status.giveUp')}</strong>
@@ -309,7 +316,8 @@ export function Game({ game, lang, onToggleLang }: Props) {
             <button className="icon-btn" onClick={() => window.location.reload()}>{t('error.retry')}</button>
           </div>
         ) : loading ? (
-          <div className="grid" role="status" aria-label={t('status.loading')}>
+          <div className="grid" role="status">
+            <span className="sr-only">{t('status.loading')}</span>
             {Array.from({ length: 24 }, (_, i) => (
               <div key={i} className="card skeleton" aria-hidden="true" />
             ))}
@@ -333,7 +341,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
             setPendingConfirm(null);
             action();
           }}
-          onCancel={() => setPendingConfirm(null)}
+          onCancel={closeConfirm}
         />
       )}
 

@@ -76,6 +76,30 @@ describe('Game flow', () => {
     expect(document.querySelectorAll('.card.missed')).toHaveLength(1);
   });
 
+  it('keeps a gave-up run closed: no completion, no record from the revealed names', async () => {
+    renderGame();
+    const input = screen.getByRole('textbox');
+    submit(input, 'jett'); // 1/2 trouvé
+    fireEvent.click(screen.getByText('Abandonner'));
+    fireEvent.click(screen.getByText('Confirmer'));
+    await screen.findByRole('dialog', {}, { timeout: 2000 });
+    // La saisie est close : impossible de compléter avec les noms révélés.
+    expect(input).toBeDisabled();
+    expect(screen.getByText('Valider')).toBeDisabled();
+    submit(input, 'sage'); // tentative de triche post-abandon
+    expect(screen.getByRole('dialog')).toHaveTextContent('Run Abandonnée');
+    expect(localStorage.getItem('memochamp_best_valorant')).toBeNull();
+  });
+
+  it('shows the gave-up modal and reveals everything even at zero found', async () => {
+    renderGame();
+    fireEvent.click(screen.getByText('Abandonner'));
+    fireEvent.click(screen.getByText('Confirmer'));
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 2000 });
+    expect(dialog).toHaveTextContent('0/2');
+    expect(document.querySelectorAll('.card.missed')).toHaveLength(2);
+  });
+
   it('does not end the run when the confirm dialog is cancelled', () => {
     renderGame();
     fireEvent.click(screen.getByText('Abandonner'));

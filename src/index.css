@@ -300,7 +300,7 @@ body {
 
 .stale-note {
   font-size: 12px;
-  color: var(--ink-mute);
+  color: var(--ink-dim);
   padding: 0 4px;
 }
 
@@ -545,7 +545,8 @@ body {
   line-height: 1.5;
   color: var(--ink);
 }
-.modal .actions button.danger { background: var(--danger); color: #fff; }
+/* #dc2626 plutôt que var(--danger) #ef4444 : blanc sur #ef4444 ≈ 3,8:1 (< AA). */
+.modal .actions button.danger { background: #dc2626; color: #fff; }
 
 /* ===== Responsive ===== */
 @media (max-width: 880px) {
