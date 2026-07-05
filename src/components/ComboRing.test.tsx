@@ -10,10 +10,9 @@ describe('ComboRing', () => {
     cleanup();
   });
 
-  it('renders an idle ring before any find', () => {
+  it('renders nothing before any find', () => {
     const { container } = render(<ComboRing comboBase={null} lastFindAt={null} />);
-    expect(container.querySelector('.combo-ring-fill')).toHaveClass('idle');
-    expect(container.querySelector('.combo-ring-inner')).toHaveTextContent('');
+    expect(container.querySelector('.combo-ring')).not.toBeInTheDocument();
   });
 
   it('shows the current combo value right after a find', () => {
@@ -23,7 +22,7 @@ describe('ComboRing', () => {
     expect(container.querySelector('.combo-ring-inner')).toHaveTextContent('x3');
   });
 
-  it('decays the displayed combo after 5s without a new find, floored at x1', () => {
+  it('decays the displayed combo after 5s without a new find, then hides once floored at x1', () => {
     vi.useFakeTimers();
     vi.setSystemTime(1_000_000);
     const { container } = render(<ComboRing comboBase={3} lastFindAt={1_000_000} />);
@@ -34,11 +33,11 @@ describe('ComboRing', () => {
     act(() => {
       vi.advanceTimersByTime(5000);
     });
-    expect(container.querySelector('.combo-ring-inner')).toHaveTextContent('x1');
+    expect(container.querySelector('.combo-ring')).not.toBeInTheDocument();
     act(() => {
       vi.advanceTimersByTime(50000);
     });
-    expect(container.querySelector('.combo-ring-inner')).toHaveTextContent('x1');
+    expect(container.querySelector('.combo-ring')).not.toBeInTheDocument();
   });
 
   it('restarts the ring animation (remounts the fill element) on a new find', () => {
