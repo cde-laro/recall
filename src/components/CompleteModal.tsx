@@ -14,11 +14,14 @@ interface Props {
   time: number;
   bestTime: number | null;
   isNewRecord: boolean;
+  score: number;
+  bestScore: number | null;
+  isNewScoreRecord: boolean;
   onRestart: () => void;
   onClose: () => void;
 }
 
-export function CompleteModal({ game, total, found, completed, lang, time, bestTime, isNewRecord, onRestart, onClose }: Props) {
+export function CompleteModal({ game, total, found, completed, lang, time, bestTime, isNewRecord, score, bestScore, isNewScoreRecord, onRestart, onClose }: Props) {
   const { t } = useTranslation();
   const current = formatTime(time);
   const best = bestTime != null ? formatTime(bestTime) : null;
@@ -28,8 +31,11 @@ export function CompleteModal({ game, total, found, completed, lang, time, bestT
   const dialogRef = useRef<HTMLDivElement>(null);
   const restartRef = useRef<HTMLButtonElement>(null);
 
-  const record = completed && isNewRecord;
-  const shareText = buildShareText({ game, found, total, timeMs: time, isNewRecord: record, lang });
+  const record = completed && (isNewRecord || isNewScoreRecord);
+  const recordSubKey = isNewRecord && isNewScoreRecord
+    ? 'modal.subNewRecordBoth'
+    : isNewScoreRecord ? 'modal.subNewRecordScore' : 'modal.subNewRecordTime';
+  const shareText = buildShareText({ game, found, total, timeMs: time, score, isNewRecord: record, lang });
 
   function handleCopy() {
     navigator.clipboard?.writeText(shareText).then(() => {
@@ -68,7 +74,7 @@ export function CompleteModal({ game, total, found, completed, lang, time, bestT
         </h2>
         <div className="sub">
           {completed
-            ? (record ? t('modal.subNewRecord') : t('modal.subComplete'))
+            ? (record ? t(recordSubKey) : t('modal.subComplete'))
             : t('modal.subGaveUp', { found, total })}
         </div>
         <div className="stats">
@@ -87,6 +93,14 @@ export function CompleteModal({ game, total, found, completed, lang, time, bestT
                 {best ? `.${best.cs}` : ''}
               </span>
             </div>
+          </div>
+          <div>
+            <div className="stat-label">{t('modal.score')}</div>
+            <div className="stat-value gold">{score}</div>
+          </div>
+          <div>
+            <div className="stat-label">{t('modal.bestScore')}</div>
+            <div className="stat-value">{bestScore ?? '—'}</div>
           </div>
         </div>
         <div className="actions">

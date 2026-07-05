@@ -47,6 +47,7 @@ describe('Game flow', () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     cleanup();
   });
 
@@ -139,5 +140,45 @@ describe('Game flow', () => {
     expect(document.querySelector('.command-bar')).not.toHaveClass('flash-wrong');
     expect(document.querySelector('.command-bar')).not.toHaveClass('shake');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('scores each find by the current combo value and grows the combo on fast finds', () => {
+    vi.useFakeTimers();
+    renderGame();
+    const input = screen.getByRole('textbox');
+    submit(input, 'jett'); // combo=1 → score=1
+    vi.advanceTimersByTime(2000); // rapide : pas de décroissance
+    submit(input, 'sage'); // combo=2 → score=1+2=3
+    expect(document.querySelector('.stat-score-row .stat-big')).toHaveTextContent('3');
+  });
+
+  it('decays the combo after 5s of inactivity but never drops below x1', () => {
+    vi.useFakeTimers();
+    renderGame();
+    const input = screen.getByRole('textbox');
+    submit(input, 'jett'); // combo=1 → score=1, comboBase devient 2
+    vi.advanceTimersByTime(12000); // 2 tranches de 5s pleines écoulées : 2-2=0 → plancher 1
+    submit(input, 'sage'); // +1 → score=2
+    expect(document.querySelector('.stat-score-row .stat-big')).toHaveTextContent('2');
+  });
+
+  it('does not save a best score when the run is abandoned', () => {
+    renderGame();
+    const input = screen.getByRole('textbox');
+    submit(input, 'jett');
+    fireEvent.click(screen.getByText('Abandonner'));
+    fireEvent.click(screen.getByText('Confirmer'));
+    expect(localStorage.getItem('memochamp_bestscore_valorant')).toBeNull();
+  });
+
+  it('shows the score and marks a new score record in the completion modal', async () => {
+    renderGame();
+    const input = screen.getByRole('textbox');
+    submit(input, 'jett');
+    submit(input, 'sage');
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 2000 });
+    expect(dialog).toHaveTextContent('Score');
+    expect(dialog).toHaveTextContent('Meilleur Score');
+    expect(localStorage.getItem('memochamp_bestscore_valorant')).toBe('3');
   });
 });

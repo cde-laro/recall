@@ -7,6 +7,7 @@ import { normalize } from './utils/normalize';
 import { formatTime } from './utils/formatTime';
 import { findCharacter } from './utils/aliases';
 import { Timer } from './components/Timer';
+import { ComboRing } from './components/ComboRing';
 import { ChampionGrid } from './components/ChampionGrid';
 import { CompleteModal } from './components/CompleteModal';
 import { ConfirmModal } from './components/ConfirmModal';
@@ -49,8 +50,18 @@ export function Game({ game, lang, onToggleLang }: Props) {
     const parsed = raw ? Number(raw) : NaN;
     return Number.isFinite(parsed) ? parsed : null;
   });
+  const bestScoreKey = `memochamp_bestscore_${game}`;
+  const [bestScore, setBestScore] = useState<number | null>(() => {
+    const raw = localStorage.getItem(`memochamp_bestscore_${game}`);
+    const parsed = raw ? Number(raw) : NaN;
+    return Number.isFinite(parsed) ? parsed : null;
+  });
+  const [score, setScore] = useState(0);
+  const [comboBase, setComboBase] = useState<number | null>(null);
+  const [lastFindAt, setLastFindAt] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [isNewRecord, setIsNewRecord] = useState(false);
+  const [isNewScoreRecord, setIsNewScoreRecord] = useState(false);
   const [justFoundName, setJustFoundName] = useState<string | null>(null);
   const [flash, setFlash] = useState<'correct' | 'wrong' | 'duplicate' | null>(null);
   const [shake, setShake] = useState(false);
@@ -129,9 +140,13 @@ export function Game({ game, lang, onToggleLang }: Props) {
     setEndTime(null);
     setShowModal(false);
     setIsNewRecord(false);
+    setIsNewScoreRecord(false);
     setJustFoundName(null);
     setLastFound(null);
     setCompleted(false);
+    setScore(0);
+    setComboBase(null);
+    setLastFindAt(null);
   }, []);
 
   const handleSubmit = useCallback(() => {
@@ -140,9 +155,10 @@ export function Game({ game, lang, onToggleLang }: Props) {
 
     const match = findCharacter(champions, query, game);
     if (match && !found.has(match.name)) {
+      const now = Date.now();
       const next = new Set(found);
       next.add(match.name);
-      const startedAt = startTime ?? Date.now();
+      const startedAt = startTime ?? now;
       if (!startTime) setStartTime(startedAt);
       setFound(next);
       setLastFound(match.name);
@@ -152,17 +168,32 @@ export function Game({ game, lang, onToggleLang }: Props) {
       setFlash('correct');
       setTimeout(() => setFlash(null), 320);
 
+      // Combo : décroissance dérivée du temps écoulé depuis la dernière
+      // trouvaille (palier de 5s, plancher à 1), jamais affectée par une
+      // mauvaise saisie.
+      const elapsedSteps = comboBase == null ? 0 : Math.floor((now - (lastFindAt ?? now)) / 5000);
+      const currentCombo = comboBase == null ? 1 : Math.max(1, comboBase - elapsedSteps);
+      const nextScore = score + currentCombo;
+      setScore(nextScore);
+      setComboBase(currentCombo + 1);
+      setLastFindAt(now);
+
       if (next.size === champions.length) {
-        const finishedAt = Date.now();
-        setEndTime(finishedAt);
+        setEndTime(now);
         setCompleted(true);
-        const elapsed = finishedAt - startedAt;
+        const elapsed = now - startedAt;
         const newRecord = bestTime == null || elapsed < bestTime;
         if (newRecord) {
           setBestTime(elapsed);
           try { localStorage.setItem(bestKey, String(elapsed)); } catch { /* quota plein / navigation privée : best-effort */ }
         }
         setIsNewRecord(newRecord);
+        const newScoreRecord = bestScore == null || nextScore > bestScore;
+        if (newScoreRecord) {
+          setBestScore(nextScore);
+          try { localStorage.setItem(bestScoreKey, String(nextScore)); } catch { /* quota plein / navigation privée : best-effort */ }
+        }
+        setIsNewScoreRecord(newScoreRecord);
         modalTimerRef.current = setTimeout(() => setShowModal(true), 500);
       }
     } else if (match) {
@@ -177,7 +208,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
       setShake(true);
       setTimeout(() => { setFlash(null); setShake(false); }, 360);
     }
-  }, [query, found, startTime, endTime, champions, game, bestTime, bestKey]);
+  }, [query, found, startTime, endTime, champions, game, bestTime, bestKey, bestScore, bestScoreKey, score, comboBase, lastFindAt]);
 
   const handleGiveUp = useCallback(() => {
     // Garde : si la run s'est terminée pendant que la confirmation était
@@ -193,8 +224,10 @@ export function Game({ game, lang, onToggleLang }: Props) {
 
   const handleResetRecord = useCallback(() => {
     localStorage.removeItem(bestKey);
+    localStorage.removeItem(bestScoreKey);
     setBestTime(null);
-  }, [bestKey]);
+    setBestScore(null);
+  }, [bestKey, bestScoreKey]);
 
   // Stable : ConfirmModal / CompleteModal dépendent de ces callbacks dans useDialogFocus.
   const closeConfirm = useCallback(() => setPendingConfirm(null), []);
@@ -271,6 +304,13 @@ export function Game({ game, lang, onToggleLang }: Props) {
             </span>
             <div className="progress-track in-cell">
               <div className="progress-fill" style={{ width: `${pct}%` }} />
+            </div>
+          </div>
+          <div className="stat">
+            <span className="stat-lbl">{t('scoreboard.score')}</span>
+            <div className="stat-score-row">
+              <span className="stat-big" style={{ color: 'var(--gold-bright)' }}>{score}</span>
+              <ComboRing comboBase={comboBase} lastFindAt={lastFindAt} />
             </div>
           </div>
           <div className="stat">
@@ -363,6 +403,9 @@ export function Game({ game, lang, onToggleLang }: Props) {
           time={endTime - startTime}
           bestTime={bestTime}
           isNewRecord={isNewRecord}
+          score={score}
+          bestScore={bestScore}
+          isNewScoreRecord={isNewScoreRecord}
           onRestart={resetGame}
           onClose={closeModal}
         />
