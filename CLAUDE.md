@@ -63,29 +63,58 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   échouer un build (fichier gardé tel quel si fetch KO/vide) et sa logique
   fetch+normalisation est volontairement dupliquée depuis `useGameData.ts`
   (Node pur vs TS navigateur) — garder les deux en phase.
-- `src/components/` — Timer, ChampionGrid, ChampionCard, CompleteModal,
-  ConfirmModal (plus de TopBar : la barre est inline dans `Game.tsx`). La modale
-  de fin s'affiche sur run complète **ET sur abandon** (prop `completed=false`,
-  score partiel `found/total`). **L'abandon ne remplit plus `found`** : la
-  grille reçoit `revealMissed` et les non-trouvés passent en état `missed`
-  (portrait désaturé, ✗ rouge) — 3 états de carte : locked/found/missed.
-  `ConfirmModal` remplace `window.confirm` (état `pendingConfirm` dans Game,
-  Escape/backdrop = annuler). Le focus trap (Tab piégé, focus initial, restitution
-  au unmount) est factorisé dans `src/hooks/useDialogFocus.ts`, partagé par
-  `ConfirmModal` et `CompleteModal` — le callback de fermeture passé (`onCancel`/
-  `onClose`) doit rester stable (`useCallback`), l'effet en dépend. Les popovers
-  du rail (menu ⋯, sélecteur de jeu) ferment sur Escape (retour du focus au
-  bouton déclencheur) en plus du clic extérieur, et portent `role="menu"` /
-  `role="menuitem"` en cohérence avec `aria-haspopup="menu"`. Retaper un nom déjà
-  trouvé déclenche un flash `duplicate` (bordure or, re-pulse la carte via
-  `justFoundName`) au lieu du flash rouge + shake réservé aux vraies erreurs.
-  Le tick 30ms du chrono vit dans `Timer.tsx` pour ne pas
-  re-rendre la grille (Grid et Card sont mémoïsés) — ne pas remonter d'état
-  haute fréquence dans Game.tsx. `Timer` rend juste la valeur (`.stat-big`),
-  affichée dans le panneau `.stats` de la rail (chrono · progression
-  `found/total` + barre · meilleur temps). `ChampionCard` : carte arrondie ;
-  verrouillée = silhouette d'avatar (`.lock-glyph`, plus de « ? » ni de numéro),
-  trouvée = portrait + bandeau nom.
+- `src/components/` — Timer, ComboRing, ChampionGrid, ChampionCard,
+  CompleteModal, ConfirmModal (plus de TopBar : la barre est inline dans
+  `Game.tsx`). La modale de fin s'affiche sur run complète **ET sur abandon**
+  (prop `completed=false`, score partiel `found/total`). **L'abandon ne
+  remplit plus `found`** : la grille reçoit `revealMissed` et les non-trouvés
+  passent en état `missed` (portrait désaturé, ✗ rouge) — 3 états de base de
+  carte (locked/found/missed) + 2 pulses transitoires sur `found` (~900ms,
+  mutuellement exclusifs sur une même carte) : `justfound` (éclat or diagonal,
+  vraie nouvelle trouvaille) et `duplicate` (lueur rouge pulsée, nom déjà
+  trouvé retapé — si un `justfound` est encore actif sur ce même nom au
+  moment du retype, `handleSubmit` le coupe court avant de poser `duplicate`,
+  pour garantir l'exclusion mutuelle). `ConfirmModal` remplace
+  `window.confirm` (état `pendingConfirm` dans Game, Escape/backdrop =
+  annuler). Le focus trap (Tab piégé, focus initial, restitution au unmount)
+  est factorisé dans `src/hooks/useDialogFocus.ts`, partagé par `ConfirmModal`
+  et `CompleteModal` — le callback de fermeture passé (`onCancel`/`onClose`)
+  doit rester stable (`useCallback`), l'effet en dépend. Les popovers du rail
+  (menu ⋯, sélecteur de jeu) ferment sur Escape (retour du focus au bouton
+  déclencheur) en plus du clic extérieur, et portent `role="menu"` /
+  `role="menuitem"` en cohérence avec `aria-haspopup="menu"`. Le tick 30ms du
+  chrono vit dans `Timer.tsx` pour ne pas re-rendre la grille (Grid et Card
+  sont mémoïsés) — ne pas remonter d'état haute fréquence dans Game.tsx.
+  `Timer` rend juste la valeur (`.stat-big`). `ChampionCard` : carte
+  arrondie ; verrouillée = silhouette d'avatar (`.lock-glyph`, plus de « ? »
+  ni de numéro), trouvée = portrait + bandeau nom.
+- **Score et combo** — panneau `.stats` de la rail : progression `found/total`
+  + barre, **Score** (cumulatif, `.stat-score-row` avec la valeur + `ComboRing`),
+  meilleur temps. Mécanique (état dans `Game.tsx` : `score`, `comboBase`,
+  `lastFindAt`) : chaque trouvaille rapporte des points = valeur du combo au
+  moment de la trouvaille (calcul dérivé des timestamps, pas d'état tické),
+  puis incrémente le combo de 1 ; chaque tranche de 5s d'inactivité depuis la
+  dernière trouvaille fait -1, **plancher à 1** (jamais 0) ; une mauvaise
+  saisie n'affecte ni le score ni le combo (seul le temps écoulé compte).
+  `ComboRing` (`src/components/ComboRing.tsx`) affiche l'anneau **seulement
+  si le combo affiché est > 1** (aucun bonus actif ⇒ pas de rendu, y compris
+  à l'état idle avant la première trouvaille) ; le remplissage est une
+  **animation CSS pure** (`@property --combo-pct` + `@keyframes
+  combo-ring-deplete`, `animation-fill-mode: forwards`), remontée via
+  `key={`${lastFindAt}-${elapsedSteps}`}` pour repartir de 100% à **chaque**
+  trouvaille et à **chaque palier de 5s** (pas seulement la première fois,
+  sinon l'anneau reste vide indéfiniment) ; seul le chiffre affiché déclenche
+  un re-render, via une chaîne de `setTimeout` auto-reprogrammée (jamais un
+  `setInterval` qui poll). Best score indépendant du meilleur temps
+  (`memochamp_bestscore_{game}`, même durcissement `Number.isFinite` +
+  `try/catch` que `bestTime`, mis à jour uniquement sur run complète, jamais
+  sur abandon) — les deux records coexistent, un run peut battre l'un sans
+  l'autre. `topbar.resetRecord` / `confirm.resetRecord` réinitialisent
+  désormais **les deux** records. `CompleteModal` affiche Score/Meilleur
+  Score en plus de Temps Final/Meilleur Temps ; le sous-titre « Nouveau
+  Record » distingue temps/score/les deux (`modal.subNewRecordTime` /
+  `subNewRecordScore` / `subNewRecordBoth`, plus d'unique clé
+  `subNewRecord`). `shareText.ts` inclut une ligne `⭐ {score} pts`.
 - `src/utils/` — fonctions pures testées (normalize, formatTime, shareText,
   aliases, levenshtein, dataCache). `aliases.ts` : abréviations de saisie
   (mf, j4, asol…) ; les cibles LoL visent l'id Data Dragon (stable inter-langues),
@@ -94,9 +123,9 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   ambigu) — après l'exact et les alias. `shareText.ts` prend `found` + `total`
   (trophée seulement si complet ; barre emoji 🟩/⬛ de 10 cases, clampée 1–9
   sur run partielle).
-- Best times en localStorage : `memochamp_best_{game}` ; langue/thème :
-  `memochamp_lang` (plus de thème light — dark uniquement) ; cache data :
-  `memochamp_cache_{game}_{lang}`.
+- Best times en localStorage : `memochamp_best_{game}` ; meilleur score :
+  `memochamp_bestscore_{game}` ; langue/thème : `memochamp_lang` (plus de
+  thème light — dark uniquement) ; cache data : `memochamp_cache_{game}_{lang}`.
 
 ## Commandes
 
