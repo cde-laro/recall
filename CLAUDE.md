@@ -41,6 +41,13 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   `index.html`), labels en casse normale, ombres douces, accent or/rouge/orange
   selon le jeu. Le **chrono est en grand en haut du `.main`** (`.timebar`), pas
   dans le panneau `.stats` (qui ne contient que progression + meilleur temps).
+  `GameBadge` (`src/components/GameBadge.tsx`) affiche le vrai logo du jeu
+  (`public/logos/`, provenance documentée dans `public/logos/README.md`) à la
+  place de la lettre `BRAND_MARK` quand un logo existe pour ce jeu — variante
+  `black` sur `.brand-mark` (fond clair/dégradé), `white` sur
+  `.game-select-mark` (fond sombre), ou `universal` pour un logo déjà
+  bicolore utilisable tel quel dans les deux contextes. Repli silencieux sur
+  la lettre si aucun logo n'est défini pour le jeu.
 - `src/hooks/useGameData.ts` — fetch des personnages : Data Dragon (LoL),
   valorant-api.com, overfast-api.tekrop.fr (check `r.ok` + `AbortSignal.timeout(10_000)`
   sur chaque fetch via `fetchJson` — une API qui pend doit rejeter pour

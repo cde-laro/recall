@@ -112,6 +112,7 @@ body {
   box-shadow: 0 8px 20px -8px color-mix(in oklab, var(--gold) 70%, transparent);
 }
 .brand-text { font-weight: 800; font-size: 23px; letter-spacing: 0.04em; line-height: 1; }
+.brand-logo { width: 60%; height: 60%; object-fit: contain; }
 
 .rail-controls { display: flex; align-items: center; gap: 6px; }
 

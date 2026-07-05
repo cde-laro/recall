@@ -8,6 +8,7 @@ import { formatTime } from './utils/formatTime';
 import { findCharacter } from './utils/aliases';
 import { Timer } from './components/Timer';
 import { ComboRing } from './components/ComboRing';
+import { GameBadge } from './components/GameBadge';
 import { ChampionGrid } from './components/ChampionGrid';
 import { CompleteModal } from './components/CompleteModal';
 import { ConfirmModal } from './components/ConfirmModal';
@@ -246,7 +247,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
   if (loading) {
     return (
       <div className="page-loading" role="status">
-        <div className="brand-mark" aria-hidden="true">{BRAND_MARK[game]}</div>
+        <div className="brand-mark" aria-hidden="true"><GameBadge game={game} letter={BRAND_MARK[game]} variant="black" /></div>
         {t('status.loading')}
       </div>
     );
@@ -257,7 +258,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
       <aside className="rail">
         <div className="rail-head">
           <div className="brand">
-            <div className="brand-mark">{BRAND_MARK[game]}</div>
+            <div className="brand-mark"><GameBadge game={game} letter={BRAND_MARK[game]} variant="black" /></div>
             <div className="brand-text">RECALL</div>
           </div>
           <div className="rail-controls">
@@ -280,7 +281,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
           <span className="rail-lbl">{t('sidebar.game')}</span>
           <div className="game-select" ref={gameRef}>
             <button ref={gameBtnRef} className="game-select-btn" onClick={() => setGameOpen(o => !o)} aria-haspopup="menu" aria-expanded={gameOpen}>
-              <span className="game-select-mark">{BRAND_MARK[game]}</span>
+              <span className="game-select-mark"><GameBadge game={game} letter={BRAND_MARK[game]} variant="white" /></span>
               <span className="game-select-name">{GAME_LABELS[game]}</span>
               <span className="game-select-chev" aria-hidden="true">▾</span>
             </button>
@@ -293,7 +294,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
                     className={`popover-item${g === game ? ' current' : ''}`}
                     onClick={() => { setGameOpen(false); navigate(GAME_PATHS[g]); }}
                   >
-                    <span className="game-select-mark">{BRAND_MARK[g]}</span>
+                    <span className="game-select-mark"><GameBadge game={g} letter={BRAND_MARK[g]} variant="white" /></span>
                     {GAME_LABELS[g]}
                   </button>
                 ))}
