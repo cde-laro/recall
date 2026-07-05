@@ -129,6 +129,8 @@ describe('Game flow', () => {
     submit(input, 'zzzzz');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(input).not.toBeDisabled();
+    // Aucune trouvaille : le score/combo ne doit pas bouger sur une erreur.
+    expect(document.querySelector('.stat-score-row .stat-big')).toHaveTextContent('0');
   });
 
   it('gives distinct feedback for a repeated guess instead of treating it as wrong', () => {
@@ -140,6 +142,9 @@ describe('Game flow', () => {
     expect(document.querySelector('.command-bar')).not.toHaveClass('flash-wrong');
     expect(document.querySelector('.command-bar')).not.toHaveClass('shake');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    // Le second submit du même nom est un no-op : score reste celui de la
+    // première trouvaille légitime (combo=1 → score=1).
+    expect(document.querySelector('.stat-score-row .stat-big')).toHaveTextContent('1');
   });
 
   it('scores each find by the current combo value and grows the combo on fast finds', () => {
@@ -179,6 +184,30 @@ describe('Game flow', () => {
     const dialog = await screen.findByRole('dialog', {}, { timeout: 2000 });
     expect(dialog).toHaveTextContent('Score');
     expect(dialog).toHaveTextContent('Meilleur Score');
+    // Premier run jamais joué : bat à la fois le temps et le score.
+    expect(dialog).toHaveTextContent('// nouveau meilleur temps et meilleur score');
     expect(localStorage.getItem('memochamp_bestscore_valorant')).toBe('3');
+  });
+
+  it('marks only a score record when the best time is unbeatable', async () => {
+    localStorage.setItem('memochamp_best_valorant', '1'); // 1ms : impossible à battre
+    renderGame();
+    const input = screen.getByRole('textbox');
+    submit(input, 'jett');
+    submit(input, 'sage');
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 2000 });
+    expect(dialog).toHaveTextContent('// nouveau meilleur score');
+    expect(dialog).not.toHaveTextContent('// nouveau meilleur temps et meilleur score');
+  });
+
+  it('marks only a time record when the best score is unbeatable', async () => {
+    localStorage.setItem('memochamp_bestscore_valorant', '999999'); // score inatteignable
+    renderGame();
+    const input = screen.getByRole('textbox');
+    submit(input, 'jett');
+    submit(input, 'sage');
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 2000 });
+    expect(dialog).toHaveTextContent('// nouveau meilleur temps');
+    expect(dialog).not.toHaveTextContent('// nouveau meilleur temps et meilleur score');
   });
 });
