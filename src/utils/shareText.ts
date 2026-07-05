@@ -23,6 +23,7 @@ interface ShareTextOptions {
   found: number;
   total: number;
   timeMs: number;
+  score: number;
   isNewRecord: boolean;
   lang: 'fr' | 'en';
 }
@@ -38,13 +39,14 @@ function buildBar(found: number, total: number): string {
   return '🟩'.repeat(filled) + '⬛'.repeat(BAR_LENGTH - filled);
 }
 
-export function buildShareText({ game, found, total, timeMs, isNewRecord, lang }: ShareTextOptions): string {
+export function buildShareText({ game, found, total, timeMs, score, isNewRecord, lang }: ShareTextOptions): string {
   const { mmss, cs } = formatTime(timeMs);
   const complete = found >= total;
   const record = complete && isNewRecord ? RECORD_SUFFIX[lang] : '';
-  const scoreLine = complete ? `${total}/${total} 🏆` : `${found}/${total}`;
+  const progressLine = complete ? `${total}/${total} 🏆` : `${found}/${total}`;
   return [
-    `RECALL/${GAME_LABELS[game]} — ${scoreLine}`,
+    `RECALL/${GAME_LABELS[game]} — ${progressLine}`,
+    `⭐ ${score} pts`,
     buildBar(found, total),
     `⏱️ ${mmss}.${cs}${record}`,
     GAME_URLS[game],
