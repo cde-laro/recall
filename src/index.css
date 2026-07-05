@@ -579,3 +579,31 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ===== Combo ring ===== */
+@property --combo-pct {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 100;
+}
+@keyframes combo-ring-deplete {
+  from { --combo-pct: 100; }
+  to { --combo-pct: 0; }
+}
+.combo-ring { width: 34px; height: 34px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.combo-ring-fill {
+  width: 100%; height: 100%; border-radius: 50%;
+  background: conic-gradient(var(--gold-bright) calc(var(--combo-pct) * 1%), var(--line) 0);
+  display: flex; align-items: center; justify-content: center;
+  animation: combo-ring-deplete 5000ms linear forwards;
+}
+.combo-ring-fill.idle { background: var(--line); animation: none; }
+.combo-ring-inner {
+  width: 74%; height: 74%; border-radius: 50%;
+  background: var(--surface-solid);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 12px; color: var(--gold-bright);
+}
+.combo-ring-fill.idle .combo-ring-inner { color: var(--ink-mute); }
+
+.stat-score-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
