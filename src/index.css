@@ -631,6 +631,7 @@ body {
   filter: blur(1.5px) brightness(0.5) saturate(0.85);
   transform: scale(1.02);
   overflow: hidden;
+  pointer-events: none;
 }
 .marquee-row {
   display: flex; gap: 10px; width: max-content;
