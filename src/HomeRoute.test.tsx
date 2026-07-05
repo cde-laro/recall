@@ -61,4 +61,12 @@ describe('HomeRoute', () => {
     fireEvent.click(screen.getByRole('button', { name: /EN/ }));
     expect(screen.getByText('Name every character.')).toBeInTheDocument();
   });
+
+  it('resets stale data-game attribute and document title left over from a game page', () => {
+    document.documentElement.setAttribute('data-game', 'valorant');
+    document.title = 'RECALL/Valorant — All agents · cde-laro.dev';
+    renderHome();
+    expect(document.documentElement.hasAttribute('data-game')).toBe(false);
+    expect(document.title).toBe('RECALL — Champion Identification Challenge');
+  });
 });

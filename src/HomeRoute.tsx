@@ -29,6 +29,20 @@ export function HomeRoute() {
     localStorage.setItem('memochamp_lang', lang);
   }, [lang]);
 
+  // Game.tsx pose data-game/title/meta description sans jamais les nettoyer
+  // au démontage. Le seul chemin réaliste pour revenir sur Home est le bouton
+  // Retour du navigateur (pas de lien retour depuis une partie) : on
+  // réinitialise donc ici, au montage de Home, plutôt que de compter sur un
+  // cleanup côté Game — plus robuste, peu importe comment on est revenu ici.
+  useEffect(() => {
+    document.documentElement.removeAttribute('data-game');
+    document.title = 'RECALL — Champion Identification Challenge';
+    document.querySelector('meta[name="description"]')?.setAttribute(
+      'content',
+      'A memory challenge: name every champion, agent, or hero from memory. League of Legends, Valorant, Overwatch.'
+    );
+  }, []);
+
   const toggleLang = useCallback(() => setLang(l => (l === 'fr' ? 'en' : 'fr')), []);
 
   return (
