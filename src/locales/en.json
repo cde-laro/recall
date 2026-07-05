@@ -2,7 +2,7 @@
   "topbar": {
     "menu": "Menu",
     "newRun": "New Run",
-    "resetRecord": "Reset Record",
+    "resetRecord": "Reset Records",
     "switchLanguage": "Switch language"
   },
   "card": {
@@ -17,6 +17,7 @@
   "scoreboard": {
     "found": "Champions Found",
     "timer": "Timer",
+    "score": "Score",
     "bestTime": "Best Time"
   },
   "input": {
@@ -35,10 +36,14 @@
     "complete": "Mission Complete",
     "gaveUp": "Run Abandoned",
     "subGaveUp": "// {{found}}/{{total}} identified before giving up",
-    "subNewRecord": "// personal best logged",
+    "subNewRecordTime": "// new best time",
+    "subNewRecordScore": "// new high score",
+    "subNewRecordBoth": "// new best time and high score",
     "subComplete": "// all champions identified",
     "finalTime": "Final Time",
     "bestTime": "Best Time",
+    "score": "Score",
+    "bestScore": "Best Score",
     "replay": "Play again",
     "viewGrid": "View grid",
     "share": "Share",
@@ -47,7 +52,7 @@
   },
   "confirm": {
     "giveUp": "Give up and reveal all champions?",
-    "resetRecord": "Clear the saved best time?",
+    "resetRecord": "Clear the saved best time and high score?",
     "confirm": "Confirm",
     "cancel": "Cancel"
   },
