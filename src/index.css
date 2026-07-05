@@ -412,6 +412,18 @@ body {
   to { transform: translateX(100%); }
 }
 
+/* "Déjà trouvé" : lueur rouge pulsée, distincte du shine or (nouvelle
+   trouvaille) et de la bordure rouge plate de .missed (fin de run). */
+.card.duplicate {
+  border-color: var(--danger);
+  animation: duplicate-glow 900ms ease;
+}
+@keyframes duplicate-glow {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--danger) 65%, transparent); }
+  35% { box-shadow: 0 0 0 5px color-mix(in oklab, var(--danger) 40%, transparent); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
 .card.missed {
   border-color: color-mix(in oklab, var(--danger) 55%, var(--line));
 }

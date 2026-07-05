@@ -63,6 +63,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const [isNewRecord, setIsNewRecord] = useState(false);
   const [isNewScoreRecord, setIsNewScoreRecord] = useState(false);
   const [justFoundName, setJustFoundName] = useState<string | null>(null);
+  const [duplicateName, setDuplicateName] = useState<string | null>(null);
   const [flash, setFlash] = useState<'correct' | 'wrong' | 'duplicate' | null>(null);
   const [shake, setShake] = useState(false);
   const [lastFound, setLastFound] = useState<string | null>(null);
@@ -142,6 +143,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
     setIsNewRecord(false);
     setIsNewScoreRecord(false);
     setJustFoundName(null);
+    setDuplicateName(null);
     setLastFound(null);
     setCompleted(false);
     setScore(0);
@@ -197,9 +199,13 @@ export function Game({ game, lang, onToggleLang }: Props) {
         modalTimerRef.current = setTimeout(() => setShowModal(true), 500);
       }
     } else if (match) {
-      // Déjà trouvé : pas une erreur, pulse la carte existante au lieu du shake rouge.
-      setJustFoundName(match.name);
-      setTimeout(() => setJustFoundName(prev => prev === match.name ? null : prev), 900);
+      // Déjà trouvé : pas une erreur — highlight rouge distinct de justfound
+      // (qui reste réservé aux vraies nouvelles trouvailles) et du shake rouge.
+      // On coupe court un justfound encore actif sur ce même nom (retype dans
+      // les 900ms suivant la trouvaille) pour garantir l'exclusion mutuelle.
+      setJustFoundName(prev => prev === match.name ? null : prev);
+      setDuplicateName(match.name);
+      setTimeout(() => setDuplicateName(prev => prev === match.name ? null : prev), 900);
       setQuery('');
       setFlash('duplicate');
       setTimeout(() => setFlash(null), 320);
@@ -375,6 +381,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
             champions={champions}
             found={found}
             justFoundName={justFoundName}
+            duplicateName={duplicateName}
             revealMissed={endTime != null && !completed}
           />
         )}

@@ -6,10 +6,11 @@ interface Props {
   champion: Character;
   found: boolean;
   justFound: boolean;
+  duplicate: boolean;
   missed: boolean;
 }
 
-export const ChampionCard = memo(function ChampionCard({ champion, found, justFound, missed }: Props) {
+export const ChampionCard = memo(function ChampionCard({ champion, found, justFound, duplicate, missed }: Props) {
   const { t } = useTranslation();
 
   if (missed) {
@@ -27,7 +28,7 @@ export const ChampionCard = memo(function ChampionCard({ champion, found, justFo
     );
   }
 
-  const cls = ['card', found ? 'found' : 'locked', justFound ? 'justfound' : '']
+  const cls = ['card', found ? 'found' : 'locked', justFound ? 'justfound' : '', duplicate ? 'duplicate' : '']
     .filter(Boolean).join(' ');
 
   if (!found) {

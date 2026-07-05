@@ -141,6 +141,9 @@ describe('Game flow', () => {
     expect(document.querySelector('.command-bar')).toHaveClass('flash-duplicate');
     expect(document.querySelector('.command-bar')).not.toHaveClass('flash-wrong');
     expect(document.querySelector('.command-bar')).not.toHaveClass('shake');
+    expect(document.querySelector('.card.duplicate')).not.toBeNull();
+    expect(document.querySelector('.card.duplicate .name-bar')).toHaveTextContent('Jett');
+    expect(document.querySelector('.card.duplicate')).not.toHaveClass('justfound');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     // Le second submit du même nom est un no-op : score reste celui de la
     // première trouvaille légitime (combo=1 → score=1).
