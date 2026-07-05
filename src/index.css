@@ -593,8 +593,11 @@ body {
   }
 
   /* La règle générique ci-dessus accélérerait une boucle infinie au lieu de
-     la figer (clignotement). On la fige explicitement à la place. */
-  .marquee-row { animation-play-state: paused; }
+     la figer (clignotement). On la fige explicitement à la place. `!important`
+     est nécessaire : le raccourci `animation` de .marquee-row (déclaré plus
+     bas dans le fichier) réinitialise sinon animation-play-state à `running`,
+     l'ordre de cascade lui donnant le dernier mot sans ce renfort. */
+  .marquee-row { animation-play-state: paused !important; }
 }
 
 /* ===== Combo ring ===== */
