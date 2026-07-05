@@ -36,7 +36,9 @@ const SNAPSHOTS: Record<GameId, Record<'fr' | 'en', () => Promise<{ default: Sna
 };
 
 async function fetchJson<T>(url: string): Promise<T> {
-  const r = await fetch(url);
+  // Timeout : une API qui pend (au lieu d'échouer) ne doit pas bloquer le
+  // loader indéfiniment — sans rejet, le fallback snapshot ne se déclenche jamais.
+  const r = await fetch(url, { signal: AbortSignal.timeout(10_000) });
   if (!r.ok) throw new Error(`HTTP ${r.status} — ${url}`);
   return r.json() as Promise<T>;
 }

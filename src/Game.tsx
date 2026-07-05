@@ -46,12 +46,13 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const bestKey = `memochamp_best_${game}`;
   const [bestTime, setBestTime] = useState<number | null>(() => {
     const raw = localStorage.getItem(`memochamp_best_${game}`);
-    return raw ? Number(raw) : null;
+    const parsed = raw ? Number(raw) : NaN;
+    return Number.isFinite(parsed) ? parsed : null;
   });
   const [showModal, setShowModal] = useState(false);
   const [isNewRecord, setIsNewRecord] = useState(false);
   const [justFoundName, setJustFoundName] = useState<string | null>(null);
-  const [flash, setFlash] = useState<'correct' | 'wrong' | null>(null);
+  const [flash, setFlash] = useState<'correct' | 'wrong' | 'duplicate' | null>(null);
   const [shake, setShake] = useState(false);
   const [lastFound, setLastFound] = useState<string | null>(null);
   const [completed, setCompleted] = useState(false);
@@ -64,6 +65,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const gameRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
+  const gameBtnRef = useRef<HTMLButtonElement>(null);
 
   const { characters: champions, loading, error, stale } = useGameData(game, lang);
 
@@ -93,15 +95,30 @@ export function Game({ game, lang, onToggleLang }: Props) {
     if (endTime == null && !loading) inputRef.current?.focus();
   }, [endTime, loading]);
 
-  // Close popovers on outside click
+  // Évite un setShowModal orphelin si le composant est démonté (changement de
+  // jeu/langue) dans les 500ms suivant une fin de run.
+  useEffect(() => () => {
+    if (modalTimerRef.current != null) clearTimeout(modalTimerRef.current);
+  }, []);
+
+  // Close popovers on outside click or Escape (focus revient au déclencheur)
   useEffect(() => {
     if (!gameOpen && !menuOpen) return;
     function handleClick(e: MouseEvent) {
       if (gameRef.current && !gameRef.current.contains(e.target as Node)) setGameOpen(false);
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
     }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== 'Escape') return;
+      if (gameOpen) { setGameOpen(false); gameBtnRef.current?.focus(); }
+      if (menuOpen) { setMenuOpen(false); menuBtnRef.current?.focus(); }
+    }
     document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [gameOpen, menuOpen]);
 
   const resetGame = useCallback(() => {
@@ -143,11 +160,18 @@ export function Game({ game, lang, onToggleLang }: Props) {
         const newRecord = bestTime == null || elapsed < bestTime;
         if (newRecord) {
           setBestTime(elapsed);
-          localStorage.setItem(bestKey, String(elapsed));
+          try { localStorage.setItem(bestKey, String(elapsed)); } catch { /* quota plein / navigation privée : best-effort */ }
         }
         setIsNewRecord(newRecord);
         modalTimerRef.current = setTimeout(() => setShowModal(true), 500);
       }
+    } else if (match) {
+      // Déjà trouvé : pas une erreur, pulse la carte existante au lieu du shake rouge.
+      setJustFoundName(match.name);
+      setTimeout(() => setJustFoundName(prev => prev === match.name ? null : prev), 900);
+      setQuery('');
+      setFlash('duplicate');
+      setTimeout(() => setFlash(null), 320);
     } else {
       setFlash('wrong');
       setShake(true);
@@ -172,8 +196,9 @@ export function Game({ game, lang, onToggleLang }: Props) {
     setBestTime(null);
   }, [bestKey]);
 
-  // Stable : ConfirmModal dépend de onCancel dans son effet de focus.
+  // Stable : ConfirmModal / CompleteModal dépendent de ces callbacks dans useDialogFocus.
   const closeConfirm = useCallback(() => setPendingConfirm(null), []);
+  const closeModal = useCallback(() => setShowModal(false), []);
 
   const bestDisplay = bestTime != null ? formatTime(bestTime) : null;
   const pct = champions.length ? (found.size / champions.length) * 100 : 0;
@@ -201,11 +226,11 @@ export function Game({ game, lang, onToggleLang }: Props) {
               {lang === 'fr' ? 'EN' : 'FR'}
             </button>
             <div className="menu-wrap" ref={menuRef}>
-              <button ref={menuBtnRef} className="icon-btn" onClick={() => setMenuOpen(o => !o)} aria-expanded={menuOpen} aria-label={t('topbar.menu')}>⋯</button>
+              <button ref={menuBtnRef} className="icon-btn" onClick={() => setMenuOpen(o => !o)} aria-haspopup="menu" aria-expanded={menuOpen} aria-label={t('topbar.menu')}>⋯</button>
               {menuOpen && (
-                <div className="popover">
-                  <button className="popover-item" onClick={() => { setMenuOpen(false); resetGame(); }}>{t('topbar.newRun')}</button>
-                  <button className="popover-item" onClick={() => { setMenuOpen(false); menuBtnRef.current?.focus(); setPendingConfirm('resetRecord'); }}>{t('topbar.resetRecord')}</button>
+                <div className="popover" role="menu">
+                  <button role="menuitem" className="popover-item" onClick={() => { setMenuOpen(false); resetGame(); }}>{t('topbar.newRun')}</button>
+                  <button role="menuitem" className="popover-item" onClick={() => { setMenuOpen(false); menuBtnRef.current?.focus(); setPendingConfirm('resetRecord'); }}>{t('topbar.resetRecord')}</button>
                 </div>
               )}
             </div>
@@ -215,16 +240,17 @@ export function Game({ game, lang, onToggleLang }: Props) {
         <div className="rail-game">
           <span className="rail-lbl">{t('sidebar.game')}</span>
           <div className="game-select" ref={gameRef}>
-            <button className="game-select-btn" onClick={() => setGameOpen(o => !o)} aria-haspopup="menu" aria-expanded={gameOpen}>
+            <button ref={gameBtnRef} className="game-select-btn" onClick={() => setGameOpen(o => !o)} aria-haspopup="menu" aria-expanded={gameOpen}>
               <span className="game-select-mark">{BRAND_MARK[game]}</span>
               <span className="game-select-name">{GAME_LABELS[game]}</span>
               <span className="game-select-chev" aria-hidden="true">▾</span>
             </button>
             {gameOpen && (
-              <div className="popover popover--full">
+              <div className="popover popover--full" role="menu">
                 {(Object.keys(GAME_LABELS) as GameId[]).map(g => (
                   <button
                     key={g}
+                    role="menuitem"
                     className={`popover-item${g === game ? ' current' : ''}`}
                     onClick={() => { setGameOpen(false); navigate(GAME_PATHS[g]); }}
                   >
@@ -273,7 +299,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
           </button>
         </div>
 
-        <div className={['command-bar', shake ? 'shake' : '', flash === 'correct' ? 'flash-correct' : '', flash === 'wrong' ? 'flash-wrong' : ''].filter(Boolean).join(' ')}>
+        <div className={['command-bar', shake ? 'shake' : '', flash === 'correct' ? 'flash-correct' : '', flash === 'wrong' ? 'flash-wrong' : '', flash === 'duplicate' ? 'flash-duplicate' : ''].filter(Boolean).join(' ')}>
           <input
             ref={inputRef}
             autoFocus
@@ -338,7 +364,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
           bestTime={bestTime}
           isNewRecord={isNewRecord}
           onRestart={resetGame}
-          onClose={() => setShowModal(false)}
+          onClose={closeModal}
         />
       )}
     </div>

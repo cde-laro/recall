@@ -24,7 +24,9 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   `key={`${game}-${lang}`}`. Le reset d'une run se fait par **remontage**
   (changement de jeu ou de langue) — pas d'effets de reset dans `Game.tsx`.
   Ne pas réintroduire de `useEffect` qui setState en synchrone (règle lint
-  `react-hooks/set-state-in-effect`).
+  `react-hooks/set-state-in-effect`). `main.tsx` a une route `*` de repli
+  (`Navigate to="/league"`) — sans elle, une URL inconnue sous `/recall/`
+  affichait une page blanche (le rewrite Vercel sert `index.html` pour tout).
 - `src/Game.tsx` — composant principal (état du jeu, saisie) **et shell UI**.
   Reçoit `lang`/`onToggleLang` en props (plus d'état `lang` local). Layout
   `.shell` en 2 colonnes : `.rail` (gauche — marque, sélecteur de jeu, panneau
@@ -40,8 +42,10 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   selon le jeu. Le **chrono est en grand en haut du `.main`** (`.timebar`), pas
   dans le panneau `.stats` (qui ne contient que progression + meilleur temps).
 - `src/hooks/useGameData.ts` — fetch des personnages : Data Dragon (LoL),
-  valorant-api.com, overfast-api.tekrop.fr (check `r.ok` sur chaque fetch via
-  `fetchJson`). **Cache localStorage** via `src/utils/dataCache.ts` : clé
+  valorant-api.com, overfast-api.tekrop.fr (check `r.ok` + `AbortSignal.timeout(10_000)`
+  sur chaque fetch via `fetchJson` — une API qui pend doit rejeter pour
+  déclencher le fallback snapshot, pas bloquer le loader indéfiniment).
+  **Cache localStorage** via `src/utils/dataCache.ts` : clé
   `memochamp_cache_{game}_{lang}`, expiration au minuit local prochain. Le cache
   est lu dans l'initialiseur `useState` (pas dans l'effet) ; une réponse vide
   n'est jamais mise en cache. Exporte le type partagé `GameId`
@@ -66,7 +70,16 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   grille reçoit `revealMissed` et les non-trouvés passent en état `missed`
   (portrait désaturé, ✗ rouge) — 3 états de carte : locked/found/missed.
   `ConfirmModal` remplace `window.confirm` (état `pendingConfirm` dans Game,
-  Escape/backdrop = annuler, focus trap, `onCancel` doit rester stable). Le tick 30ms du chrono vit dans `Timer.tsx` pour ne pas
+  Escape/backdrop = annuler). Le focus trap (Tab piégé, focus initial, restitution
+  au unmount) est factorisé dans `src/hooks/useDialogFocus.ts`, partagé par
+  `ConfirmModal` et `CompleteModal` — le callback de fermeture passé (`onCancel`/
+  `onClose`) doit rester stable (`useCallback`), l'effet en dépend. Les popovers
+  du rail (menu ⋯, sélecteur de jeu) ferment sur Escape (retour du focus au
+  bouton déclencheur) en plus du clic extérieur, et portent `role="menu"` /
+  `role="menuitem"` en cohérence avec `aria-haspopup="menu"`. Retaper un nom déjà
+  trouvé déclenche un flash `duplicate` (bordure or, re-pulse la carte via
+  `justFoundName`) au lieu du flash rouge + shake réservé aux vraies erreurs.
+  Le tick 30ms du chrono vit dans `Timer.tsx` pour ne pas
   re-rendre la grille (Grid et Card sont mémoïsés) — ne pas remonter d'état
   haute fréquence dans Game.tsx. `Timer` rend juste la valeur (`.stat-big`),
   affichée dans le panneau `.stats` de la rail (chrono · progression
@@ -90,6 +103,10 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
 - `npm run dev` / `npm run build` / `npm run lint` / `npm test` (vitest).
 - `node scripts/update-snapshots.mjs` — rafraîchit manuellement les snapshots
   de `src/data/` (sinon automatique via `prebuild`).
+- CI : `.github/workflows/ci.yml` (push/PR sur `main`) — `npm ci`, lint, test,
+  build ; `npm run build` déclenche `prebuild` donc appelle les 3 APIs en
+  direct depuis le runner (le script ne fait jamais échouer le job, cf.
+  `update-snapshots.mjs`).
 - Lint : **0 erreur** (les 3 `react-hooks/set-state-in-effect` ont été
   supprimées par le remontage via `key`, cf. Structure).
 - Tests : suite mixte node + jsdom. Les utils sont en env node ; `Game.test.tsx`

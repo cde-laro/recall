@@ -8,8 +8,8 @@ import { Game } from './Game';
 import type { Character } from './hooks/useGameData';
 
 const CHARS: Character[] = [
-  { name: 'Jett', id: 'uuid-jett', imageUrl: '' },
-  { name: 'Sage', id: 'uuid-sage', imageUrl: '' },
+  { name: 'Jett', id: 'uuid-jett', imageUrl: 'https://example.test/jett.png' },
+  { name: 'Sage', id: 'uuid-sage', imageUrl: 'https://example.test/sage.png' },
 ];
 
 const mockHook = vi.hoisted(() => ({ stale: false, loading: false }));
@@ -128,5 +128,16 @@ describe('Game flow', () => {
     submit(input, 'zzzzz');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(input).not.toBeDisabled();
+  });
+
+  it('gives distinct feedback for a repeated guess instead of treating it as wrong', () => {
+    renderGame();
+    const input = screen.getByRole('textbox') as HTMLInputElement;
+    submit(input, 'jett');
+    submit(input, 'jett'); // déjà trouvé
+    expect(document.querySelector('.command-bar')).toHaveClass('flash-duplicate');
+    expect(document.querySelector('.command-bar')).not.toHaveClass('flash-wrong');
+    expect(document.querySelector('.command-bar')).not.toHaveClass('shake');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });

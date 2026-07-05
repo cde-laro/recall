@@ -13,6 +13,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/league" element={<GameRoute game="lol" />} />
         <Route path="/valorant" element={<GameRoute game="valorant" />} />
         <Route path="/overwatch" element={<GameRoute game="overwatch" />} />
+        <Route path="*" element={<Navigate to="/league" replace />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

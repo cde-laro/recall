@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatTime } from '../utils/formatTime';
 import { buildShareText } from '../utils/shareText';
+import { useDialogFocus } from '../hooks/useDialogFocus';
 import type { GameId } from '../hooks/useGameData';
 
 interface Props {
@@ -24,8 +25,8 @@ export function CompleteModal({ game, total, found, completed, lang, time, bestT
 
   const [copied, setCopied] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const restartRef = useRef<HTMLButtonElement>(null);
-  const previousFocus = useRef<Element | null>(null);
 
   const record = completed && isNewRecord;
   const shareText = buildShareText({ game, found, total, timeMs: time, isNewRecord: record, lang });
@@ -50,22 +51,12 @@ export function CompleteModal({ game, total, found, completed, lang, time, bestT
     if (copiedTimerRef.current != null) clearTimeout(copiedTimerRef.current);
   }, []);
 
-  useEffect(() => {
-    previousFocus.current = document.activeElement;
-    restartRef.current?.focus();
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose();
-    }
-    document.addEventListener('keydown', onKeyDown);
-    return () => {
-      document.removeEventListener('keydown', onKeyDown);
-      (previousFocus.current as HTMLElement | null)?.focus?.();
-    };
-  }, [onClose]);
+  useDialogFocus(dialogRef, restartRef, onClose);
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div
+        ref={dialogRef}
         className="modal"
         role="dialog"
         aria-modal="true"
