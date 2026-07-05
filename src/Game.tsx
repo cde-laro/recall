@@ -12,30 +12,13 @@ import { GameBadge } from './components/GameBadge';
 import { ChampionGrid } from './components/ChampionGrid';
 import { CompleteModal } from './components/CompleteModal';
 import { ConfirmModal } from './components/ConfirmModal';
+import { GAME_LABELS, GAME_PATHS, BRAND_MARK } from './gameMeta';
 
 interface Props {
   game: GameId;
   lang: 'fr' | 'en';
   onToggleLang: () => void;
 }
-
-const GAME_LABELS: Record<GameId, string> = {
-  lol: 'League of Legends',
-  valorant: 'Valorant',
-  overwatch: 'Overwatch',
-};
-
-const GAME_PATHS: Record<GameId, string> = {
-  lol: '/league',
-  valorant: '/valorant',
-  overwatch: '/overwatch',
-};
-
-const BRAND_MARK: Record<GameId, string> = {
-  lol: 'L',
-  valorant: 'V',
-  overwatch: 'O',
-};
 
 export function Game({ game, lang, onToggleLang }: Props) {
   const { t } = useTranslation();
