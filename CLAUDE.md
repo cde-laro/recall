@@ -24,9 +24,32 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   `key={`${game}-${lang}`}`. Le reset d'une run se fait par **remontage**
   (changement de jeu ou de langue) — pas d'effets de reset dans `Game.tsx`.
   Ne pas réintroduire de `useEffect` qui setState en synchrone (règle lint
-  `react-hooks/set-state-in-effect`). `main.tsx` a une route `*` de repli
-  (`Navigate to="/league"`) — sans elle, une URL inconnue sous `/recall/`
-  affichait une page blanche (le rewrite Vercel sert `index.html` pour tout).
+  `react-hooks/set-state-in-effect`). La route `/` sert `HomeRoute` (page
+  d'accueil, plus une redirection) ; la route `*` de repli redirige vers `/`
+  (pas `/league`) — sans elle, une URL inconnue sous `/recall/` affichait une
+  page blanche (le rewrite Vercel sert `index.html` pour tout).
+- `src/HomeRoute.tsx` — page d'accueil (sélection de jeu), même schéma que
+  `GameRoute` pour l'état `lang`. Fond `PortraitMarquee`
+  (`src/components/PortraitMarquee.tsx`, purement décoratif, `aria-hidden`) :
+  lignes de portraits qui défilent en boucle CSS pure, mélangées aléatoirement
+  et dupliquées pour boucler sans à-coup (mélange calculé une fois, pas à
+  chaque render), sens alterné une ligne sur deux, vitesses légèrement
+  différentes par ligne. **Chargement dynamique** (`import()` dans un effet,
+  pas un import statique) des snapshots `src/data/*.fr.json` : un import
+  statique forcerait Vite à fusionner ces JSON dans le bundle principal et
+  casserait le découpage en chunks paresseux déjà utilisé par le fallback de
+  `useGameData.ts` sur les mêmes fichiers. `pointer-events: none` pour ne
+  jamais intercepter les clics des cartes de jeu au premier plan ; sous
+  `prefers-reduced-motion`, le défilement se **met en pause**
+  (`animation-play-state: paused !important` — le `!important` est
+  nécessaire car le raccourci `animation` de `.marquee-row`, déclaré plus bas
+  dans le fichier, réinitialiserait sinon `animation-play-state` à `running`
+  via l'ordre de cascade). Chaque carte de jeu affiche le vrai logo
+  (`GameBadge`) et, si une run complète existe déjà, **temps ET score**
+  ensemble (les deux sont toujours posés au même moment, cf. `Game.tsx`) —
+  sinon « Pas encore joué ». `GAME_LABELS`/`GAME_PATHS`/`BRAND_MARK` vivent
+  dans `src/gameMeta.ts` (partagés entre `Game.tsx` et `HomeRoute.tsx` — ne
+  pas les redéclarer localement dans l'un ou l'autre).
 - `src/Game.tsx` — composant principal (état du jeu, saisie) **et shell UI**.
   Reçoit `lang`/`onToggleLang` en props (plus d'état `lang` local). Layout
   `.shell` en 2 colonnes : `.rail` (gauche — marque, sélecteur de jeu, panneau
