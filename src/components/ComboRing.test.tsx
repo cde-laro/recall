@@ -50,4 +50,16 @@ describe('ComboRing', () => {
     const secondFill = container.querySelector('.combo-ring-fill');
     expect(secondFill).not.toBe(firstFill);
   });
+
+  it('also restarts the ring animation on a decay tick, not just on a new find', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000_000);
+    const { container } = render(<ComboRing comboBase={3} lastFindAt={1_000_000} />);
+    const firstFill = container.querySelector('.combo-ring-fill');
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+    const secondFill = container.querySelector('.combo-ring-fill');
+    expect(secondFill).not.toBe(firstFill);
+  });
 });

@@ -8,8 +8,10 @@ interface Props {
 const DECAY_MS = 5000;
 
 // L'anneau (remplissage) est une animation CSS pure — voir .combo-ring-fill
-// dans index.css — remontée via `key={lastFindAt}` pour repartir de 100% à
-// chaque trouvaille : aucun tick JS pour le visuel. Seul le chiffre affiché
+// dans index.css — remontée via `key={`${lastFindAt}-${elapsedSteps}`}` pour
+// repartir de 100% à chaque trouvaille ET à chaque palier de 5s (sinon
+// l'anneau ne redémarre qu'une fois puis reste vide indéfiniment) : aucun
+// tick JS pour le visuel lui-même, juste ce remount. Seul le chiffre affiché
 // est recalculé : `elapsedSteps` (nombre de paliers de 5s écoulés depuis la
 // dernière trouvaille) est stocké en state et n'avance que via une chaîne de
 // setTimeout auto-reprogrammée (jamais un setInterval qui poll, jamais plus
@@ -66,7 +68,7 @@ export function ComboRing({ comboBase, lastFindAt }: Props) {
 
   return (
     <div className="combo-ring" aria-hidden="true">
-      <div className="combo-ring-fill" key={lastFindAt}>
+      <div className="combo-ring-fill" key={`${lastFindAt}-${elapsedSteps}`}>
         <div className="combo-ring-inner">x{combo}</div>
       </div>
     </div>
