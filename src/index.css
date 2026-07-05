@@ -591,6 +591,10 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+
+  /* La règle générique ci-dessus accélérerait une boucle infinie au lieu de
+     la figer (clignotement). On la fige explicitement à la place. */
+  .marquee-row { animation-play-state: paused; }
 }
 
 /* ===== Combo ring ===== */
@@ -618,3 +622,26 @@ body {
 }
 
 .stat-score-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+
+/* ===== Portrait marquee (fond de la page d'accueil) ===== */
+.portrait-marquee {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: space-between;
+  gap: 10px; padding: 6px 0;
+  filter: blur(1.5px) brightness(0.5) saturate(0.85);
+  transform: scale(1.02);
+  overflow: hidden;
+}
+.marquee-row {
+  display: flex; gap: 10px; width: max-content;
+  animation: marquee-scroll 40s linear infinite;
+}
+.marquee-row--reverse { animation-direction: reverse; }
+.marquee-row img {
+  width: 64px; height: 64px; border-radius: 10px;
+  object-fit: cover; flex-shrink: 0;
+}
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
