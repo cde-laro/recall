@@ -3,17 +3,18 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './i18n';
 import './index.css';
+import { HomeRoute } from './HomeRoute';
 import { GameRoute } from './GameRoute';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter basename="/recall">
       <Routes>
-        <Route path="/" element={<Navigate to="/league" replace />} />
+        <Route path="/" element={<HomeRoute />} />
         <Route path="/league" element={<GameRoute game="lol" />} />
         <Route path="/valorant" element={<GameRoute game="valorant" />} />
         <Route path="/overwatch" element={<GameRoute game="overwatch" />} />
-        <Route path="*" element={<Navigate to="/league" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

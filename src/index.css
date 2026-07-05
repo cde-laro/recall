@@ -646,3 +646,55 @@ body {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
+
+/* ===== Page d'accueil ===== */
+.home-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.home-scrim {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 65% 55% at 50% 45%, rgba(7,9,15,0.4), rgba(7,9,15,0.9) 78%),
+    linear-gradient(180deg, rgba(7,9,15,0.6), rgba(7,9,15,0.8));
+}
+.home-content {
+  position: relative; z-index: 2;
+  width: min(720px, 92vw);
+  text-align: center;
+  padding: 40px 20px;
+}
+.home-top {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 10px;
+}
+.home-lang { position: absolute; right: 0; }
+.home-tagline { color: var(--ink-dim); font-size: 13px; margin-bottom: 36px; }
+
+.home-games { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+.home-game {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  background: none; border: none; cursor: pointer; padding: 0;
+  font-family: inherit; color: inherit;
+}
+.home-game-icon {
+  width: 74px; height: 74px; border-radius: 20px;
+  background: rgba(17,22,35,0.75); border: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(6px);
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+.home-game:hover .home-game-icon, .home-game:focus-visible .home-game-icon {
+  transform: translateY(-3px);
+  border-color: var(--gold-bright);
+}
+.home-game-name { color: var(--ink); font-weight: 700; font-size: 13px; }
+.home-game-best { color: var(--ink-dim); font-size: 11px; line-height: 1.6; }
+.home-game-best .gold { color: var(--gold-bright); font-weight: 700; }
+
+.home-game[data-game="lol"] { --gold: #d6a64a; --gold-bright: #f3c969; }
+.home-game[data-game="valorant"] { --gold: #FF4655; --gold-bright: #FF7A84; }
+.home-game[data-game="overwatch"] { --gold: #F99E1A; --gold-bright: #FFBC3B; }
