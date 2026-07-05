@@ -59,5 +59,9 @@
   "error": {
     "loadFailed": "// failed to load game data",
     "retry": "Retry"
+  },
+  "home": {
+    "tagline": "Name every character.",
+    "notPlayed": "Not played yet"
   }
 }
