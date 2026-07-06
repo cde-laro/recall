@@ -13,15 +13,19 @@ import { GameBadge } from './components/GameBadge';
 import { ChampionGrid } from './components/ChampionGrid';
 import { CompleteModal } from './components/CompleteModal';
 import { ConfirmModal } from './components/ConfirmModal';
-import { GAME_LABELS, GAME_PATHS, BRAND_MARK } from './gameMeta';
+import { GAME_LABELS, GAME_PATHS, BRAND_MARK, GAME_MODES, TA_DURATIONS, recordKey, type GameMode, type TaDuration } from './gameMeta';
 
 interface Props {
   game: GameId;
   lang: 'fr' | 'en';
   onToggleLang: () => void;
+  mode: GameMode;
+  taDuration: TaDuration;
+  onChangeMode: (mode: GameMode) => void;
+  onChangeDuration: (d: TaDuration) => void;
 }
 
-export function Game({ game, lang, onToggleLang }: Props) {
+export function Game({ game, lang, onToggleLang, mode, taDuration, onChangeMode, onChangeDuration }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -29,15 +33,9 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const [query, setQuery] = useState('');
   const [startTime, setStartTime] = useState<number | null>(null);
   const [endTime, setEndTime] = useState<number | null>(null);
-  const bestKey = `memochamp_best_${game}`;
-  const [bestTime, setBestTime] = useState<number | null>(() => {
-    const raw = localStorage.getItem(`memochamp_best_${game}`);
-    const parsed = raw ? Number(raw) : NaN;
-    return Number.isFinite(parsed) ? parsed : null;
-  });
-  const bestScoreKey = `memochamp_bestscore_${game}`;
-  const [bestScore, setBestScore] = useState<number | null>(() => {
-    const raw = localStorage.getItem(`memochamp_bestscore_${game}`);
+  const recKey = recordKey(mode, game, taDuration);
+  const [best, setBest] = useState<number | null>(() => {
+    const raw = localStorage.getItem(recKey);
     const parsed = raw ? Number(raw) : NaN;
     return Number.isFinite(parsed) ? parsed : null;
   });
@@ -46,7 +44,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const [lastFindAt, setLastFindAt] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [isNewRecord, setIsNewRecord] = useState(false);
-  const [isNewScoreRecord, setIsNewScoreRecord] = useState(false);
+  const [endReason, setEndReason] = useState<'complete' | 'expired' | 'gaveup' | null>(null);
   const [justFoundName, setJustFoundName] = useState<string | null>(null);
   const [duplicateName, setDuplicateName] = useState<string | null>(null);
   const [flash, setFlash] = useState<'correct' | 'wrong' | 'duplicate' | null>(null);
@@ -55,6 +53,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const [completed, setCompleted] = useState(false);
   const [gameOpen, setGameOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [modeOpen, setModeOpen] = useState(false);
   const [pendingConfirm, setPendingConfirm] = useState<'giveUp' | 'resetRecord' | null>(null);
 
   const modalTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -63,6 +62,14 @@ export function Game({ game, lang, onToggleLang }: Props) {
   const menuRef = useRef<HTMLDivElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
   const gameBtnRef = useRef<HTMLButtonElement>(null);
+  const modeRef = useRef<HTMLDivElement>(null);
+  const modeBtnRef = useRef<HTMLButtonElement>(null);
+  const foundRef = useRef(found);
+  const endTimeRef = useRef(endTime);
+  const bestRef = useRef(best);
+  foundRef.current = found;
+  endTimeRef.current = endTime;
+  bestRef.current = best;
 
   const { characters: champions, loading, error, stale } = useGameData(game, lang);
 
@@ -100,15 +107,17 @@ export function Game({ game, lang, onToggleLang }: Props) {
 
   // Close popovers on outside click or Escape (focus revient au déclencheur)
   useEffect(() => {
-    if (!gameOpen && !menuOpen) return;
+    if (!gameOpen && !menuOpen && !modeOpen) return;
     function handleClick(e: MouseEvent) {
       if (gameRef.current && !gameRef.current.contains(e.target as Node)) setGameOpen(false);
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+      if (modeRef.current && !modeRef.current.contains(e.target as Node)) setModeOpen(false);
     }
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key !== 'Escape') return;
       if (gameOpen) { setGameOpen(false); gameBtnRef.current?.focus(); }
       if (menuOpen) { setMenuOpen(false); menuBtnRef.current?.focus(); }
+      if (modeOpen) { setModeOpen(false); modeBtnRef.current?.focus(); }
     }
     document.addEventListener('mousedown', handleClick);
     document.addEventListener('keydown', handleKeyDown);
@@ -116,7 +125,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
       document.removeEventListener('mousedown', handleClick);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [gameOpen, menuOpen]);
+  }, [gameOpen, menuOpen, modeOpen]);
 
   const resetGame = useCallback(() => {
     if (modalTimerRef.current != null) clearTimeout(modalTimerRef.current);
@@ -126,7 +135,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
     setEndTime(null);
     setShowModal(false);
     setIsNewRecord(false);
-    setIsNewScoreRecord(false);
+    setEndReason(null);
     setJustFoundName(null);
     setDuplicateName(null);
     setLastFound(null);
@@ -155,32 +164,33 @@ export function Game({ game, lang, onToggleLang }: Props) {
       setFlash('correct');
       setTimeout(() => setFlash(null), 320);
 
-      // Combo : décroissance dérivée du temps écoulé depuis la dernière
-      // trouvaille (palier de 5s, plancher à 1), jamais affectée par une
-      // mauvaise saisie.
-      const elapsedSteps = comboBase == null ? 0 : Math.floor((now - (lastFindAt ?? now)) / 5000);
-      const currentCombo = comboBase == null ? 1 : Math.max(1, comboBase - elapsedSteps);
-      const nextScore = score + currentCombo;
-      setScore(nextScore);
-      setComboBase(currentCombo + 1);
-      setLastFindAt(now);
+      // Combo/score uniquement en mode Combo : décroissance dérivée du temps
+      // écoulé depuis la dernière trouvaille (palier de 5s, plancher à 1),
+      // jamais affectée par une mauvaise saisie.
+      let nextScore = score;
+      if (mode === 'combo') {
+        const elapsedSteps = comboBase == null ? 0 : Math.floor((now - (lastFindAt ?? now)) / 5000);
+        const currentCombo = comboBase == null ? 1 : Math.max(1, comboBase - elapsedSteps);
+        nextScore = score + currentCombo;
+        setScore(nextScore);
+        setComboBase(currentCombo + 1);
+        setLastFindAt(now);
+      }
 
       if (next.size === champions.length) {
         setEndTime(now);
         setCompleted(true);
-        const elapsed = now - startedAt;
-        const newRecord = bestTime == null || elapsed < bestTime;
+        setEndReason('complete');
+        const metric = mode === 'combo' ? nextScore
+          : mode === 'timeattack' ? next.size
+          : now - startedAt; // speedrun : temps
+        const lower = mode === 'speedrun';
+        const newRecord = best == null || (lower ? metric < best : metric > best);
         if (newRecord) {
-          setBestTime(elapsed);
-          try { localStorage.setItem(bestKey, String(elapsed)); } catch { /* quota plein / navigation privée : best-effort */ }
+          setBest(metric);
+          try { localStorage.setItem(recKey, String(metric)); } catch { /* quota plein / navigation privée : best-effort */ }
         }
         setIsNewRecord(newRecord);
-        const newScoreRecord = bestScore == null || nextScore > bestScore;
-        if (newScoreRecord) {
-          setBestScore(nextScore);
-          try { localStorage.setItem(bestScoreKey, String(nextScore)); } catch { /* quota plein / navigation privée : best-effort */ }
-        }
-        setIsNewScoreRecord(newScoreRecord);
         modalTimerRef.current = setTimeout(() => setShowModal(true), 500);
       }
     } else if (match) {
@@ -199,7 +209,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
       setShake(true);
       setTimeout(() => { setFlash(null); setShake(false); }, 360);
     }
-  }, [query, found, startTime, endTime, champions, game, bestTime, bestKey, bestScore, bestScoreKey, score, comboBase, lastFindAt]);
+  }, [query, found, startTime, endTime, champions, game, mode, best, recKey, score, comboBase, lastFindAt]);
 
   const handleGiveUp = useCallback(() => {
     // Garde : si la run s'est terminée pendant que la confirmation était
@@ -209,22 +219,47 @@ export function Game({ game, lang, onToggleLang }: Props) {
     if (startTime == null) setStartTime(now);
     setEndTime(now);
     setCompleted(false);
+    setEndReason('gaveup');
     setIsNewRecord(false);
     modalTimerRef.current = setTimeout(() => setShowModal(true), 500);
   }, [startTime, endTime]);
 
+  // Fin par compte à rebours épuisé (timeattack). Stable (ne dépend que de
+  // recKey) : lit found/endTime/best via refs pour ne pas se re-créer à chaque
+  // trouvaille (sinon l'effet onExpire de Timer se relancerait en boucle).
+  const handleExpire = useCallback(() => {
+    if (endTimeRef.current != null) return;
+    const now = Date.now();
+    setEndTime(now);
+    setCompleted(false);
+    setEndReason('expired');
+    const count = foundRef.current.size;
+    const prev = bestRef.current;
+    const newRecord = prev == null || count > prev;
+    if (newRecord) {
+      setBest(count);
+      try { localStorage.setItem(recKey, String(count)); } catch { /* best-effort */ }
+    }
+    setIsNewRecord(newRecord);
+    modalTimerRef.current = setTimeout(() => setShowModal(true), 500);
+  }, [recKey]);
+
   const handleResetRecord = useCallback(() => {
-    localStorage.removeItem(bestKey);
-    localStorage.removeItem(bestScoreKey);
-    setBestTime(null);
-    setBestScore(null);
-  }, [bestKey, bestScoreKey]);
+    localStorage.removeItem(recKey);
+    setBest(null);
+  }, [recKey]);
 
   // Stable : ConfirmModal / CompleteModal dépendent de ces callbacks dans useDialogFocus.
   const closeConfirm = useCallback(() => setPendingConfirm(null), []);
   const closeModal = useCallback(() => setShowModal(false), []);
 
-  const bestDisplay = bestTime != null ? formatTime(bestTime) : null;
+  const bestTimeDisplay = mode === 'speedrun' && best != null ? formatTime(best) : null;
+  const bestLabelKey = mode === 'speedrun' ? 'scoreboard.bestTime'
+    : mode === 'combo' ? 'scoreboard.bestScore' : 'scoreboard.bestCount';
+  const bestValueText = mode === 'speedrun'
+    ? (bestTimeDisplay ? bestTimeDisplay.mmss : '--:--')
+    : best != null ? String(best) : '--';
+  const countdownMs = mode === 'timeattack' ? taDuration * 60_000 : undefined;
   const pct = champions.length ? (found.size / champions.length) * 100 : 0;
 
   // Chargement des données : loader plein écran, le shell n'apparaît que prêt.
@@ -287,6 +322,44 @@ export function Game({ game, lang, onToggleLang }: Props) {
           </div>
         </div>
 
+        <div className="rail-mode">
+          <span className="rail-lbl">{t('mode.label')}</span>
+          <div className="game-select" ref={modeRef}>
+            <button ref={modeBtnRef} className="game-select-btn" onClick={() => setModeOpen(o => !o)} aria-haspopup="menu" aria-expanded={modeOpen}>
+              <span className="game-select-name">{t(`mode.${mode}`)}</span>
+              <CaretDown className="game-select-chev" size={13} weight="bold" aria-hidden="true" />
+            </button>
+            {modeOpen && (
+              <div className="popover popover--full" role="menu">
+                {GAME_MODES.map(m => (
+                  <button
+                    key={m}
+                    role="menuitem"
+                    className={`popover-item${m === mode ? ' current' : ''}`}
+                    onClick={() => { setModeOpen(false); onChangeMode(m); }}
+                  >
+                    {t(`mode.${m}`)}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          {mode === 'timeattack' && (
+            <div className="ta-durations" role="group" aria-label={t('mode.duration')}>
+              {TA_DURATIONS.map(d => (
+                <button
+                  key={d}
+                  className={`ta-dur${d === taDuration ? ' current' : ''}`}
+                  aria-pressed={d === taDuration}
+                  onClick={() => onChangeDuration(d)}
+                >
+                  {t('mode.min', { count: d })}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         <div className="stats">
           <div className="stat stat--progress">
             <span className="stat-lbl">{t('scoreboard.found')}</span>
@@ -297,17 +370,19 @@ export function Game({ game, lang, onToggleLang }: Props) {
               <div className="progress-fill" style={{ width: `${pct}%` }} />
             </div>
           </div>
-          <div className="stat">
-            <span className="stat-lbl">{t('scoreboard.score')}</span>
-            <div className="stat-score-row">
-              <span className="stat-big" style={{ color: 'var(--gold-bright)' }}>{score}</span>
-              <ComboRing comboBase={comboBase} lastFindAt={lastFindAt} />
+          {mode === 'combo' && (
+            <div className="stat">
+              <span className="stat-lbl">{t('scoreboard.score')}</span>
+              <div className="stat-score-row">
+                <span className="stat-big" style={{ color: 'var(--gold-bright)' }}>{score}</span>
+                <ComboRing comboBase={comboBase} lastFindAt={lastFindAt} />
+              </div>
             </div>
-          </div>
+          )}
           <div className="stat">
-            <span className="stat-lbl">{t('scoreboard.bestTime')}</span>
-            <span className="stat-big" style={{ color: bestDisplay ? 'var(--gold-bright)' : 'var(--ink-mute)' }}>
-              {bestDisplay ? bestDisplay.mmss : '--:--'}
+            <span className="stat-lbl">{t(bestLabelKey)}</span>
+            <span className="stat-big" style={{ color: best != null ? 'var(--gold-bright)' : 'var(--ink-mute)' }}>
+              {bestValueText}
             </span>
           </div>
         </div>
@@ -318,8 +393,8 @@ export function Game({ game, lang, onToggleLang }: Props) {
       <main className="main">
         <div className="main-top">
           <div className="timebar">
-            <span className="timebar-lbl">{t('scoreboard.timer')}</span>
-            <Timer startTime={startTime} endTime={endTime} />
+            <span className="timebar-lbl">{mode === 'timeattack' ? t('scoreboard.timeLeft') : t('scoreboard.timer')}</span>
+            <Timer startTime={startTime} endTime={endTime} countdownMs={countdownMs} onExpire={handleExpire} />
           </div>
           <button className="giveup" onClick={() => setPendingConfirm('giveUp')} disabled={endTime != null || !champions.length}>
             <Flag className="giveup-flag" size={16} weight="bold" aria-hidden="true" />
@@ -388,16 +463,17 @@ export function Game({ game, lang, onToggleLang }: Props) {
       {showModal && endTime != null && startTime != null && (
         <CompleteModal
           game={game}
+          mode={mode}
+          taDuration={taDuration}
           total={champions.length}
           found={found.size}
           completed={completed}
+          endReason={endReason}
           lang={lang}
           time={endTime - startTime}
-          bestTime={bestTime}
-          isNewRecord={isNewRecord}
           score={score}
-          bestScore={bestScore}
-          isNewScoreRecord={isNewScoreRecord}
+          best={best}
+          isNewRecord={isNewRecord}
           onRestart={resetGame}
           onClose={closeModal}
         />
