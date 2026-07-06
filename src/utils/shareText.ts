@@ -1,5 +1,6 @@
 import { formatTime } from './formatTime';
 import type { GameId } from '../hooks/useGameData';
+import type { GameMode, TaDuration } from '../gameMeta';
 
 const GAME_LABELS: Record<GameId, string> = {
   lol: 'League',
@@ -18,12 +19,19 @@ const RECORD_SUFFIX: Record<'fr' | 'en', string> = {
   en: ' - New record!',
 };
 
+const IN_MIN: Record<'fr' | 'en', (d: number) => string> = {
+  fr: d => `en ${d} min`,
+  en: d => `in ${d} min`,
+};
+
 interface ShareTextOptions {
   game: GameId;
+  mode: GameMode;
   found: number;
   total: number;
   timeMs: number;
   score: number;
+  taDuration: TaDuration;
   isNewRecord: boolean;
   lang: 'fr' | 'en';
 }
@@ -39,16 +47,31 @@ function buildBar(found: number, total: number): string {
   return '🟩'.repeat(filled) + '⬛'.repeat(BAR_LENGTH - filled);
 }
 
-export function buildShareText({ game, found, total, timeMs, score, isNewRecord, lang }: ShareTextOptions): string {
+export function buildShareText({ game, mode, found, total, timeMs, score, taDuration, isNewRecord, lang }: ShareTextOptions): string {
   const { mmss, cs } = formatTime(timeMs);
   const complete = found >= total;
-  const record = complete && isNewRecord ? RECORD_SUFFIX[lang] : '';
-  const progressLine = complete ? `${total}/${total} 🏆` : `${found}/${total}`;
-  return [
-    `RECALL/${GAME_LABELS[game]} - ${progressLine}`,
-    `⭐ ${score} pts`,
-    buildBar(found, total),
-    `⏱️ ${mmss}.${cs}${record}`,
-    GAME_URLS[game],
-  ].join('\n');
+  const trophy = complete ? ' 🏆' : '';
+  const bar = buildBar(found, total);
+  const url = GAME_URLS[game];
+  const record = RECORD_SUFFIX[lang];
+
+  if (mode === 'timeattack') {
+    // Le suffixe record s'applique même sur un run partiel (résultat normal).
+    const rec = isNewRecord ? record : '';
+    return [
+      `RECALL/${GAME_LABELS[game]} - ${found}/${total}${trophy} ${IN_MIN[lang](taDuration)}${rec}`,
+      bar,
+      url,
+    ].join('\n');
+  }
+
+  // speedrun & combo : suffixe record seulement en run complète.
+  const rec = complete && isNewRecord ? record : '';
+  const header = `RECALL/${GAME_LABELS[game]} - ${found}/${total}${trophy}`;
+
+  if (mode === 'combo') {
+    return [header, `⭐ ${score} pts${rec}`, bar, `⏱️ ${mmss}.${cs}`, url].join('\n');
+  }
+  // speedrun
+  return [header, bar, `⏱️ ${mmss}.${cs}${rec}`, url].join('\n');
 }
