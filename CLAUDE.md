@@ -25,14 +25,35 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
 ## Structure
 
 - `src/main.tsx` + `src/GameRoute.tsx` — `GameRoute` porte l'état `lang`
-  (i18next + `<html lang>` + persistance) et monte `Game` avec
-  `key={`${game}-${lang}`}`. Le reset d'une run se fait par **remontage**
-  (changement de jeu ou de langue) — pas d'effets de reset dans `Game.tsx`.
+  (i18next + `<html lang>` + persistance) **ainsi que `mode` et `taDuration`**
+  (persistés `memochamp_mode` / `memochamp_ta_duration`) et monte `Game` avec
+  `key={`${game}-${lang}-${mode}-${mode === 'timeattack' ? taDuration : ''}`}`.
+  Le reset d'une run se fait par **remontage** (changement de jeu, langue, mode
+  ou durée) - pas d'effets de reset dans `Game.tsx`.
   Ne pas réintroduire de `useEffect` qui setState en synchrone (règle lint
   `react-hooks/set-state-in-effect`). La route `/` sert `HomeRoute` (page
   d'accueil, plus une redirection) ; la route `*` de repli redirige vers `/`
   (pas `/league`) — sans elle, une URL inconnue sous `/recall/` affichait une
   page blanche (le rewrite Vercel sert `index.html` pour tout).
+- **Modes de jeu** (`src/gameMeta.ts` : `GameMode`, `GAME_MODES`, `TaDuration`,
+  `TA_DURATIONS`, `recordKey`) : 3 modes sélectionnables dans la rail
+  (sélecteur calqué sur `.game-select`) - `speedrun` (objectif temps),
+  `combo` (objectif points via multiplicateur), `timeattack` (max de perso en
+  5/10 min, compte à rebours). La **progression `found/total` est visible dans
+  les 3 modes** ; le bloc Score + `ComboRing` n'existe **qu'en `combo`** ; les
+  durées 5/10 min n'apparaissent qu'en `timeattack`. `Timer` accepte
+  `countdownMs` + `onExpire` (one-shot) pour le compte à rebours ;
+  `handleExpire` dans `Game` lit `found`/`endTime`/`best` via **refs mises à
+  jour en effet** (jamais pendant le rendu, règle `react-hooks/refs`) pour
+  rester stable et ne pas relancer l'effet de `Timer` à chaque trouvaille.
+  Records : **une clé par mode** (`recordKey`) - Speedrun réutilise
+  `memochamp_best_{game}`, Combo `memochamp_bestscore_{game}`, Contre la montre
+  `memochamp_ta_{game}_{5|10}` (record **par durée**). « Réinitialiser » n'efface
+  que le record du mode courant. Fin de run : tous trouvés (`complete`),
+  compte à rebours épuisé (`expired`, timeattack), ou abandon (`gaveup`, aucun
+  record écrit) - l'état `endReason` pilote titre/sous-titre de `CompleteModal`.
+  `CompleteModal` et `shareText` sont conscients du mode (métrique + copie de
+  partage). L'accueil n'affiche pas encore les records Contre la montre.
 - `src/HomeRoute.tsx` — page d'accueil (sélection de jeu), même schéma que
   `GameRoute` pour l'état `lang`. Fond `PortraitMarquee`
   (`src/components/PortraitMarquee.tsx`, purement décoratif, `aria-hidden`) :
@@ -163,9 +184,12 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   ambigu) — après l'exact et les alias. `shareText.ts` prend `found` + `total`
   (trophée seulement si complet ; barre emoji 🟩/⬛ de 10 cases, clampée 1–9
   sur run partielle).
-- Best times en localStorage : `memochamp_best_{game}` ; meilleur score :
-  `memochamp_bestscore_{game}` ; langue/thème : `memochamp_lang` (plus de
-  thème light — dark uniquement) ; cache data : `memochamp_cache_{game}_{lang}`.
+- Best times en localStorage : `memochamp_best_{game}` (Speedrun) ; meilleur
+  score : `memochamp_bestscore_{game}` (Combo) ; meilleur compte Contre la
+  montre : `memochamp_ta_{game}_{5|10}` (par durée) ; mode/durée courants :
+  `memochamp_mode` / `memochamp_ta_duration` ; langue/thème : `memochamp_lang`
+  (plus de thème light - dark uniquement) ; cache data :
+  `memochamp_cache_{game}_{lang}`.
 
 ## Commandes
 
