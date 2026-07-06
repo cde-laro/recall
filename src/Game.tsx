@@ -53,7 +53,6 @@ export function Game({ game, lang, onToggleLang, mode, taDuration, onChangeMode,
   const [completed, setCompleted] = useState(false);
   const [gameOpen, setGameOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [modeOpen, setModeOpen] = useState(false);
   const [pendingConfirm, setPendingConfirm] = useState<'giveUp' | 'resetRecord' | null>(null);
 
   const modalTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -62,8 +61,6 @@ export function Game({ game, lang, onToggleLang, mode, taDuration, onChangeMode,
   const menuRef = useRef<HTMLDivElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
   const gameBtnRef = useRef<HTMLButtonElement>(null);
-  const modeRef = useRef<HTMLDivElement>(null);
-  const modeBtnRef = useRef<HTMLButtonElement>(null);
   const foundRef = useRef(found);
   const endTimeRef = useRef(endTime);
   const bestRef = useRef(best);
@@ -111,17 +108,15 @@ export function Game({ game, lang, onToggleLang, mode, taDuration, onChangeMode,
 
   // Close popovers on outside click or Escape (focus revient au déclencheur)
   useEffect(() => {
-    if (!gameOpen && !menuOpen && !modeOpen) return;
+    if (!gameOpen && !menuOpen) return;
     function handleClick(e: MouseEvent) {
       if (gameRef.current && !gameRef.current.contains(e.target as Node)) setGameOpen(false);
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
-      if (modeRef.current && !modeRef.current.contains(e.target as Node)) setModeOpen(false);
     }
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key !== 'Escape') return;
       if (gameOpen) { setGameOpen(false); gameBtnRef.current?.focus(); }
       if (menuOpen) { setMenuOpen(false); menuBtnRef.current?.focus(); }
-      if (modeOpen) { setModeOpen(false); modeBtnRef.current?.focus(); }
     }
     document.addEventListener('mousedown', handleClick);
     document.addEventListener('keydown', handleKeyDown);
@@ -129,7 +124,7 @@ export function Game({ game, lang, onToggleLang, mode, taDuration, onChangeMode,
       document.removeEventListener('mousedown', handleClick);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [gameOpen, menuOpen, modeOpen]);
+  }, [gameOpen, menuOpen]);
 
   const resetGame = useCallback(() => {
     if (modalTimerRef.current != null) clearTimeout(modalTimerRef.current);
@@ -328,25 +323,17 @@ export function Game({ game, lang, onToggleLang, mode, taDuration, onChangeMode,
 
         <div className="rail-mode">
           <span className="rail-lbl">{t('mode.label')}</span>
-          <div className="game-select" ref={modeRef}>
-            <button ref={modeBtnRef} className="game-select-btn" onClick={() => setModeOpen(o => !o)} aria-haspopup="menu" aria-expanded={modeOpen}>
-              <span className="game-select-name">{t(`mode.${mode}`)}</span>
-              <CaretDown className="game-select-chev" size={13} weight="bold" aria-hidden="true" />
-            </button>
-            {modeOpen && (
-              <div className="popover popover--full" role="menu">
-                {GAME_MODES.map(m => (
-                  <button
-                    key={m}
-                    role="menuitem"
-                    className={`popover-item${m === mode ? ' current' : ''}`}
-                    onClick={() => { setModeOpen(false); onChangeMode(m); }}
-                  >
-                    {t(`mode.${m}`)}
-                  </button>
-                ))}
-              </div>
-            )}
+          <div className="mode-group" role="group" aria-label={t('mode.label')}>
+            {GAME_MODES.map(m => (
+              <button
+                key={m}
+                className={`mode-btn${m === mode ? ' current' : ''}`}
+                aria-pressed={m === mode}
+                onClick={() => onChangeMode(m)}
+              >
+                {t(`mode.${m}`)}
+              </button>
+            ))}
           </div>
           {mode === 'timeattack' && (
             <div className="ta-durations" role="group" aria-label={t('mode.duration')}>
