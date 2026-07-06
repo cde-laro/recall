@@ -11,6 +11,14 @@
   "sidebar": {
     "game": "Game"
   },
+  "mode": {
+    "label": "Mode",
+    "speedrun": "Speedrun",
+    "combo": "Combo",
+    "timeattack": "Time Attack",
+    "duration": "Duration",
+    "min": "{{count}} min"
+  },
   "data": {
     "stale": "Local data: may be one patch behind"
   },
@@ -18,7 +26,10 @@
     "found": "Champions Found",
     "timer": "Timer",
     "score": "Score",
-    "bestTime": "Best Time"
+    "bestTime": "Best Time",
+    "timeLeft": "Time left",
+    "bestScore": "Best Score",
+    "bestCount": "Best Count"
   },
   "input": {
     "placeholder": "Type a champion name and press Enter…",
@@ -48,11 +59,17 @@
     "viewGrid": "View grid",
     "share": "Share",
     "copyScore": "Copy score",
-    "copied": "Copied!"
+    "copied": "Copied!",
+    "timeUp": "Time's up",
+    "allFound": "All found!",
+    "foundCount": "Found",
+    "bestCount": "Best Count",
+    "subTimeUp": "{{found}}/{{total}} found before time ran out",
+    "subNewRecordCount": "New best count"
   },
   "confirm": {
     "giveUp": "Give up and reveal all champions?",
-    "resetRecord": "Clear the saved best time and high score?",
+    "resetRecord": "Clear this mode's record?",
     "confirm": "Confirm",
     "cancel": "Cancel"
   },

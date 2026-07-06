@@ -11,6 +11,14 @@
   "sidebar": {
     "game": "Jeu"
   },
+  "mode": {
+    "label": "Mode",
+    "speedrun": "Speedrun",
+    "combo": "Combo",
+    "timeattack": "Contre la montre",
+    "duration": "Duree",
+    "min": "{{count}} min"
+  },
   "data": {
     "stale": "Données locales : patch antérieur possible"
   },
@@ -18,7 +26,10 @@
     "found": "Champions Trouvés",
     "timer": "Chrono",
     "score": "Score",
-    "bestTime": "Meilleur Temps"
+    "bestTime": "Meilleur Temps",
+    "timeLeft": "Temps restant",
+    "bestScore": "Meilleur Score",
+    "bestCount": "Meilleur Compte"
   },
   "input": {
     "placeholder": "Tape le nom d'un champion puis Entrée…",
@@ -48,11 +59,17 @@
     "viewGrid": "Voir la grille",
     "share": "Partager",
     "copyScore": "Copier le score",
-    "copied": "Copié !"
+    "copied": "Copié !",
+    "timeUp": "Temps ecoule",
+    "allFound": "Tout trouve !",
+    "foundCount": "Trouves",
+    "bestCount": "Meilleur Compte",
+    "subTimeUp": "{{found}}/{{total}} trouves avant la fin",
+    "subNewRecordCount": "Nouveau meilleur compte"
   },
   "confirm": {
     "giveUp": "Abandonner et révéler tous les champions ?",
-    "resetRecord": "Effacer le meilleur temps et le meilleur score enregistrés ?",
+    "resetRecord": "Effacer le record de ce mode ?",
     "confirm": "Confirmer",
     "cancel": "Annuler"
   },
