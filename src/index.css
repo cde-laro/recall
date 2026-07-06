@@ -719,3 +719,42 @@ body {
 .home-game[data-game="lol"] { --gold: #d6a64a; --gold-bright: #f3c969; }
 .home-game[data-game="valorant"] { --gold: #FF4655; --gold-bright: #FF7A84; }
 .home-game[data-game="overwatch"] { --gold: #F99E1A; --gold-bright: #FFBC3B; }
+
+.rail-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ta-durations {
+  display: flex;
+  gap: 8px;
+}
+.ta-dur {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-mute);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+.ta-dur:hover { border-color: var(--gold-bright); }
+.ta-dur.current {
+  border-color: var(--gold-bright);
+  color: var(--gold-bright);
+  background: color-mix(in oklab, var(--gold-bright) 12%, transparent);
+}
+
+/* Compte a rebours : accent d'urgence sous 30s (pas de clignotement agressif). */
+.timer-val.urgent { color: var(--danger); }
+@media (prefers-reduced-motion: no-preference) {
+  .timer-val.urgent.live { animation: pulse-urgent 1s ease-in-out infinite; }
+}
+@keyframes pulse-urgent {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
