@@ -36,8 +36,9 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   (pas `/league`) — sans elle, une URL inconnue sous `/recall/` affichait une
   page blanche (le rewrite Vercel sert `index.html` pour tout).
 - **Modes de jeu** (`src/gameMeta.ts` : `GameMode`, `GAME_MODES`, `TaDuration`,
-  `TA_DURATIONS`, `recordKey`) : 3 modes sélectionnables dans la rail
-  (sélecteur calqué sur `.game-select`) - `speedrun` (objectif temps),
+  `TA_DURATIONS`, `recordKey`) : 3 modes sélectionnables dans la rail via un
+  **groupe de boutons segmenté** (`.mode-group`, boutons `.mode-btn` empilés,
+  `aria-pressed` ; plus de menu déroulant) - `speedrun` (objectif temps),
   `combo` (objectif points via multiplicateur), `timeattack` (max de perso en
   5/10 min, compte à rebours). La **progression `found/total` est visible dans
   les 3 modes** ; le bloc Score + `ComboRing` n'existe **qu'en `combo`** ; les
