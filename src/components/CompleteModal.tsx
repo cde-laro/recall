@@ -12,7 +12,6 @@ interface Props {
   taDuration: TaDuration;
   total: number;
   found: number;
-  completed: boolean;
   endReason: 'complete' | 'expired' | 'gaveup' | null;
   lang: 'fr' | 'en';
   time: number;
@@ -23,7 +22,7 @@ interface Props {
   onClose: () => void;
 }
 
-export function CompleteModal({ game, mode, taDuration, total, found, completed, endReason, lang, time, score, best, isNewRecord, onRestart, onClose }: Props) {
+export function CompleteModal({ game, mode, taDuration, total, found, endReason, lang, time, score, best, isNewRecord, onRestart, onClose }: Props) {
   const { t } = useTranslation();
   const current = formatTime(time);
   const bestTimeFmt = best != null ? formatTime(best) : null;

@@ -67,9 +67,13 @@ export function Game({ game, lang, onToggleLang, mode, taDuration, onChangeMode,
   const foundRef = useRef(found);
   const endTimeRef = useRef(endTime);
   const bestRef = useRef(best);
-  foundRef.current = found;
-  endTimeRef.current = endTime;
-  bestRef.current = best;
+  // Miroirs à jour lus par handleExpire (fin par compte à rebours) sans le
+  // rendre instable. Mis à jour en effet (jamais pendant le rendu).
+  useEffect(() => {
+    foundRef.current = found;
+    endTimeRef.current = endTime;
+    bestRef.current = best;
+  });
 
   const { characters: champions, loading, error, stale } = useGameData(game, lang);
 
@@ -467,7 +471,6 @@ export function Game({ game, lang, onToggleLang, mode, taDuration, onChangeMode,
           taDuration={taDuration}
           total={champions.length}
           found={found.size}
-          completed={completed}
           endReason={endReason}
           lang={lang}
           time={endTime - startTime}
