@@ -12,7 +12,7 @@
     "game": "Jeu"
   },
   "data": {
-    "stale": "Données locales — patch antérieur possible"
+    "stale": "Données locales : patch antérieur possible"
   },
   "scoreboard": {
     "found": "Champions Trouvés",
@@ -22,7 +22,7 @@
   },
   "input": {
     "placeholder": "Tape le nom d'un champion puis Entrée…",
-    "placeholderDone": "Run terminée — appuyez sur Nouvelle Run",
+    "placeholderDone": "Run terminée : appuyez sur Nouvelle Run",
     "submit": "Valider"
   },
   "status": {
@@ -35,11 +35,11 @@
     "newRecord": "Nouveau Record",
     "complete": "Mission Accomplie",
     "gaveUp": "Run Abandonnée",
-    "subGaveUp": "// {{found}}/{{total}} identifiés avant abandon",
-    "subNewRecordTime": "// nouveau meilleur temps",
-    "subNewRecordScore": "// nouveau meilleur score",
-    "subNewRecordBoth": "// nouveau meilleur temps et meilleur score",
-    "subComplete": "// tous les personnages identifiés",
+    "subGaveUp": "{{found}}/{{total}} identifiés avant abandon",
+    "subNewRecordTime": "Nouveau meilleur temps",
+    "subNewRecordScore": "Nouveau meilleur score",
+    "subNewRecordBoth": "Nouveau meilleur temps et meilleur score",
+    "subComplete": "Tous les personnages identifiés",
     "finalTime": "Temps Final",
     "bestTime": "Meilleur Temps",
     "score": "Score",
@@ -57,7 +57,7 @@
     "cancel": "Annuler"
   },
   "error": {
-    "loadFailed": "// impossible de charger les données du jeu",
+    "loadFailed": "Impossible de charger les données du jeu",
     "retry": "Réessayer"
   },
   "home": {

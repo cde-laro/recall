@@ -113,7 +113,7 @@ describe('Game flow', () => {
   it('shows the stale-data notice when data comes from the local snapshot', () => {
     mockHook.stale = true;
     renderGame();
-    expect(screen.getByText('Données locales — patch antérieur possible')).toBeInTheDocument();
+    expect(screen.getByText('Données locales : patch antérieur possible')).toBeInTheDocument();
   });
 
   it('shows a full-page loader while loading', () => {
@@ -188,7 +188,7 @@ describe('Game flow', () => {
     expect(dialog).toHaveTextContent('Score');
     expect(dialog).toHaveTextContent('Meilleur Score');
     // Premier run jamais joué : bat à la fois le temps et le score.
-    expect(dialog).toHaveTextContent('// nouveau meilleur temps et meilleur score');
+    expect(dialog).toHaveTextContent('Nouveau meilleur temps et meilleur score');
     expect(localStorage.getItem('memochamp_bestscore_valorant')).toBe('3');
   });
 
@@ -199,8 +199,8 @@ describe('Game flow', () => {
     submit(input, 'jett');
     submit(input, 'sage');
     const dialog = await screen.findByRole('dialog', {}, { timeout: 2000 });
-    expect(dialog).toHaveTextContent('// nouveau meilleur score');
-    expect(dialog).not.toHaveTextContent('// nouveau meilleur temps et meilleur score');
+    expect(dialog).toHaveTextContent('Nouveau meilleur score');
+    expect(dialog).not.toHaveTextContent('Nouveau meilleur temps et meilleur score');
   });
 
   it('marks only a time record when the best score is unbeatable', async () => {
@@ -210,7 +210,7 @@ describe('Game flow', () => {
     submit(input, 'jett');
     submit(input, 'sage');
     const dialog = await screen.findByRole('dialog', {}, { timeout: 2000 });
-    expect(dialog).toHaveTextContent('// nouveau meilleur temps');
-    expect(dialog).not.toHaveTextContent('// nouveau meilleur temps et meilleur score');
+    expect(dialog).toHaveTextContent('Nouveau meilleur temps');
+    expect(dialog).not.toHaveTextContent('Nouveau meilleur temps et meilleur score');
   });
 });

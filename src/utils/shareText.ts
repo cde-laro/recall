@@ -14,8 +14,8 @@ const GAME_URLS: Record<GameId, string> = {
 };
 
 const RECORD_SUFFIX: Record<'fr' | 'en', string> = {
-  fr: ' — Nouveau record !',
-  en: ' — New record!',
+  fr: ' - Nouveau record !',
+  en: ' - New record!',
 };
 
 interface ShareTextOptions {
@@ -45,7 +45,7 @@ export function buildShareText({ game, found, total, timeMs, score, isNewRecord,
   const record = complete && isNewRecord ? RECORD_SUFFIX[lang] : '';
   const progressLine = complete ? `${total}/${total} 🏆` : `${found}/${total}`;
   return [
-    `RECALL/${GAME_LABELS[game]} — ${progressLine}`,
+    `RECALL/${GAME_LABELS[game]} - ${progressLine}`,
     `⭐ ${score} pts`,
     buildBar(found, total),
     `⏱️ ${mmss}.${cs}${record}`,

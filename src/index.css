@@ -51,9 +51,10 @@ html, body {
   padding: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Variable', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 body {
@@ -275,8 +276,23 @@ body {
 .giveup-text em { font-style: normal; font-size: 11px; color: var(--ink-mute); }
 
 /* ===== Command bar (input + submit) ===== */
-.command-bar { display: flex; gap: 12px; }
+/* Collée en haut du viewport : l'input reste toujours atteignable même quand
+   la grille défile sous elle. Fond frosté pour masquer les cartes qui passent
+   dessous (fallback opaque si transparence réduite). */
+.command-bar {
+  display: flex;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding-block: 14px;
+  background: color-mix(in oklab, var(--bg) 80%, transparent);
+  backdrop-filter: blur(10px);
+}
 .command-bar.shake { animation: shake 320ms ease; }
+@media (prefers-reduced-transparency: reduce) {
+  .command-bar { background: var(--bg); backdrop-filter: none; }
+}
 .command-bar input {
   flex: 1; min-width: 0;
   background: var(--surface-solid);
@@ -438,6 +454,7 @@ body {
 /* ===== Chargement plein écran ===== */
 .page-loading {
   min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-content: center;
   justify-items: center;
@@ -654,6 +671,7 @@ body {
 .home-page {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }

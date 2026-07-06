@@ -12,7 +12,7 @@
     "game": "Game"
   },
   "data": {
-    "stale": "Local data — may be one patch behind"
+    "stale": "Local data: may be one patch behind"
   },
   "scoreboard": {
     "found": "Champions Found",
@@ -22,7 +22,7 @@
   },
   "input": {
     "placeholder": "Type a champion name and press Enter…",
-    "placeholderDone": "Run over — press New Run",
+    "placeholderDone": "Run over: press New Run",
     "submit": "Submit"
   },
   "status": {
@@ -35,11 +35,11 @@
     "newRecord": "New Record",
     "complete": "Mission Complete",
     "gaveUp": "Run Abandoned",
-    "subGaveUp": "// {{found}}/{{total}} identified before giving up",
-    "subNewRecordTime": "// new best time",
-    "subNewRecordScore": "// new high score",
-    "subNewRecordBoth": "// new best time and high score",
-    "subComplete": "// all champions identified",
+    "subGaveUp": "{{found}}/{{total}} identified before giving up",
+    "subNewRecordTime": "New best time",
+    "subNewRecordScore": "New high score",
+    "subNewRecordBoth": "New best time and high score",
+    "subComplete": "All champions identified",
     "finalTime": "Final Time",
     "bestTime": "Best Time",
     "score": "Score",
@@ -57,7 +57,7 @@
     "cancel": "Cancel"
   },
   "error": {
-    "loadFailed": "// failed to load game data",
+    "loadFailed": "Failed to load game data",
     "retry": "Retry"
   },
   "home": {

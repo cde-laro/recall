@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { DotsThree, CaretDown, Flag } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useGameData, type GameId } from './hooks/useGameData';
@@ -73,9 +74,9 @@ export function Game({ game, lang, onToggleLang }: Props) {
   useEffect(() => {
     document.documentElement.setAttribute('data-game', game);
     const TITLES: Record<typeof game, string> = {
-      lol: 'RECALL/League — All champions · cde-laro.dev',
-      valorant: 'RECALL/Valorant — All agents · cde-laro.dev',
-      overwatch: 'RECALL/Overwatch — All heroes · cde-laro.dev',
+      lol: 'RECALL/League - All champions',
+      valorant: 'RECALL/Valorant - All agents',
+      overwatch: 'RECALL/Overwatch - All heroes',
     };
     const DESCS: Record<typeof game, string> = {
       lol: 'Can you name every League of Legends champion from memory? No hints, no help.',
@@ -245,11 +246,11 @@ export function Game({ game, lang, onToggleLang }: Props) {
             <div className="brand-text">RECALL</div>
           </div>
           <div className="rail-controls">
-            <button className="lang-btn" onClick={onToggleLang} aria-label={`${lang === 'fr' ? 'EN' : 'FR'} — ${t('topbar.switchLanguage')}`}>
+            <button className="lang-btn" onClick={onToggleLang} aria-label={`${lang === 'fr' ? 'EN' : 'FR'} - ${t('topbar.switchLanguage')}`}>
               {lang === 'fr' ? 'EN' : 'FR'}
             </button>
             <div className="menu-wrap" ref={menuRef}>
-              <button ref={menuBtnRef} className="icon-btn" onClick={() => setMenuOpen(o => !o)} aria-haspopup="menu" aria-expanded={menuOpen} aria-label={t('topbar.menu')}>⋯</button>
+              <button ref={menuBtnRef} className="icon-btn" onClick={() => setMenuOpen(o => !o)} aria-haspopup="menu" aria-expanded={menuOpen} aria-label={t('topbar.menu')}><DotsThree size={20} weight="bold" /></button>
               {menuOpen && (
                 <div className="popover" role="menu">
                   <button role="menuitem" className="popover-item" onClick={() => { setMenuOpen(false); resetGame(); }}>{t('topbar.newRun')}</button>
@@ -266,7 +267,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
             <button ref={gameBtnRef} className="game-select-btn" onClick={() => setGameOpen(o => !o)} aria-haspopup="menu" aria-expanded={gameOpen}>
               <span className="game-select-mark"><GameBadge game={game} letter={BRAND_MARK[game]} variant="white" /></span>
               <span className="game-select-name">{GAME_LABELS[game]}</span>
-              <span className="game-select-chev" aria-hidden="true">▾</span>
+              <CaretDown className="game-select-chev" size={13} weight="bold" aria-hidden="true" />
             </button>
             {gameOpen && (
               <div className="popover popover--full" role="menu">
@@ -321,7 +322,7 @@ export function Game({ game, lang, onToggleLang }: Props) {
             <Timer startTime={startTime} endTime={endTime} />
           </div>
           <button className="giveup" onClick={() => setPendingConfirm('giveUp')} disabled={endTime != null || !champions.length}>
-            <span className="giveup-flag" aria-hidden="true">⚑</span>
+            <Flag className="giveup-flag" size={16} weight="bold" aria-hidden="true" />
             <span className="giveup-text">
               <strong>{t('status.giveUp')}</strong>
               <em>{t('status.giveUpSub')}</em>

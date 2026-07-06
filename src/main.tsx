@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import '@fontsource-variable/geist/index.css';
 import './i18n';
 import './index.css';
 import { HomeRoute } from './HomeRoute';

@@ -64,9 +64,9 @@ describe('HomeRoute', () => {
 
   it('resets stale data-game attribute and document title left over from a game page', () => {
     document.documentElement.setAttribute('data-game', 'valorant');
-    document.title = 'RECALL/Valorant — All agents · cde-laro.dev';
+    document.title = 'RECALL/Valorant - All agents';
     renderHome();
     expect(document.documentElement.hasAttribute('data-game')).toBe(false);
-    expect(document.title).toBe('RECALL — Champion Identification Challenge');
+    expect(document.title).toBe('RECALL - Champion Identification Challenge');
   });
 });

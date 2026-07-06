@@ -36,7 +36,7 @@ export function HomeRoute() {
   // cleanup côté Game — plus robuste, peu importe comment on est revenu ici.
   useEffect(() => {
     document.documentElement.removeAttribute('data-game');
-    document.title = 'RECALL — Champion Identification Challenge';
+    document.title = 'RECALL - Champion Identification Challenge';
     document.querySelector('meta[name="description"]')?.setAttribute(
       'content',
       'A memory challenge: name every champion, agent, or hero from memory. League of Legends, Valorant, Overwatch.'
@@ -58,7 +58,7 @@ export function HomeRoute() {
           <button
             className="lang-btn home-lang"
             onClick={toggleLang}
-            aria-label={`${lang === 'fr' ? 'EN' : 'FR'} — ${t('topbar.switchLanguage')}`}
+            aria-label={`${lang === 'fr' ? 'EN' : 'FR'} - ${t('topbar.switchLanguage')}`}
           >
             {lang === 'fr' ? 'EN' : 'FR'}
           </button>

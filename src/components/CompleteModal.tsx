@@ -100,7 +100,7 @@ export function CompleteModal({ game, total, found, completed, lang, time, bestT
           </div>
           <div>
             <div className="stat-label">{t('modal.bestScore')}</div>
-            <div className="stat-value">{bestScore ?? '—'}</div>
+            <div className="stat-value">{bestScore ?? '--'}</div>
           </div>
         </div>
         <div className="actions">

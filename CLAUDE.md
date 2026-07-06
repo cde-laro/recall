@@ -13,7 +13,12 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   `style-src` doivent inclure `recall-cde.vercel.app` (base absolu ⇒ assets
   cross-origin vus depuis cde-laro.dev) ; `img-src` liste les CDN de portraits
   (ddragon, media.valorant-api.com, d15f34w2p8l1cc.cloudfront.net pour
-  Overwatch) ; tout nouvel hôte d'image/API doit y être ajouté.
+  Overwatch) ; tout nouvel hôte d'image/API doit y être ajouté. La police
+  **Geist est self-hostée** (`@fontsource-variable/geist`, importée dans
+  `src/main.tsx`, woff2 émis dans `/assets`) — **plus de Google Fonts** :
+  `font-src` = `'self' https://recall-cde.vercel.app` (assets cross-origin),
+  et `style-src` ne liste plus `fonts.googleapis.com`. Ne pas réintroduire de
+  `<link>` vers fonts.googleapis/gstatic.
 - Toute URL affichée à l'utilisateur (partage, SEO) doit pointer sur `cde-laro.dev/recall/...`
   (cf. `src/utils/shareText.ts`).
 
@@ -55,13 +60,18 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
   `.shell` en 2 colonnes : `.rail` (gauche — marque, sélecteur de jeu, panneau
   `.stats`, contrôles langue/menu ; plus de thème light, de panneau
   « à propos » ni de tagline) et `.main` (abandon discret, `.command-bar` input+Valider,
-  sous-titre « Dernier trouvé », grille). Pendant `loading`, `Game` early-return
+  sous-titre « Dernier trouvé », grille). La **`.command-bar` est `sticky`
+  (top:0, fond frosté, fallback opaque sous `prefers-reduced-transparency`)** :
+  l'input reste toujours atteignable quand la grille défile dessous — ne pas
+  la sortir du flux ni retirer le sticky. Pendant `loading`, `Game` early-return
   un **loader plein écran** `.page-loading` (brand-mark pulsante) — pas de shell. Le sélecteur de
   jeu et les contrôles sont inline dans `Game.tsx` (il n'y a **plus de
-  `TopBar`**). Sur mobile la rail se replie au-dessus de `.main` et `.stats`
+  `TopBar`**). Les icônes (menu, chevron, drapeau d'abandon) viennent de
+  **Phosphor** (`@phosphor-icons/react`, `weight="bold"`) — plus de glyphes
+  Unicode ; garder une seule famille d'icônes. Sur mobile la rail se replie au-dessus de `.main` et `.stats`
   passe en carte horizontale. Style « app » lisse et arrondi calqué sur une
-  maquette : typo **Inter** (plus d'Anton ni de JetBrains Mono ; cf.
-  `index.html`), labels en casse normale, ombres douces, accent or/rouge/orange
+  maquette : typo **Geist** (self-hostée via `@fontsource-variable/geist`,
+  famille `'Geist Variable'` ; plus d'Inter/Anton/JetBrains Mono), labels en casse normale, ombres douces, accent or/rouge/orange
   selon le jeu. Le **chrono est en grand en haut du `.main`** (`.timebar`), pas
   dans le panneau `.stats` (qui ne contient que progression + meilleur temps).
   `GameBadge` (`src/components/GameBadge.tsx`) affiche le vrai logo du jeu
@@ -175,4 +185,8 @@ Quiz "nomme tous les personnages" : React 19 + TypeScript + Vite, react-router, 
 ## Conventions
 
 - Texte UI toujours via i18next (`src/locales/{fr,en}.json`), jamais en dur.
+- **Zéro em-dash (`—`), en-dash (`–`) ou middle-dot (`·`) dans le texte
+  visible** (titres, aria-labels, `shareText.ts`, locales) : séparateurs ASCII
+  uniquement (`-`, `:`, `,`). Copie en **langage naturel** — plus de préfixe
+  `//` facon commentaire sur les sous-titres de modale ou les messages d'erreur.
 - `docs/superpowers/` est gitignoré (specs de design locales uniquement).

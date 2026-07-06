@@ -14,7 +14,7 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://recall-cde.vercel.app; style-src 'self' 'unsafe-inline' https://recall-cde.vercel.app https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://recall-cde.vercel.app https://ddragon.leagueoflegends.com https://media.valorant-api.com https://overfast-api.tekrop.fr https://d15f34w2p8l1cc.cloudfront.net; connect-src 'self' https://ddragon.leagueoflegends.com https://valorant-api.com https://overfast-api.tekrop.fr; frame-ancestors 'none'; base-uri 'self'"
+          "value": "default-src 'self'; script-src 'self' https://recall-cde.vercel.app; style-src 'self' 'unsafe-inline' https://recall-cde.vercel.app; font-src 'self' https://recall-cde.vercel.app; img-src 'self' data: https://recall-cde.vercel.app https://ddragon.leagueoflegends.com https://media.valorant-api.com https://overfast-api.tekrop.fr https://d15f34w2p8l1cc.cloudfront.net; connect-src 'self' https://ddragon.leagueoflegends.com https://valorant-api.com https://overfast-api.tekrop.fr; frame-ancestors 'none'; base-uri 'self'"
         }
       ]
     }
