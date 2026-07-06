@@ -17,3 +17,26 @@ export const BRAND_MARK: Record<GameId, string> = {
   valorant: 'V',
   overwatch: 'O',
 };
+
+export type GameMode = 'speedrun' | 'combo' | 'timeattack';
+export const GAME_MODES: GameMode[] = ['speedrun', 'combo', 'timeattack'];
+
+export const TA_DURATIONS = [5, 10] as const;
+export type TaDuration = (typeof TA_DURATIONS)[number];
+
+// 'lower' = plus petit est mieux (temps) ; 'higher' = plus grand est mieux.
+export const MODE_BETTER: Record<GameMode, 'lower' | 'higher'> = {
+  speedrun: 'lower',
+  combo: 'higher',
+  timeattack: 'higher',
+};
+
+// Clé localStorage du record du mode. Speedrun/Combo réutilisent les clés
+// historiques (best time / best score) ; Contre la montre a une clé par durée.
+export function recordKey(mode: GameMode, game: GameId, taDuration: TaDuration): string {
+  switch (mode) {
+    case 'speedrun': return `memochamp_best_${game}`;
+    case 'combo': return `memochamp_bestscore_${game}`;
+    case 'timeattack': return `memochamp_ta_${game}_${taDuration}`;
+  }
+}
