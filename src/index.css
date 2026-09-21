@@ -37,6 +37,17 @@
   --line-bright: #2e3240;
 }
 
+[data-game="marvel-rivals"] {
+  --gold: #5e6cff;
+  --gold-bright: #8b96ff;
+  --found: #5e6cff;
+  --bg: #0c0d16;
+  --bg-2: #131420;
+  --surface-solid: #1a1c2a;
+  --line: #212437;
+  --line-bright: #30344d;
+}
+
 * { box-sizing: border-box; }
 
 :focus-visible {
@@ -719,6 +730,7 @@ body {
 .home-game[data-game="lol"] { --gold: #d6a64a; --gold-bright: #f3c969; }
 .home-game[data-game="valorant"] { --gold: #FF4655; --gold-bright: #FF7A84; }
 .home-game[data-game="overwatch"] { --gold: #F99E1A; --gold-bright: #FFBC3B; }
+.home-game[data-game="marvel-rivals"] { --gold: #5e6cff; --gold-bright: #8b96ff; }
 
 .rail-mode {
   display: flex;

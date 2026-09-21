@@ -1,0 +1,245 @@
+{
+  "version": "2026-09-21T13:10:50.271Z",
+  "characters": [
+    {
+      "name": "Adam Warlock",
+      "id": "adam-warlock",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/5/56/Adam_Warlock_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804203112"
+    },
+    {
+      "name": "Angela",
+      "id": "angela",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/b/b1/Angela_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804203156"
+    },
+    {
+      "name": "Black Cat",
+      "id": "black-cat",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/f/fd/Black_Cat_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804203443"
+    },
+    {
+      "name": "Black Panther",
+      "id": "black-panther",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/8/89/Black_Panther_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804203621"
+    },
+    {
+      "name": "Black Widow",
+      "id": "black-widow",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/2/21/Black_Widow_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804203758"
+    },
+    {
+      "name": "Blade",
+      "id": "blade",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/2/24/Blade_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804204932"
+    },
+    {
+      "name": "Captain America",
+      "id": "captain-america",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/f/f8/Captain_America_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804205925"
+    },
+    {
+      "name": "Cloak & Dagger",
+      "id": "cloak---dagger",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/9/9d/Cloak_%26_Dagger_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804210017"
+    },
+    {
+      "name": "Cyclops",
+      "id": "cyclops",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/b/b7/Cyclops_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804210111"
+    },
+    {
+      "name": "Daredevil",
+      "id": "daredevil",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/2/29/Daredevil_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804210507"
+    },
+    {
+      "name": "Deadpool",
+      "id": "deadpool",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/4/4d/Deadpool_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804210703"
+    },
+    {
+      "name": "Devil Dinosaur",
+      "id": "devil-dinosaur",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/6/60/Devil_Dinosaur_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804210809"
+    },
+    {
+      "name": "Doctor Strange",
+      "id": "doctor-strange",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/a/a1/Doctor_Strange_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804210904"
+    },
+    {
+      "name": "Elsa Bloodstone",
+      "id": "elsa-bloodstone",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/8/8c/Elsa_Bloodstone_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804212134"
+    },
+    {
+      "name": "Emma Frost",
+      "id": "emma-frost",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/b/b7/Emma_Frost_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804212208"
+    },
+    {
+      "name": "Gambit",
+      "id": "gambit",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/d/d9/Gambit_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804213312"
+    },
+    {
+      "name": "Gorr",
+      "id": "gorr",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/8/84/Gorr_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260909172321"
+    },
+    {
+      "name": "Groot",
+      "id": "groot",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/8/8a/Groot_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804213425"
+    },
+    {
+      "name": "Hawkeye",
+      "id": "hawkeye",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/a/a5/Hawkeye_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804213745"
+    },
+    {
+      "name": "Hela",
+      "id": "hela",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/3/32/Hela_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804214046"
+    },
+    {
+      "name": "Hulk",
+      "id": "hulk",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/0/01/Hulk_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804205246"
+    },
+    {
+      "name": "Human Torch",
+      "id": "human-torch",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/2/25/Human_Torch_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804214307"
+    },
+    {
+      "name": "Invisible Woman",
+      "id": "invisible-woman",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/4/4c/Invisible_Woman_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804214602"
+    },
+    {
+      "name": "Iron Fist",
+      "id": "iron-fist",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/0/0a/Iron_Fist_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804223925"
+    },
+    {
+      "name": "Iron Man",
+      "id": "iron-man",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/c/c4/Iron_Man_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804224011"
+    },
+    {
+      "name": "Jeff the Land Shark",
+      "id": "jeff-the-land-shark",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/7/7d/Jeff_the_Land_Shark_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804224529"
+    },
+    {
+      "name": "Jubilee",
+      "id": "jubilee",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/e/ef/Jubilee_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804195817"
+    },
+    {
+      "name": "Loki",
+      "id": "loki",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/f/f8/Loki_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804224715"
+    },
+    {
+      "name": "Luna Snow",
+      "id": "luna-snow",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/c/cc/Luna_Snow_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804224846"
+    },
+    {
+      "name": "Magik",
+      "id": "magik",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/e/eb/Magik_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804225119"
+    },
+    {
+      "name": "Magneto",
+      "id": "magneto",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/f/fc/Magneto_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804231157"
+    },
+    {
+      "name": "Mantis",
+      "id": "mantis",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/7/7d/Mantis_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804231237"
+    },
+    {
+      "name": "Mister Fantastic",
+      "id": "mister-fantastic",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/f/ff/Mister_Fantastic_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804233623"
+    },
+    {
+      "name": "Moon Girl",
+      "id": "moon-girl",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/9/99/Moon_Girl_Portrait.png/revision/latest/scale-to-width-down/110?cb=20260514125535"
+    },
+    {
+      "name": "Moon Knight",
+      "id": "moon-knight",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/9/9c/Moon_Knight_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804234054"
+    },
+    {
+      "name": "Namor",
+      "id": "namor",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/e/e7/Namor_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804235947"
+    },
+    {
+      "name": "Peni Parker",
+      "id": "peni-parker",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/2/27/Peni_Parker_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260805000421"
+    },
+    {
+      "name": "Phoenix",
+      "id": "phoenix",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/4/40/Phoenix_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260805000457"
+    },
+    {
+      "name": "Psylocke",
+      "id": "psylocke",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/5/5b/Psylocke_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260805000654"
+    },
+    {
+      "name": "Rocket Raccoon",
+      "id": "rocket-raccoon",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/b/b0/Rocket_Raccoon_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260805000810"
+    },
+    {
+      "name": "Rogue",
+      "id": "rogue",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/4/45/Rogue_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260805000852"
+    },
+    {
+      "name": "Scarlet Witch",
+      "id": "scarlet-witch",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/3/33/Scarlet_Witch_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260805000936"
+    },
+    {
+      "name": "Spider-Man",
+      "id": "spider-man",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/9/97/Spider-Man_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260805001112"
+    },
+    {
+      "name": "Squirrel Girl",
+      "id": "squirrel-girl",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/2/23/Squirrel_Girl_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260805001559"
+    },
+    {
+      "name": "Star-Lord",
+      "id": "star-lord",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/3/31/Star-Lord_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260805001804"
+    },
+    {
+      "name": "Storm",
+      "id": "storm",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/7/7b/Storm_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260805002226"
+    },
+    {
+      "name": "The Hood",
+      "id": "the-hood",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/d/d7/The_Hood_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260804195717"
+    },
+    {
+      "name": "The Punisher",
+      "id": "the-punisher",
+      "imageUrl": "https://static.wikia.nocookie.net/marvel-rivals/images/6/61/The_Punisher_Main_Page_Portrait.png/revision/latest/scale-to-width-down/141?cb=20260805002419"
+    }
+  ]
+}

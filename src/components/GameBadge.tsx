@@ -18,7 +18,7 @@ type LogoEntry = { black: string; white: string } | { universal: string };
 // obtenir une URL absolue correcte dans tous les contextes (dev, prod via
 // cde-laro.dev, prod via recall-cde.vercel.app direct), comme le fait déjà
 // Vite lui-même pour le favicon/les bundles JS dans index.html.
-const LOGO_BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+const LOGO_BASE = import.meta.env.DEV ? '' : import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // Logos de marque (officiels pour LoL/Overwatch, reconstitution vectorielle
 // communautaire pour Valorant faute de SVG officiel — cf.
@@ -30,6 +30,7 @@ const LOGOS: Partial<Record<GameId, LogoEntry>> = {
   lol: { black: `${LOGO_BASE}/logos/lol-black.svg`, white: `${LOGO_BASE}/logos/lol-white.svg` },
   valorant: { black: `${LOGO_BASE}/logos/valorant-black.svg`, white: `${LOGO_BASE}/logos/valorant-white.svg` },
   overwatch: { universal: `${LOGO_BASE}/logos/overwatch.svg` },
+  'marvel-rivals': { universal: `${LOGO_BASE}/logos/marvel-rivals.png` },
 };
 
 export function GameBadge({ game, letter, variant }: Props) {

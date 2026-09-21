@@ -15,6 +15,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/league" element={<GameRoute game="lol" />} />
         <Route path="/valorant" element={<GameRoute game="valorant" />} />
         <Route path="/overwatch" element={<GameRoute game="overwatch" />} />
+        <Route path="/marvel-rivals" element={<GameRoute game="marvel-rivals" />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

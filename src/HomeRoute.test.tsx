@@ -14,6 +14,7 @@ function renderHome() {
         <Route path="/league" element={<div>LEAGUE PAGE</div>} />
         <Route path="/valorant" element={<div>VALORANT PAGE</div>} />
         <Route path="/overwatch" element={<div>OVERWATCH PAGE</div>} />
+        <Route path="/marvel-rivals" element={<div>MARVEL RIVALS PAGE</div>} />
       </Routes>
     </MemoryRouter>
   );
@@ -29,16 +30,17 @@ describe('HomeRoute', () => {
     cleanup();
   });
 
-  it('renders all three game cards', () => {
+  it('renders all game cards', () => {
     renderHome();
     expect(screen.getByText('League of Legends')).toBeInTheDocument();
     expect(screen.getByText('Valorant')).toBeInTheDocument();
     expect(screen.getByText('Overwatch')).toBeInTheDocument();
+    expect(screen.getByText('Marvel Rivals')).toBeInTheDocument();
   });
 
   it('shows "not played yet" when no record exists for a game', () => {
     renderHome();
-    expect(screen.getAllByText('Pas encore joué')).toHaveLength(3);
+    expect(screen.getAllByText('Pas encore joué')).toHaveLength(4);
   });
 
   it('shows best time and best score together when a record exists', () => {

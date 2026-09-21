@@ -4,18 +4,21 @@ export const GAME_LABELS: Record<GameId, string> = {
   lol: 'League of Legends',
   valorant: 'Valorant',
   overwatch: 'Overwatch',
+  'marvel-rivals': 'Marvel Rivals',
 };
 
 export const GAME_PATHS: Record<GameId, string> = {
   lol: '/league',
   valorant: '/valorant',
   overwatch: '/overwatch',
+  'marvel-rivals': '/marvel-rivals',
 };
 
 export const BRAND_MARK: Record<GameId, string> = {
   lol: 'L',
   valorant: 'V',
   overwatch: 'O',
+  'marvel-rivals': 'MR',
 };
 
 export type GameMode = 'speedrun' | 'combo' | 'timeattack';

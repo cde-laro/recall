@@ -8,7 +8,7 @@ import { PortraitMarquee } from './components/PortraitMarquee';
 import { GAME_LABELS, GAME_PATHS, BRAND_MARK } from './gameMeta';
 import type { GameId } from './hooks/useGameData';
 
-const GAMES: GameId[] = ['lol', 'valorant', 'overwatch'];
+const GAMES: GameId[] = ['lol', 'valorant', 'overwatch', 'marvel-rivals'];
 
 function readBest(key: string): number | null {
   const raw = localStorage.getItem(key);

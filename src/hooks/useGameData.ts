@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { readCache, writeCache, nextMidnight } from '../utils/dataCache';
 
-export type GameId = 'lol' | 'valorant' | 'overwatch';
+export type GameId = 'lol' | 'valorant' | 'overwatch' | 'marvel-rivals';
 
 export interface Character {
   name: string;
@@ -33,6 +33,7 @@ const SNAPSHOTS: Record<GameId, Record<'fr' | 'en', () => Promise<{ default: Sna
   lol: { fr: () => import('../data/lol.fr.json'), en: () => import('../data/lol.en.json') },
   valorant: { fr: () => import('../data/valorant.fr.json'), en: () => import('../data/valorant.en.json') },
   overwatch: { fr: () => import('../data/overwatch.fr.json'), en: () => import('../data/overwatch.en.json') },
+  'marvel-rivals': { fr: () => import('../data/marvel-rivals.fr.json'), en: () => import('../data/marvel-rivals.en.json') },
 };
 
 async function fetchJson<T>(url: string): Promise<T> {
@@ -112,7 +113,7 @@ export function useGameData(game: GameId, lang: 'fr' | 'en'): State {
       store('', characters);
     }
 
-    const fetch$ = game === 'lol' ? fetchLol() : game === 'valorant' ? fetchValorant() : fetchOverwatch();
+    const fetch$ = game === 'lol' ? fetchLol() : game === 'valorant' ? fetchValorant() : game === 'overwatch' ? fetchOverwatch() : Promise.reject(new Error('No API for Marvel Rivals, falling back to snapshot'));
     fetch$.catch(async e => {
       // API injoignable : on sert le snapshot committé (rafraîchi à chaque
       // déploiement), sans le mettre en cache pour retenter l'API ensuite.

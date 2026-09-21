@@ -36,12 +36,14 @@ export function PortraitMarquee() {
       import('../data/lol.fr.json'),
       import('../data/valorant.fr.json'),
       import('../data/overwatch.fr.json'),
-    ]).then(([lol, valorant, overwatch]) => {
+      import('../data/marvel-rivals.fr.json'),
+    ]).then(([lol, valorant, overwatch, mr]) => {
       if (cancelled) return;
       const portraits = [
         ...lol.default.characters,
         ...valorant.default.characters,
         ...overwatch.default.characters,
+        ...mr.default.characters,
       ].map(c => c.imageUrl);
       setRows(buildRows(portraits));
     });
